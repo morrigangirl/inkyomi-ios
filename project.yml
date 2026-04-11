@@ -1,0 +1,62 @@
+name: InkYomi
+options:
+  bundleIdPrefix: shop.inkcolors
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: ""
+
+packages:
+  Nuke:
+    url: https://github.com/kean/Nuke
+    from: "12.0.0"
+  ZIPFoundation:
+    url: https://github.com/readium/ZIPFoundation.git
+    from: "3.0.1"
+  ReadiumSwift:
+    url: https://github.com/readium/swift-toolkit.git
+    from: "3.1.0"
+
+targets:
+  InkYomi:
+    type: application
+    platform: iOS
+    sources:
+      - InkYomi
+    resources:
+      - path: InkYomi/Resources
+        buildPhase: resources
+    settings:
+      base:
+        INFOPLIST_FILE: InkYomi/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: shop.inkcolors.InkYomi
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: true
+    dependencies:
+      - package: Nuke
+      - package: ZIPFoundation
+        product: ReadiumZIPFoundation
+      - package: ReadiumSwift
+        product: ReadiumShared
+      - package: ReadiumSwift
+        product: ReadiumStreamer
+      - package: ReadiumSwift
+        product: ReadiumNavigator
+
+  InkYomiTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - InkYomiTests
+    dependencies:
+      - target: InkYomi
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: shop.inkcolors.InkYomiTests

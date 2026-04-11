@@ -1,0 +1,32 @@
+[
+  {
+    "name": "primitives",
+    "input": { "b": true, "n": null, "i": 42, "s": "hi" },
+    "expected": "{\"b\":true,\"i\":42,\"n\":null,\"s\":\"hi\"}"
+  },
+  {
+    "name": "key sort",
+    "input": { "z": 1, "a": 2, "m": 3 },
+    "expected": "{\"a\":2,\"m\":3,\"z\":1}"
+  },
+  {
+    "name": "nested objects",
+    "input": { "outer": { "z": 1, "a": { "y": 2, "b": 3 } }, "first": "go" },
+    "expected": "{\"first\":\"go\",\"outer\":{\"a\":{\"b\":3,\"y\":2},\"z\":1}}"
+  },
+  {
+    "name": "arrays preserve order",
+    "input": { "list": [3, 1, 2, { "z": 1, "a": 2 }] },
+    "expected": "{\"list\":[3,1,2,{\"a\":2,\"z\":1}]}"
+  },
+  {
+    "name": "string escapes",
+    "input": { "msg": "line1\nline2\t\"quoted\"" },
+    "expected": "{\"msg\":\"line1\\nline2\\t\\\"quoted\\\"\"}"
+  },
+  {
+    "name": "empty containers",
+    "input": { "obj": {}, "arr": [] },
+    "expected": "{\"arr\":[],\"obj\":{}}"
+  }
+]

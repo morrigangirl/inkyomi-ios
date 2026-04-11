@@ -1,0 +1,35 @@
+{
+  "params": {
+    "version": 1,
+    "type": "argon2id",
+    "memoryCostKiB": 65536,
+    "timeCost": 3,
+    "parallelism": 4,
+    "hashLength": 32,
+    "saltBytes": 16
+  },
+  "boundPassphrase": [
+    {
+      "name": "basic",
+      "deviceSecretHex": "0101010101010101010101010101010101010101010101010101010101010101",
+      "email": "alice@example.com",
+      "pin": "1234",
+      "expectedHex": "31b4f06de69ae41cac4e286e66d2a8de12ed44b25322820612079f18808677f7"
+    },
+    {
+      "name": "uppercase email matches lowercase",
+      "deviceSecretHex": "0101010101010101010101010101010101010101010101010101010101010101",
+      "email": "ALICE@EXAMPLE.COM",
+      "pin": "1234",
+      "expectedHex": "31b4f06de69ae41cac4e286e66d2a8de12ed44b25322820612079f18808677f7"
+    }
+  ],
+  "deriveUserKey": [
+    {
+      "name": "fixed passphrase + salt",
+      "passphraseHex": "31b4f06de69ae41cac4e286e66d2a8de12ed44b25322820612079f18808677f7",
+      "saltHex": "00112233445566778899aabbccddeeff",
+      "expectedHex": "1a4c27bfc2033ac578c99fb2fcca6654f243406c7d43d5dda67f28f62bca64d0"
+    }
+  ]
+}

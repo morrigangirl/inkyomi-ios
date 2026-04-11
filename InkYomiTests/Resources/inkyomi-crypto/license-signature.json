@@ -1,0 +1,6 @@
+{
+  "name": "fixed RSA-SHA256 signature over canonical JSON",
+  "document": { "a": 1, "b": 2, "c": [1, 2, 3] },
+  "expectedCanonical": "{\"a\":1,\"b\":2,\"c\":[1,2,3]}",
+  "signatureB64": "hAFy4kPe1sMtyp8jOtls8/p8WwsnM/qyjUcbIRE1E9oHGvloV6rRJSNpIyqWduyazFWadvkO9f0z96wwKFjYtoO6vKZnkaU+wxLuoHQxzgQVcDAc+rRQIFTvY5KfGIwQCGzdliUadK0I8ISeJ1DgrD9WWrcyU531CVYnmm9Xx/cSM/n9f+k9/wCOrHUMyHQWEiwp/ftKr0rNs8HupUzd9lz3Ae4lgoMKBy1XKfSSYjqCnnT/zAw6ePWSE4lejOgjA6vGot7ZQb1sTjJyE+RaMek3U/na6/A4Inq7nSQv6pYF0sdZl0bTdafJz6XJzKmGi/xo/+DiowN/0iGXE2xb+A=="
+}

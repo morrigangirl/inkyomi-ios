@@ -1,0 +1,1236 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0096E26C8E24B1D4D4BF185E /* TabRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39272FD01C070F0793C35449 /* TabRoute.swift */; };
+		00A5C30EE43108988FD1DB87 /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38D7AD97DDEF410EB5BD23D /* CartItem.swift */; };
+		02C1FE8A131714CE5F7A017F /* CheckoutDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68DBDBC8081F9D5F1EAADF1B /* CheckoutDTOs.swift */; };
+		0A2AAAF7CCBAAB612523D0B5 /* LoanCacheModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CE64A51B19248A8E9E798F /* LoanCacheModel.swift */; };
+		0F2AFF416148EF9282130FDF /* DeviceListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752022A2FDD99BA9C5CAFB00 /* DeviceListViewModel.swift */; };
+		129A35C30DF5D532D04743DB /* OpdsDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AE9721B363A692275BD802 /* OpdsDTOs.swift */; };
+		12C946D481DAB2977F4B46B5 /* DeviceAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */; };
+		142BCD636DDA9A91746526D4 /* ReadingTelemetryEventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A6FB673D9036A9B641C380 /* ReadingTelemetryEventModel.swift */; };
+		15B0B93E4EE1FEA4BD95008B /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8780BBD47C18C9A9403DCF29 /* Book.swift */; };
+		1758E873E3AEEF06ECC1DEF4 /* PendingSpanReadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E02867E468A0FA44D2561F /* PendingSpanReadModel.swift */; };
+		18E22A7BCA9B44D807CB898D /* dev-signing-key.pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = CF89D145025E3294913168E7 /* dev-signing-key.pub.pem */; };
+		1B8C1C83855AE0A9BC6F8F1F /* ReaderDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0967CA50D1FF05D6C574EC /* ReaderDTOs.swift */; };
+		1F13F8065D12F0354F8E966B /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD2DA117B3B637816ABAD5D /* CartView.swift */; };
+		204017BFA2C37676AE5F45EC /* transport-key.json in Resources */ = {isa = PBXBuildFile; fileRef = 8B923F98BF6EC1860B8812F6 /* transport-key.json */; };
+		2386885D232260EF06A25A95 /* canonical-json.json in Resources */ = {isa = PBXBuildFile; fileRef = 993EFADCE7828C6682C2878D /* canonical-json.json */; };
+		250074C88C753529D58579CB /* LibraryBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29739591B5050B6DDE5EDC81 /* LibraryBook.swift */; };
+		2774788156F34B43CB3852D3 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 41D8B7C5A0C6E8724395BDF5 /* Nuke */; };
+		2833AEB68104F17F3AEADF0E /* LendingCatalogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D80AABAFFA8C47AFD647E38 /* LendingCatalogViewModel.swift */; };
+		29C502C83EF4F8A54381EC7F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94909A4587C96E0B48B75E8 /* AppState.swift */; };
+		2A82F88BD35D3BA64A557AAD /* ReaderAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6570844B345A501CE53C03B2 /* ReaderAPIService.swift */; };
+		2E2DE25FA072E3D0F60C3218 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AFBE9CAABA520DBC2BCBDD /* Constants.swift */; };
+		301AE4FEE9D59F1C1B566EB2 /* CatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09CEE4897FA0A1EC16CB48C8 /* CatalogRepository.swift */; };
+		3128C47007FDFE21A24956D6 /* TelemetryDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0891F61A1F07B34BEB8A1DD /* TelemetryDTOs.swift */; };
+		3146E225FCF6E78A62E94C1E /* ReadiumNavigator in Frameworks */ = {isa = PBXBuildFile; productRef = 0B26992E06FDEDE70EFE4C91 /* ReadiumNavigator */; };
+		31AD59C916762E3BAF6257D2 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E4AED1DDC044EF22D8F2FB /* AuthState.swift */; };
+		34017D1C0EF78E3E53BBD86F /* ReaderSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3437215236DC49549BD2BC8 /* ReaderSettingsSheet.swift */; };
+		34AD3777AB77D8E7B4CC940B /* ReadingSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC018635FEEE860A0AF3050C /* ReadingSessionModel.swift */; };
+		34F90E1528C56FE317C67250 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CBE9AF771BD9288DD70F5D /* HomeViewModel.swift */; };
+		3525A2551EE9B546F47DE6EB /* LoanInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCF7446717AB840B07AD61C /* LoanInfo.swift */; };
+		36260EFEE4B1801B645D9FD1 /* NotesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5748F93CE76D6C318868F041 /* NotesSheet.swift */; };
+		379B0A3A9030265B6EF3EB2F /* InstrumentedLocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F60281E3A645AC0EF849D09 /* InstrumentedLocationModel.swift */; };
+		3BBBAFC3A2943282DA76A930 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9041A941069D55608B9F58DB /* LibraryView.swift */; };
+		3C90F0CACC8D9A54F48961F9 /* inkyomi-provider-cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 62D7BE243FC6A02A67A3935A /* inkyomi-provider-cert.pem */; };
+		3C9CA98297C77BEC17B3147D /* AuthDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE055DFB60F00FAFD471EE /* AuthDTOs.swift */; };
+		3ECAF2613F0C3168231A1E22 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2A357626E0AD09A13691B5 /* LoginViewModel.swift */; };
+		4083E2248CC1AD7786837E54 /* ContentKeyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0143F07DC5C32066A7F9C1CB /* ContentKeyWrapper.swift */; };
+		46EBD7B1F9CC039E4613D32E /* CanonicalJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B22F5B67A2FBB3E36574EA /* CanonicalJSON.swift */; };
+		479C7CC0039E6BB2B38E4D2F /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76FB19C6BE3382BD469E584 /* APIClient.swift */; };
+		48D906FB46929B27E1577F75 /* OpdsCatalogAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013BA04594342D71BB89669B /* OpdsCatalogAPIService.swift */; };
+		4C03D58BB8B2D9AA6A4C4F0C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C0FAA43D2A34A9B059584 /* HomeView.swift */; };
+		50228A146F97FD5E4B5AC1FE /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E13E3F329281602F887CF /* DeepLinkHandler.swift */; };
+		510A20F6A92DAB33B22E5732 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB9446793D132483C416A7A /* SettingsView.swift */; };
+		5363ED59F8877499DDEF2191 /* SpanTelemetryAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46073C86CA71A9E846F6616E /* SpanTelemetryAPIService.swift */; };
+		547EEBCFB081C204F64DDDAA /* SafariViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B425D900E89037548B855DDC /* SafariViewRepresentable.swift */; };
+		548F43D46869296BF7F792B6 /* TocSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE59CC463C9DCF3B2068DEB /* TocSheet.swift */; };
+		5586B88617CED9DF8C61133E /* ReadiumStreamer in Frameworks */ = {isa = PBXBuildFile; productRef = 8E4C6F70B3246F89B9E51734 /* ReadiumStreamer */; };
+		5765718401F656FA0D409FF1 /* AccountingManifestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03D56F65D316AD52F5E3D2E /* AccountingManifestModel.swift */; };
+		3OVAOG189HZCI6YQ4CFVY8W4 /* InkyomiContentProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DZ2CD237QJ6DIC7QPMXLCIT5 /* InkyomiContentProtection.swift */; };
+		BT8IR3RDZJQ080U29N8X06J7 /* InkyomiDecryptingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TSTX8KPH1Z2JMONZWFISFKXG /* InkyomiDecryptingContainer.swift */; };
+		5B935DD82342493A65C90D6D /* LsdStatusChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE373C4F18A6ECBD3CB67738 /* LsdStatusChecker.swift */; };
+		5CB939C48CBF34CC0E418618 /* LendingCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AB83BE7439F727985EDE25 /* LendingCatalogView.swift */; };
+		5F921D3BF76FD1AF2D0E6B0B /* InkyomiKdf.swift in Sources */ = {isa = PBXBuildFile; fileRef = B591827A975605796DB7A07A /* InkyomiKdf.swift */; };
+		613FB82C33CCD18AC8357AC7 /* BookmarkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAB07CA8880172D17C700A1 /* BookmarkModel.swift */; };
+		663833092A4EFEE7DF187A55 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5789D051E256D9B2EC1CBAA9 /* DeviceListView.swift */; };
+		68C9C5B3E2D0FBBCC9F62978 /* OpdsCatalogDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFF379565BD466ECB46F135 /* OpdsCatalogDTOs.swift */; };
+		6A056EDBEF310B73C705009D /* BookDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B752867921F98B3D46270 /* BookDetailViewModel.swift */; };
+		6A13C83AD9639CEE0BA65203 /* DeviceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB971B7C64E410B3457F2BB /* DeviceRepository.swift */; };
+		6A8462B68F885A645A5B704F /* AccSpanObserverScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF82ED22F87B5C821CBB855E /* AccSpanObserverScript.swift */; };
+		6F453EA095EF44E93680BD6F /* TransportKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4C132F36363EE9E7134986 /* TransportKey.swift */; };
+		6FB29C4939D338B2FFEBFC1D /* EncryptionXmlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5775B5275805C7B245647D /* EncryptionXmlParser.swift */; };
+		7005570EFDE1F7D034DFB1A1 /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9EC0925C902D885DBF43087 /* AuthRepository.swift */; };
+		738749F437B8A48786BBF6CF /* HeroCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFFAA6EFCE65949DF0AB9EB /* HeroCarouselView.swift */; };
+		7629BBC1DC158206DF567FF9 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C11263B922F44284305776 /* ForgotPasswordViewModel.swift */; };
+		770757FBFC182B890A89C247 /* BookRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC170036D746FE75DC715B61 /* BookRepositoryImpl.swift */; };
+		7758F5A0302918CDF32584FC /* CatalogDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6382A59DA80FD03F494581 /* CatalogDTOs.swift */; };
+		77DC3F8F4426110EE467E7BE /* LicenseSignatureVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12290C1E2058A74918F7DCD /* LicenseSignatureVerifier.swift */; };
+		792D20A4FB3EF3F0E0FBCC6C /* InkYomiTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C876E658A49403343F3C8A /* InkYomiTheme.swift */; };
+		794046EA9ABE2291EC56E617 /* CatalogAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA539F91D6563D126F1C455 /* CatalogAPIService.swift */; };
+		7ACFE8A88EB8B9DD05239351 /* DeviceKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D584DEE1FFF754872F357F86 /* DeviceKeyManager.swift */; };
+		7D5505B86E6387C90A32F0E6 /* BookCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB620ED2CF33A6A1A7F6331 /* BookCardView.swift */; };
+		7E6D85522D0BC8B0A851F0E4 /* InkyomiModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF991BC33189F695D0A8432 /* InkyomiModelContainer.swift */; };
+		812DFDA31AE447C5DE050B1F /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B497015ECD12702E8263024 /* SearchBarView.swift */; };
+		87CCF39FD446603A550AE843 /* ReaderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ABB26CDBAB2161AC79DEC /* ReaderModels.swift */; };
+		8988533EC34A4BF8CCBF1BBF /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562EB943D4239E0FD6D5F9AD /* UserProfile.swift */; };
+		8C0B074C1789DA1B90538022 /* kdf.json in Resources */ = {isa = PBXBuildFile; fileRef = 0B7CCFE82D55A991B97FD1B0 /* kdf.json */; };
+		8D7A83F495E29E36C5C24807 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D3358451A5502E41A82C98 /* AppRouter.swift */; };
+		8F895004AA4105274688E820 /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE72DE90C192AF222BE579B3 /* ReaderView.swift */; };
+		95351AC21960764676BE3515 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA22A4073C456495D0E7693 /* LandingPage.swift */; };
+		956B223C12FC0A2F3A811A76 /* LendingRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFB29B953AB4C01431DCE20 /* LendingRepositoryImpl.swift */; };
+		985FED6D57233214A402B140 /* SpanUploadScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84F66C2D2EF6399D1F850C4 /* SpanUploadScheduler.swift */; };
+		9E7EFDA721270E39D6E695EA /* ReaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AE71C4C213F43AA185D393 /* ReaderViewModel.swift */; };
+		9ED426112A542D812CCCD7A9 /* ReadiumShared in Frameworks */ = {isa = PBXBuildFile; productRef = 4C18982B8F8D5EA4312A1E26 /* ReadiumShared */; };
+		9F7F25BE2D3C8ABAAE6730A0 /* BookRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9C66396462D5520F67532D /* BookRepository.swift */; };
+		A0E2F9F42AC0C5A4A9A7B674 /* CheckoutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF5639B291398674173F13 /* CheckoutRepository.swift */; };
+		A26460FE281E79615B400A07 /* ProviderCertStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F10FDBD104E8FAA22C7F97 /* ProviderCertStore.swift */; };
+		A2C29D9B5564456007F8AF51 /* HighlightModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6F4D08031363E246E3047D /* HighlightModel.swift */; };
+		A42099996D29C1E23E343C53 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE480D4B3800AEDA46D2D7D /* LoginView.swift */; };
+		A4FF1BA3515A0AEDC6878E4E /* EPUBReaderRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37817BE8446267A160E82E1 /* EPUBReaderRepresentable.swift */; };
+		A8F675171DAEFB58126BA560 /* AuthAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C80CD09F7839396144B1E54 /* AuthAPIService.swift */; };
+		AB37AA097FCF230E7D4E9D71 /* LibraryRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695966B1CA470983E6010862 /* LibraryRepositoryImpl.swift */; };
+		AE415375E5C2EE562C99E578 /* CachedBookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E5348A5D4053126055DD8E /* CachedBookModel.swift */; };
+		B7C7D8F754906D9A872CDD95 /* BookCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1A5E35BAF6B89A68DB42EA /* BookCoverView.swift */; };
+		BF8EE9BCB6047F53D72FA960 /* BookDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9032BBED76CB98725878F3 /* BookDetailView.swift */; };
+		BF918D7BA28247F2F0E36984 /* LcpTransportSecretStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AEDC7D2F1EB2D0E8D94D72 /* LcpTransportSecretStore.swift */; };
+		C0C5623BD5609418B8495B1C /* ReadiumZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0934A3364709AEE044311766 /* ReadiumZIPFoundation */; };
+		C3C08189892F8E1292EA5983 /* ReaderPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC442AB88ECC15F7CCDF6C9 /* ReaderPreferences.swift */; };
+		C8645589343EFCD6FDFFC07C /* CheckoutRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98EA00365CA77D827F4913F7 /* CheckoutRepositoryImpl.swift */; };
+		CA0E729478691E1A9B0A355C /* EntitlementAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53D22AB1CD8109C9E4BF01B /* EntitlementAPIService.swift */; };
+		CBFC00ED12101B5EA6A8787F /* license-signature.json in Resources */ = {isa = PBXBuildFile; fileRef = E4A9E24E0F6D2CD9BECAAD05 /* license-signature.json */; };
+		CC7AA9F50C97FF020570AB0E /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B28524204607495F79B2B51 /* DependencyContainer.swift */; };
+		CDB2407CB23A7B9671E2C8DF /* OpdsLendingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */; };
+		CFB094D25D31752D5F9D4A25 /* EntitlementDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D33BA8B84C8E411F95392 /* EntitlementDTOs.swift */; };
+		D049C61AFE6390A1BBB4EA3A /* LendingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8527E7A7DE150BDE0A735BB7 /* LendingRepository.swift */; };
+		D21DDEB9A36B6EE4BAA2E82F /* CheckoutAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2941468B24AD0B7A8ED48660 /* CheckoutAPIService.swift */; };
+		D47AF12ACA38D17C17B11D7E /* NativeAuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A7AA2588ED8845E80F9434 /* NativeAuthRepository.swift */; };
+		D6FB1812B23D2C2C17062D13 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E301CC34B74F681B70D459 /* KeychainManager.swift */; };
+		D7A43E42B2CD38F23E58FB7B /* LcpPassphraseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DE1D96624E5FEFB8C3F19B /* LcpPassphraseManager.swift */; };
+		D9DB67C4CAFDCC1A323505D1 /* SpanTelemetryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3AF692A822E6125FB0127C /* SpanTelemetryRepository.swift */; };
+		DA665A15CA4EC0712F1A9857 /* BookDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71A68E9EA61AE542361FBB4 /* BookDetail.swift */; };
+		DADB660F125F2E1E68CF8C6E /* LendingDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BFBBA401FA93F8FFB2D55A /* LendingDownloadManager.swift */; };
+		DD180C9843F01174713CE20A /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A4667FEF828099492F5BC0 /* ForgotPasswordView.swift */; };
+		DE2DFDBC9A82EAE1D6C84281 /* HighlightEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8423BA7ED48CAF132F841442 /* HighlightEditorSheet.swift */; };
+		DE87CCFACCA26F56574B3614 /* ShelfRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */; };
+		DF7C348656869A30C0681870 /* DeviceRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D35CC53CBF1B97EE942666 /* DeviceRepositoryImpl.swift */; };
+		E7697D7CBEAE64693F614A2B /* InkYomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */; };
+		E9405F17808FA7A7FBFF87E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96C6F33106806D96613CCBAD /* Assets.xcassets */; };
+		F2064F104466275ADB2D6DEC /* DeviceDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937080EA901057051E7261D0 /* DeviceDTOs.swift */; };
+		F338F7FD62548EDCB5A60AD9 /* CatalogRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7AEC3BBCA7F28E261DAD44 /* CatalogRepositoryImpl.swift */; };
+		F4F14438DFF3C55C78FD72AB /* LibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE49CE010BE1197522CE693 /* LibraryRepository.swift */; };
+		F6683C5A3B183B02714090DB /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10DFF96B7042FD9CA4C11D0 /* LibraryViewModel.swift */; };
+		FBD0FB847F972EB24F307127 /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A47EC72148B861177CA2B0 /* CartViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		78D2A4679027828A1F9AF40A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 09D5BF9F8E5639F97EE56D28 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04348D0DD6203C6E53F0F072;
+			remoteInfo = InkYomi;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00CBE9AF771BD9288DD70F5D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		013BA04594342D71BB89669B /* OpdsCatalogAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsCatalogAPIService.swift; sourceTree = "<group>"; };
+		0143F07DC5C32066A7F9C1CB /* ContentKeyWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyWrapper.swift; sourceTree = "<group>"; };
+		02AFBE9CAABA520DBC2BCBDD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		06E02867E468A0FA44D2561F /* PendingSpanReadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSpanReadModel.swift; sourceTree = "<group>"; };
+		09CEE4897FA0A1EC16CB48C8 /* CatalogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepository.swift; sourceTree = "<group>"; };
+		0B28524204607495F79B2B51 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
+		0B7CCFE82D55A991B97FD1B0 /* kdf.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = kdf.json; sourceTree = "<group>"; };
+		0DE59CC463C9DCF3B2068DEB /* TocSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TocSheet.swift; sourceTree = "<group>"; };
+		11BFBBA401FA93F8FFB2D55A /* LendingDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingDownloadManager.swift; sourceTree = "<group>"; };
+		1CE480D4B3800AEDA46D2D7D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		24B22F5B67A2FBB3E36574EA /* CanonicalJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalJSON.swift; sourceTree = "<group>"; };
+		2941468B24AD0B7A8ED48660 /* CheckoutAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutAPIService.swift; sourceTree = "<group>"; };
+		29739591B5050B6DDE5EDC81 /* LibraryBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBook.swift; sourceTree = "<group>"; };
+		2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkYomiApp.swift; sourceTree = "<group>"; };
+		2C1A5E35BAF6B89A68DB42EA /* BookCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCoverView.swift; sourceTree = "<group>"; };
+		2D80AABAFFA8C47AFD647E38 /* LendingCatalogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingCatalogViewModel.swift; sourceTree = "<group>"; };
+		2DA22A4073C456495D0E7693 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
+		2EFB29B953AB4C01431DCE20 /* LendingRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingRepositoryImpl.swift; sourceTree = "<group>"; };
+		31C876E658A49403343F3C8A /* InkYomiTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkYomiTheme.swift; sourceTree = "<group>"; };
+		39272FD01C070F0793C35449 /* TabRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabRoute.swift; sourceTree = "<group>"; };
+		3B5775B5275805C7B245647D /* EncryptionXmlParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionXmlParser.swift; sourceTree = "<group>"; };
+		3C0967CA50D1FF05D6C574EC /* ReaderDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderDTOs.swift; sourceTree = "<group>"; };
+		3C0E51C0B815F9BAB7636C45 /* InkYomiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = InkYomiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F60281E3A645AC0EF849D09 /* InstrumentedLocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentedLocationModel.swift; sourceTree = "<group>"; };
+		401A0967073CBA36F053CED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		40CE64A51B19248A8E9E798F /* LoanCacheModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoanCacheModel.swift; sourceTree = "<group>"; };
+		46073C86CA71A9E846F6616E /* SpanTelemetryAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanTelemetryAPIService.swift; sourceTree = "<group>"; };
+		4B4C132F36363EE9E7134986 /* TransportKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportKey.swift; sourceTree = "<group>"; };
+		4BF991BC33189F695D0A8432 /* InkyomiModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiModelContainer.swift; sourceTree = "<group>"; };
+		50AE9721B363A692275BD802 /* OpdsDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsDTOs.swift; sourceTree = "<group>"; };
+		528ABB26CDBAB2161AC79DEC /* ReaderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModels.swift; sourceTree = "<group>"; };
+		52A47EC72148B861177CA2B0 /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
+		548C0FAA43D2A34A9B059584 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		562EB943D4239E0FD6D5F9AD /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		5748F93CE76D6C318868F041 /* NotesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesSheet.swift; sourceTree = "<group>"; };
+		5789D051E256D9B2EC1CBAA9 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
+		58AB83BE7439F727985EDE25 /* LendingCatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingCatalogView.swift; sourceTree = "<group>"; };
+		58DE055DFB60F00FAFD471EE /* AuthDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDTOs.swift; sourceTree = "<group>"; };
+		5C7AEC3BBCA7F28E261DAD44 /* CatalogRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepositoryImpl.swift; sourceTree = "<group>"; };
+		62D7BE243FC6A02A67A3935A /* inkyomi-provider-cert.pem */ = {isa = PBXFileReference; path = "inkyomi-provider-cert.pem"; sourceTree = "<group>"; };
+		64C11263B922F44284305776 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
+		6570844B345A501CE53C03B2 /* ReaderAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderAPIService.swift; sourceTree = "<group>"; };
+		68DBDBC8081F9D5F1EAADF1B /* CheckoutDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutDTOs.swift; sourceTree = "<group>"; };
+		695966B1CA470983E6010862 /* LibraryRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryRepositoryImpl.swift; sourceTree = "<group>"; };
+		6AB620ED2CF33A6A1A7F6331 /* BookCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCardView.swift; sourceTree = "<group>"; };
+		6B497015ECD12702E8263024 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
+		752022A2FDD99BA9C5CAFB00 /* DeviceListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListViewModel.swift; sourceTree = "<group>"; };
+		75AEDC7D2F1EB2D0E8D94D72 /* LcpTransportSecretStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LcpTransportSecretStore.swift; sourceTree = "<group>"; };
+		763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAPIService.swift; sourceTree = "<group>"; };
+		7B6F4D08031363E246E3047D /* HighlightModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightModel.swift; sourceTree = "<group>"; };
+		7BAB07CA8880172D17C700A1 /* BookmarkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkModel.swift; sourceTree = "<group>"; };
+		7CB971B7C64E410B3457F2BB /* DeviceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRepository.swift; sourceTree = "<group>"; };
+		8423BA7ED48CAF132F841442 /* HighlightEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightEditorSheet.swift; sourceTree = "<group>"; };
+		8527E7A7DE150BDE0A735BB7 /* LendingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingRepository.swift; sourceTree = "<group>"; };
+		8780BBD47C18C9A9403DCF29 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		8AD2DA117B3B637816ABAD5D /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		8B923F98BF6EC1860B8812F6 /* transport-key.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "transport-key.json"; sourceTree = "<group>"; };
+		8DC442AB88ECC15F7CCDF6C9 /* ReaderPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPreferences.swift; sourceTree = "<group>"; };
+		8E9032BBED76CB98725878F3 /* BookDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailView.swift; sourceTree = "<group>"; };
+		8EFFAA6EFCE65949DF0AB9EB /* HeroCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroCarouselView.swift; sourceTree = "<group>"; };
+		9041A941069D55608B9F58DB /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		91E5348A5D4053126055DD8E /* CachedBookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedBookModel.swift; sourceTree = "<group>"; };
+		937080EA901057051E7261D0 /* DeviceDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDTOs.swift; sourceTree = "<group>"; };
+		94DE1D96624E5FEFB8C3F19B /* LcpPassphraseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LcpPassphraseManager.swift; sourceTree = "<group>"; };
+		96C6F33106806D96613CCBAD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		976D33BA8B84C8E411F95392 /* EntitlementDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitlementDTOs.swift; sourceTree = "<group>"; };
+		98D3358451A5502E41A82C98 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		98EA00365CA77D827F4913F7 /* CheckoutRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutRepositoryImpl.swift; sourceTree = "<group>"; };
+		993EFADCE7828C6682C2878D /* canonical-json.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "canonical-json.json"; sourceTree = "<group>"; };
+		9C80CD09F7839396144B1E54 /* AuthAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPIService.swift; sourceTree = "<group>"; };
+		9CFF379565BD466ECB46F135 /* OpdsCatalogDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsCatalogDTOs.swift; sourceTree = "<group>"; };
+		A0891F61A1F07B34BEB8A1DD /* TelemetryDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryDTOs.swift; sourceTree = "<group>"; };
+		A3437215236DC49549BD2BC8 /* ReaderSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettingsSheet.swift; sourceTree = "<group>"; };
+		A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsLendingAPIService.swift; sourceTree = "<group>"; };
+		A5BC9931CE5F3C8503263882 /* InkYomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InkYomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8A4667FEF828099492F5BC0 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		AD7E13E3F329281602F887CF /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
+		AF2A357626E0AD09A13691B5 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfRowView.swift; sourceTree = "<group>"; };
+		B03D56F65D316AD52F5E3D2E /* AccountingManifestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountingManifestModel.swift; sourceTree = "<group>"; };
+		B1F10FDBD104E8FAA22C7F97 /* ProviderCertStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderCertStore.swift; sourceTree = "<group>"; };
+		B38D7AD97DDEF410EB5BD23D /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
+		B425D900E89037548B855DDC /* SafariViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewRepresentable.swift; sourceTree = "<group>"; };
+		B591827A975605796DB7A07A /* InkyomiKdf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiKdf.swift; sourceTree = "<group>"; };
+		B9E301CC34B74F681B70D459 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		BBCF7446717AB840B07AD61C /* LoanInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoanInfo.swift; sourceTree = "<group>"; };
+		BC018635FEEE860A0AF3050C /* ReadingSessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSessionModel.swift; sourceTree = "<group>"; };
+		BD6382A59DA80FD03F494581 /* CatalogDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogDTOs.swift; sourceTree = "<group>"; };
+		BD9C66396462D5520F67532D /* BookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookRepository.swift; sourceTree = "<group>"; };
+		BEB9446793D132483C416A7A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C10DFF96B7042FD9CA4C11D0 /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
+		C37817BE8446267A160E82E1 /* EPUBReaderRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EPUBReaderRepresentable.swift; sourceTree = "<group>"; };
+		C76FB19C6BE3382BD469E584 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		C84F66C2D2EF6399D1F850C4 /* SpanUploadScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanUploadScheduler.swift; sourceTree = "<group>"; };
+		C94909A4587C96E0B48B75E8 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		CAE49CE010BE1197522CE693 /* LibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryRepository.swift; sourceTree = "<group>"; };
+		CC170036D746FE75DC715B61 /* BookRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookRepositoryImpl.swift; sourceTree = "<group>"; };
+		CDA539F91D6563D126F1C455 /* CatalogAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogAPIService.swift; sourceTree = "<group>"; };
+		CE72DE90C192AF222BE579B3 /* ReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderView.swift; sourceTree = "<group>"; };
+		CF82ED22F87B5C821CBB855E /* AccSpanObserverScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccSpanObserverScript.swift; sourceTree = "<group>"; };
+		CF89D145025E3294913168E7 /* dev-signing-key.pub.pem */ = {isa = PBXFileReference; path = "dev-signing-key.pub.pem"; sourceTree = "<group>"; };
+		D17B752867921F98B3D46270 /* BookDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailViewModel.swift; sourceTree = "<group>"; };
+		D584DEE1FFF754872F357F86 /* DeviceKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceKeyManager.swift; sourceTree = "<group>"; };
+		D6A7AA2588ED8845E80F9434 /* NativeAuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuthRepository.swift; sourceTree = "<group>"; };
+		D9D35CC53CBF1B97EE942666 /* DeviceRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRepositoryImpl.swift; sourceTree = "<group>"; };
+		D9E4AED1DDC044EF22D8F2FB /* AuthState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthState.swift; sourceTree = "<group>"; };
+		DZ2CD237QJ6DIC7QPMXLCIT5 /* InkyomiContentProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiContentProtection.swift; sourceTree = "<group>"; };
+		TSTX8KPH1Z2JMONZWFISFKXG /* InkyomiDecryptingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiDecryptingContainer.swift; sourceTree = "<group>"; };
+		DE373C4F18A6ECBD3CB67738 /* LsdStatusChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LsdStatusChecker.swift; sourceTree = "<group>"; };
+		E0AE71C4C213F43AA185D393 /* ReaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewModel.swift; sourceTree = "<group>"; };
+		E4A9E24E0F6D2CD9BECAAD05 /* license-signature.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "license-signature.json"; sourceTree = "<group>"; };
+		EAFF5639B291398674173F13 /* CheckoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutRepository.swift; sourceTree = "<group>"; };
+		F12290C1E2058A74918F7DCD /* LicenseSignatureVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseSignatureVerifier.swift; sourceTree = "<group>"; };
+		F4A6FB673D9036A9B641C380 /* ReadingTelemetryEventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingTelemetryEventModel.swift; sourceTree = "<group>"; };
+		F53D22AB1CD8109C9E4BF01B /* EntitlementAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitlementAPIService.swift; sourceTree = "<group>"; };
+		F71A68E9EA61AE542361FBB4 /* BookDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetail.swift; sourceTree = "<group>"; };
+		F9EC0925C902D885DBF43087 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
+		FE3AF692A822E6125FB0127C /* SpanTelemetryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanTelemetryRepository.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0F4692593B6AA1881B2ED10E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2774788156F34B43CB3852D3 /* Nuke in Frameworks */,
+				C0C5623BD5609418B8495B1C /* ReadiumZIPFoundation in Frameworks */,
+				9ED426112A542D812CCCD7A9 /* ReadiumShared in Frameworks */,
+				5586B88617CED9DF8C61133E /* ReadiumStreamer in Frameworks */,
+				3146E225FCF6E78A62E94C1E /* ReadiumNavigator in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0A4A2C30390AD97589CC569B /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				A8A4667FEF828099492F5BC0 /* ForgotPasswordView.swift */,
+				64C11263B922F44284305776 /* ForgotPasswordViewModel.swift */,
+				1CE480D4B3800AEDA46D2D7D /* LoginView.swift */,
+				AF2A357626E0AD09A13691B5 /* LoginViewModel.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		0F703299F8292E9568638A47 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				F9EC0925C902D885DBF43087 /* AuthRepository.swift */,
+				BD9C66396462D5520F67532D /* BookRepository.swift */,
+				09CEE4897FA0A1EC16CB48C8 /* CatalogRepository.swift */,
+				EAFF5639B291398674173F13 /* CheckoutRepository.swift */,
+				7CB971B7C64E410B3457F2BB /* DeviceRepository.swift */,
+				8527E7A7DE150BDE0A735BB7 /* LendingRepository.swift */,
+				CAE49CE010BE1197522CE693 /* LibraryRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		228582E531146F63FEDB3BAF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				25B0A4E4C2B9C67E44259E77 /* inkyomi-crypto */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		239703A9A22CF0FB2433DA77 = {
+			isa = PBXGroup;
+			children = (
+				C7E46804B134633FA24C0EF5 /* InkYomi */,
+				A74F494E9C15C93308DC5B6E /* InkYomiTests */,
+				732778AF5D9F3519685495B2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		25B0A4E4C2B9C67E44259E77 /* inkyomi-crypto */ = {
+			isa = PBXGroup;
+			children = (
+				993EFADCE7828C6682C2878D /* canonical-json.json */,
+				CF89D145025E3294913168E7 /* dev-signing-key.pub.pem */,
+				0B7CCFE82D55A991B97FD1B0 /* kdf.json */,
+				E4A9E24E0F6D2CD9BECAAD05 /* license-signature.json */,
+				8B923F98BF6EC1860B8812F6 /* transport-key.json */,
+			);
+			path = "inkyomi-crypto";
+			sourceTree = "<group>";
+		};
+		2823BD45BC8EDAE6D336535C /* Reader */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Reader;
+			sourceTree = "<group>";
+		};
+		2879AF39112536CD5345C8BD /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				9041A941069D55608B9F58DB /* LibraryView.swift */,
+				C10DFF96B7042FD9CA4C11D0 /* LibraryViewModel.swift */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		2EFA3676C59605B49F592306 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				2C1A5E35BAF6B89A68DB42EA /* BookCoverView.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		38002950F533B63AA274A142 /* Reader */ = {
+			isa = PBXGroup;
+			children = (
+				C37817BE8446267A160E82E1 /* EPUBReaderRepresentable.swift */,
+				8423BA7ED48CAF132F841442 /* HighlightEditorSheet.swift */,
+				5748F93CE76D6C318868F041 /* NotesSheet.swift */,
+				A3437215236DC49549BD2BC8 /* ReaderSettingsSheet.swift */,
+				CE72DE90C192AF222BE579B3 /* ReaderView.swift */,
+				E0AE71C4C213F43AA185D393 /* ReaderViewModel.swift */,
+				0DE59CC463C9DCF3B2068DEB /* TocSheet.swift */,
+			);
+			path = Reader;
+			sourceTree = "<group>";
+		};
+		3823DE764D7585300D67C9E5 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CC170036D746FE75DC715B61 /* BookRepositoryImpl.swift */,
+				5C7AEC3BBCA7F28E261DAD44 /* CatalogRepositoryImpl.swift */,
+				98EA00365CA77D827F4913F7 /* CheckoutRepositoryImpl.swift */,
+				D9D35CC53CBF1B97EE942666 /* DeviceRepositoryImpl.swift */,
+				2EFB29B953AB4C01431DCE20 /* LendingRepositoryImpl.swift */,
+				695966B1CA470983E6010862 /* LibraryRepositoryImpl.swift */,
+				D6A7AA2588ED8845E80F9434 /* NativeAuthRepository.swift */,
+				FE3AF692A822E6125FB0127C /* SpanTelemetryRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		3B14983CB1FE3D3A0B667EBE /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				C94909A4587C96E0B48B75E8 /* AppState.swift */,
+				02AFBE9CAABA520DBC2BCBDD /* Constants.swift */,
+				0B28524204607495F79B2B51 /* DependencyContainer.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		4ED08F346A99B587E8C2C93B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				0A4A2C30390AD97589CC569B /* Auth */,
+				9F5F53722A4EAA4AF1C5B6B4 /* BookDetail */,
+				DDB54F8E08DB6A909454D350 /* Cart */,
+				2EFA3676C59605B49F592306 /* Common */,
+				88DC2FF9A80F5C052AE97B99 /* Home */,
+				A48D84E1232901C3042C041D /* Lending */,
+				2879AF39112536CD5345C8BD /* Library */,
+				6E724045D9716625A6572FA1 /* Navigation */,
+				38002950F533B63AA274A142 /* Reader */,
+				58EDF64CD89A6E0033849690 /* Settings */,
+				6AC984EBC270A80550263E57 /* Theme */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		58EDF64CD89A6E0033849690 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				5789D051E256D9B2EC1CBAA9 /* DeviceListView.swift */,
+				752022A2FDD99BA9C5CAFB00 /* DeviceListViewModel.swift */,
+				BEB9446793D132483C416A7A /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		599EB88EBCDCD3900D0A691B /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				24B22F5B67A2FBB3E36574EA /* CanonicalJSON.swift */,
+				0143F07DC5C32066A7F9C1CB /* ContentKeyWrapper.swift */,
+				B591827A975605796DB7A07A /* InkyomiKdf.swift */,
+				F12290C1E2058A74918F7DCD /* LicenseSignatureVerifier.swift */,
+				B1F10FDBD104E8FAA22C7F97 /* ProviderCertStore.swift */,
+				4B4C132F36363EE9E7134986 /* TransportKey.swift */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		6633836D00C8CE4E6576A18B /* DTOs */ = {
+			isa = PBXGroup;
+			children = (
+				58DE055DFB60F00FAFD471EE /* AuthDTOs.swift */,
+				BD6382A59DA80FD03F494581 /* CatalogDTOs.swift */,
+				68DBDBC8081F9D5F1EAADF1B /* CheckoutDTOs.swift */,
+				937080EA901057051E7261D0 /* DeviceDTOs.swift */,
+				976D33BA8B84C8E411F95392 /* EntitlementDTOs.swift */,
+				9CFF379565BD466ECB46F135 /* OpdsCatalogDTOs.swift */,
+				50AE9721B363A692275BD802 /* OpdsDTOs.swift */,
+				3C0967CA50D1FF05D6C574EC /* ReaderDTOs.swift */,
+				A0891F61A1F07B34BEB8A1DD /* TelemetryDTOs.swift */,
+			);
+			path = DTOs;
+			sourceTree = "<group>";
+		};
+		67561182581DBC84BEF45894 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				FBD64EFA7C0602AE71AEE0DB /* Model */,
+				0F703299F8292E9568638A47 /* Repository */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		6AC984EBC270A80550263E57 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				31C876E658A49403343F3C8A /* InkYomiTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		6E724045D9716625A6572FA1 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				98D3358451A5502E41A82C98 /* AppRouter.swift */,
+				AD7E13E3F329281602F887CF /* DeepLinkHandler.swift */,
+				39272FD01C070F0793C35449 /* TabRoute.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		7305D2765B51888B32BA6D82 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9C80CD09F7839396144B1E54 /* AuthAPIService.swift */,
+				CDA539F91D6563D126F1C455 /* CatalogAPIService.swift */,
+				2941468B24AD0B7A8ED48660 /* CheckoutAPIService.swift */,
+				763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */,
+				F53D22AB1CD8109C9E4BF01B /* EntitlementAPIService.swift */,
+				013BA04594342D71BB89669B /* OpdsCatalogAPIService.swift */,
+				A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */,
+				6570844B345A501CE53C03B2 /* ReaderAPIService.swift */,
+				46073C86CA71A9E846F6616E /* SpanTelemetryAPIService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		732778AF5D9F3519685495B2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A5BC9931CE5F3C8503263882 /* InkYomi.app */,
+				3C0E51C0B815F9BAB7636C45 /* InkYomiTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7E6797B88CF7FCE47B728AF4 /* Telemetry */ = {
+			isa = PBXGroup;
+			children = (
+				CF82ED22F87B5C821CBB855E /* AccSpanObserverScript.swift */,
+				C84F66C2D2EF6399D1F850C4 /* SpanUploadScheduler.swift */,
+			);
+			path = Telemetry;
+			sourceTree = "<group>";
+		};
+		8153A1647186807BC4D90710 /* Reader */ = {
+			isa = PBXGroup;
+			children = (
+				3B5775B5275805C7B245647D /* EncryptionXmlParser.swift */,
+				DE373C4F18A6ECBD3CB67738 /* LsdStatusChecker.swift */,
+				TSTX8KPH1Z2JMONZWFISFKXG /* InkyomiDecryptingContainer.swift */,
+				DZ2CD237QJ6DIC7QPMXLCIT5 /* InkyomiContentProtection.swift */,
+				8DC442AB88ECC15F7CCDF6C9 /* ReaderPreferences.swift */,
+			);
+			path = Reader;
+			sourceTree = "<group>";
+		};
+		84E9057752AA34174B32AB7E /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		88DC2FF9A80F5C052AE97B99 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				6AB620ED2CF33A6A1A7F6331 /* BookCardView.swift */,
+				8EFFAA6EFCE65949DF0AB9EB /* HeroCarouselView.swift */,
+				548C0FAA43D2A34A9B059584 /* HomeView.swift */,
+				00CBE9AF771BD9288DD70F5D /* HomeViewModel.swift */,
+				6B497015ECD12702E8263024 /* SearchBarView.swift */,
+				AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		8BEE87E1AA0C316E050F230F /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				C76FB19C6BE3382BD469E584 /* APIClient.swift */,
+				6633836D00C8CE4E6576A18B /* DTOs */,
+				7305D2765B51888B32BA6D82 /* Services */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		9F5F53722A4EAA4AF1C5B6B4 /* BookDetail */ = {
+			isa = PBXGroup;
+			children = (
+				8E9032BBED76CB98725878F3 /* BookDetailView.swift */,
+				D17B752867921F98B3D46270 /* BookDetailViewModel.swift */,
+			);
+			path = BookDetail;
+			sourceTree = "<group>";
+		};
+		A48D84E1232901C3042C041D /* Lending */ = {
+			isa = PBXGroup;
+			children = (
+				58AB83BE7439F727985EDE25 /* LendingCatalogView.swift */,
+				2D80AABAFFA8C47AFD647E38 /* LendingCatalogViewModel.swift */,
+			);
+			path = Lending;
+			sourceTree = "<group>";
+		};
+		A74F494E9C15C93308DC5B6E /* InkYomiTests */ = {
+			isa = PBXGroup;
+			children = (
+				B7C9908E1344D55F06C35CA3 /* Crypto */,
+				84E9057752AA34174B32AB7E /* Domain */,
+				2823BD45BC8EDAE6D336535C /* Reader */,
+				228582E531146F63FEDB3BAF /* Resources */,
+			);
+			path = InkYomiTests;
+			sourceTree = "<group>";
+		};
+		B7C9908E1344D55F06C35CA3 /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		C7E46804B134633FA24C0EF5 /* InkYomi */ = {
+			isa = PBXGroup;
+			children = (
+				96C6F33106806D96613CCBAD /* Assets.xcassets */,
+				401A0967073CBA36F053CED4 /* Info.plist */,
+				2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */,
+				3B14983CB1FE3D3A0B667EBE /* Core */,
+				E72A0FD1B930B81009E137F7 /* Data */,
+				67561182581DBC84BEF45894 /* Domain */,
+				E9B312FA6C46DE5B4DA63823 /* Resources */,
+				4ED08F346A99B587E8C2C93B /* UI */,
+			);
+			path = InkYomi;
+			sourceTree = "<group>";
+		};
+		D6765F4979C7531634BF3BDB /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				4BF991BC33189F695D0A8432 /* InkyomiModelContainer.swift */,
+				E9F6D8BD326775A8B1EE87AF /* Models */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		DDB54F8E08DB6A909454D350 /* Cart */ = {
+			isa = PBXGroup;
+			children = (
+				8AD2DA117B3B637816ABAD5D /* CartView.swift */,
+				52A47EC72148B861177CA2B0 /* CartViewModel.swift */,
+				B425D900E89037548B855DDC /* SafariViewRepresentable.swift */,
+			);
+			path = Cart;
+			sourceTree = "<group>";
+		};
+		E72A0FD1B930B81009E137F7 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				F86D3EEE0D277810EDE28D83 /* Local */,
+				8BEE87E1AA0C316E050F230F /* Remote */,
+				3823DE764D7585300D67C9E5 /* Repository */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		E9405F93A2870BDF079DD09D /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				D584DEE1FFF754872F357F86 /* DeviceKeyManager.swift */,
+				B9E301CC34B74F681B70D459 /* KeychainManager.swift */,
+				94DE1D96624E5FEFB8C3F19B /* LcpPassphraseManager.swift */,
+				75AEDC7D2F1EB2D0E8D94D72 /* LcpTransportSecretStore.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		E9B312FA6C46DE5B4DA63823 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				62D7BE243FC6A02A67A3935A /* inkyomi-provider-cert.pem */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E9F6D8BD326775A8B1EE87AF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B03D56F65D316AD52F5E3D2E /* AccountingManifestModel.swift */,
+				7BAB07CA8880172D17C700A1 /* BookmarkModel.swift */,
+				91E5348A5D4053126055DD8E /* CachedBookModel.swift */,
+				7B6F4D08031363E246E3047D /* HighlightModel.swift */,
+				3F60281E3A645AC0EF849D09 /* InstrumentedLocationModel.swift */,
+				40CE64A51B19248A8E9E798F /* LoanCacheModel.swift */,
+				06E02867E468A0FA44D2561F /* PendingSpanReadModel.swift */,
+				BC018635FEEE860A0AF3050C /* ReadingSessionModel.swift */,
+				F4A6FB673D9036A9B641C380 /* ReadingTelemetryEventModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F752D9AD722E394AC0E23322 /* Download */ = {
+			isa = PBXGroup;
+			children = (
+				11BFBBA401FA93F8FFB2D55A /* LendingDownloadManager.swift */,
+			);
+			path = Download;
+			sourceTree = "<group>";
+		};
+		F86D3EEE0D277810EDE28D83 /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				599EB88EBCDCD3900D0A691B /* Crypto */,
+				F752D9AD722E394AC0E23322 /* Download */,
+				D6765F4979C7531634BF3BDB /* Persistence */,
+				8153A1647186807BC4D90710 /* Reader */,
+				E9405F93A2870BDF079DD09D /* Security */,
+				7E6797B88CF7FCE47B728AF4 /* Telemetry */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		FBD64EFA7C0602AE71AEE0DB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D9E4AED1DDC044EF22D8F2FB /* AuthState.swift */,
+				8780BBD47C18C9A9403DCF29 /* Book.swift */,
+				F71A68E9EA61AE542361FBB4 /* BookDetail.swift */,
+				B38D7AD97DDEF410EB5BD23D /* CartItem.swift */,
+				2DA22A4073C456495D0E7693 /* LandingPage.swift */,
+				29739591B5050B6DDE5EDC81 /* LibraryBook.swift */,
+				BBCF7446717AB840B07AD61C /* LoanInfo.swift */,
+				528ABB26CDBAB2161AC79DEC /* ReaderModels.swift */,
+				562EB943D4239E0FD6D5F9AD /* UserProfile.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		04348D0DD6203C6E53F0F072 /* InkYomi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C45D3405CE120890B65D5177 /* Build configuration list for PBXNativeTarget "InkYomi" */;
+			buildPhases = (
+				9E469AF4E56B92112245BC57 /* Sources */,
+				8CBCD2619E07E1F8965290AE /* Resources */,
+				0F4692593B6AA1881B2ED10E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = InkYomi;
+			packageProductDependencies = (
+				41D8B7C5A0C6E8724395BDF5 /* Nuke */,
+				0934A3364709AEE044311766 /* ReadiumZIPFoundation */,
+				4C18982B8F8D5EA4312A1E26 /* ReadiumShared */,
+				8E4C6F70B3246F89B9E51734 /* ReadiumStreamer */,
+				0B26992E06FDEDE70EFE4C91 /* ReadiumNavigator */,
+			);
+			productName = InkYomi;
+			productReference = A5BC9931CE5F3C8503263882 /* InkYomi.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C4F368B18FEAC5BC3F7C0B52 /* InkYomiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 19A817EBE396ECD9B7C41A43 /* Build configuration list for PBXNativeTarget "InkYomiTests" */;
+			buildPhases = (
+				087955DD47FE13961A1D67EC /* Sources */,
+				1D5313D27C8BCEF8634CB5F4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4261F28D2D2ECC97427DC36F /* PBXTargetDependency */,
+			);
+			name = InkYomiTests;
+			packageProductDependencies = (
+			);
+			productName = InkYomiTests;
+			productReference = 3C0E51C0B815F9BAB7636C45 /* InkYomiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		09D5BF9F8E5639F97EE56D28 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					04348D0DD6203C6E53F0F072 = {
+						DevelopmentTeam = "";
+					};
+					C4F368B18FEAC5BC3F7C0B52 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = 9EB3B9DD266A97A0C3A6900A /* Build configuration list for PBXProject "InkYomi" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 239703A9A22CF0FB2433DA77;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C83071FE1B834FB60E71516A /* XCRemoteSwiftPackageReference "Nuke" */,
+				867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */,
+				5C5F5B83DFD8B4DADCDC776F /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				04348D0DD6203C6E53F0F072 /* InkYomi */,
+				C4F368B18FEAC5BC3F7C0B52 /* InkYomiTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D5313D27C8BCEF8634CB5F4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2386885D232260EF06A25A95 /* canonical-json.json in Resources */,
+				18E22A7BCA9B44D807CB898D /* dev-signing-key.pub.pem in Resources */,
+				8C0B074C1789DA1B90538022 /* kdf.json in Resources */,
+				CBFC00ED12101B5EA6A8787F /* license-signature.json in Resources */,
+				204017BFA2C37676AE5F45EC /* transport-key.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CBCD2619E07E1F8965290AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9405F17808FA7A7FBFF87E0 /* Assets.xcassets in Resources */,
+				3C90F0CACC8D9A54F48961F9 /* inkyomi-provider-cert.pem in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		087955DD47FE13961A1D67EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E469AF4E56B92112245BC57 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				479C7CC0039E6BB2B38E4D2F /* APIClient.swift in Sources */,
+				6A8462B68F885A645A5B704F /* AccSpanObserverScript.swift in Sources */,
+				5765718401F656FA0D409FF1 /* AccountingManifestModel.swift in Sources */,
+				8D7A83F495E29E36C5C24807 /* AppRouter.swift in Sources */,
+				29C502C83EF4F8A54381EC7F /* AppState.swift in Sources */,
+				A8F675171DAEFB58126BA560 /* AuthAPIService.swift in Sources */,
+				3C9CA98297C77BEC17B3147D /* AuthDTOs.swift in Sources */,
+				7005570EFDE1F7D034DFB1A1 /* AuthRepository.swift in Sources */,
+				31AD59C916762E3BAF6257D2 /* AuthState.swift in Sources */,
+				15B0B93E4EE1FEA4BD95008B /* Book.swift in Sources */,
+				7D5505B86E6387C90A32F0E6 /* BookCardView.swift in Sources */,
+				B7C7D8F754906D9A872CDD95 /* BookCoverView.swift in Sources */,
+				DA665A15CA4EC0712F1A9857 /* BookDetail.swift in Sources */,
+				BF8EE9BCB6047F53D72FA960 /* BookDetailView.swift in Sources */,
+				6A056EDBEF310B73C705009D /* BookDetailViewModel.swift in Sources */,
+				9F7F25BE2D3C8ABAAE6730A0 /* BookRepository.swift in Sources */,
+				770757FBFC182B890A89C247 /* BookRepositoryImpl.swift in Sources */,
+				613FB82C33CCD18AC8357AC7 /* BookmarkModel.swift in Sources */,
+				AE415375E5C2EE562C99E578 /* CachedBookModel.swift in Sources */,
+				46EBD7B1F9CC039E4613D32E /* CanonicalJSON.swift in Sources */,
+				00A5C30EE43108988FD1DB87 /* CartItem.swift in Sources */,
+				1F13F8065D12F0354F8E966B /* CartView.swift in Sources */,
+				FBD0FB847F972EB24F307127 /* CartViewModel.swift in Sources */,
+				794046EA9ABE2291EC56E617 /* CatalogAPIService.swift in Sources */,
+				7758F5A0302918CDF32584FC /* CatalogDTOs.swift in Sources */,
+				301AE4FEE9D59F1C1B566EB2 /* CatalogRepository.swift in Sources */,
+				F338F7FD62548EDCB5A60AD9 /* CatalogRepositoryImpl.swift in Sources */,
+				D21DDEB9A36B6EE4BAA2E82F /* CheckoutAPIService.swift in Sources */,
+				02C1FE8A131714CE5F7A017F /* CheckoutDTOs.swift in Sources */,
+				A0E2F9F42AC0C5A4A9A7B674 /* CheckoutRepository.swift in Sources */,
+				C8645589343EFCD6FDFFC07C /* CheckoutRepositoryImpl.swift in Sources */,
+				2E2DE25FA072E3D0F60C3218 /* Constants.swift in Sources */,
+				4083E2248CC1AD7786837E54 /* ContentKeyWrapper.swift in Sources */,
+				50228A146F97FD5E4B5AC1FE /* DeepLinkHandler.swift in Sources */,
+				CC7AA9F50C97FF020570AB0E /* DependencyContainer.swift in Sources */,
+				12C946D481DAB2977F4B46B5 /* DeviceAPIService.swift in Sources */,
+				F2064F104466275ADB2D6DEC /* DeviceDTOs.swift in Sources */,
+				7ACFE8A88EB8B9DD05239351 /* DeviceKeyManager.swift in Sources */,
+				663833092A4EFEE7DF187A55 /* DeviceListView.swift in Sources */,
+				0F2AFF416148EF9282130FDF /* DeviceListViewModel.swift in Sources */,
+				6A13C83AD9639CEE0BA65203 /* DeviceRepository.swift in Sources */,
+				DF7C348656869A30C0681870 /* DeviceRepositoryImpl.swift in Sources */,
+				A4FF1BA3515A0AEDC6878E4E /* EPUBReaderRepresentable.swift in Sources */,
+				6FB29C4939D338B2FFEBFC1D /* EncryptionXmlParser.swift in Sources */,
+				CA0E729478691E1A9B0A355C /* EntitlementAPIService.swift in Sources */,
+				CFB094D25D31752D5F9D4A25 /* EntitlementDTOs.swift in Sources */,
+				DD180C9843F01174713CE20A /* ForgotPasswordView.swift in Sources */,
+				7629BBC1DC158206DF567FF9 /* ForgotPasswordViewModel.swift in Sources */,
+				738749F437B8A48786BBF6CF /* HeroCarouselView.swift in Sources */,
+				DE2DFDBC9A82EAE1D6C84281 /* HighlightEditorSheet.swift in Sources */,
+				A2C29D9B5564456007F8AF51 /* HighlightModel.swift in Sources */,
+				4C03D58BB8B2D9AA6A4C4F0C /* HomeView.swift in Sources */,
+				34F90E1528C56FE317C67250 /* HomeViewModel.swift in Sources */,
+				E7697D7CBEAE64693F614A2B /* InkYomiApp.swift in Sources */,
+				792D20A4FB3EF3F0E0FBCC6C /* InkYomiTheme.swift in Sources */,
+				5F921D3BF76FD1AF2D0E6B0B /* InkyomiKdf.swift in Sources */,
+				7E6D85522D0BC8B0A851F0E4 /* InkyomiModelContainer.swift in Sources */,
+				379B0A3A9030265B6EF3EB2F /* InstrumentedLocationModel.swift in Sources */,
+				D6FB1812B23D2C2C17062D13 /* KeychainManager.swift in Sources */,
+				95351AC21960764676BE3515 /* LandingPage.swift in Sources */,
+				D7A43E42B2CD38F23E58FB7B /* LcpPassphraseManager.swift in Sources */,
+				BF918D7BA28247F2F0E36984 /* LcpTransportSecretStore.swift in Sources */,
+				5CB939C48CBF34CC0E418618 /* LendingCatalogView.swift in Sources */,
+				2833AEB68104F17F3AEADF0E /* LendingCatalogViewModel.swift in Sources */,
+				DADB660F125F2E1E68CF8C6E /* LendingDownloadManager.swift in Sources */,
+				D049C61AFE6390A1BBB4EA3A /* LendingRepository.swift in Sources */,
+				956B223C12FC0A2F3A811A76 /* LendingRepositoryImpl.swift in Sources */,
+				250074C88C753529D58579CB /* LibraryBook.swift in Sources */,
+				F4F14438DFF3C55C78FD72AB /* LibraryRepository.swift in Sources */,
+				AB37AA097FCF230E7D4E9D71 /* LibraryRepositoryImpl.swift in Sources */,
+				3BBBAFC3A2943282DA76A930 /* LibraryView.swift in Sources */,
+				F6683C5A3B183B02714090DB /* LibraryViewModel.swift in Sources */,
+				77DC3F8F4426110EE467E7BE /* LicenseSignatureVerifier.swift in Sources */,
+				0A2AAAF7CCBAAB612523D0B5 /* LoanCacheModel.swift in Sources */,
+				3525A2551EE9B546F47DE6EB /* LoanInfo.swift in Sources */,
+				A42099996D29C1E23E343C53 /* LoginView.swift in Sources */,
+				3ECAF2613F0C3168231A1E22 /* LoginViewModel.swift in Sources */,
+				5B935DD82342493A65C90D6D /* LsdStatusChecker.swift in Sources */,
+				BT8IR3RDZJQ080U29N8X06J7 /* InkyomiDecryptingContainer.swift in Sources */,
+				3OVAOG189HZCI6YQ4CFVY8W4 /* InkyomiContentProtection.swift in Sources */,
+				D47AF12ACA38D17C17B11D7E /* NativeAuthRepository.swift in Sources */,
+				36260EFEE4B1801B645D9FD1 /* NotesSheet.swift in Sources */,
+				48D906FB46929B27E1577F75 /* OpdsCatalogAPIService.swift in Sources */,
+				68C9C5B3E2D0FBBCC9F62978 /* OpdsCatalogDTOs.swift in Sources */,
+				129A35C30DF5D532D04743DB /* OpdsDTOs.swift in Sources */,
+				CDB2407CB23A7B9671E2C8DF /* OpdsLendingAPIService.swift in Sources */,
+				1758E873E3AEEF06ECC1DEF4 /* PendingSpanReadModel.swift in Sources */,
+				A26460FE281E79615B400A07 /* ProviderCertStore.swift in Sources */,
+				2A82F88BD35D3BA64A557AAD /* ReaderAPIService.swift in Sources */,
+				1B8C1C83855AE0A9BC6F8F1F /* ReaderDTOs.swift in Sources */,
+				87CCF39FD446603A550AE843 /* ReaderModels.swift in Sources */,
+				C3C08189892F8E1292EA5983 /* ReaderPreferences.swift in Sources */,
+				34017D1C0EF78E3E53BBD86F /* ReaderSettingsSheet.swift in Sources */,
+				8F895004AA4105274688E820 /* ReaderView.swift in Sources */,
+				9E7EFDA721270E39D6E695EA /* ReaderViewModel.swift in Sources */,
+				34AD3777AB77D8E7B4CC940B /* ReadingSessionModel.swift in Sources */,
+				142BCD636DDA9A91746526D4 /* ReadingTelemetryEventModel.swift in Sources */,
+				547EEBCFB081C204F64DDDAA /* SafariViewRepresentable.swift in Sources */,
+				812DFDA31AE447C5DE050B1F /* SearchBarView.swift in Sources */,
+				510A20F6A92DAB33B22E5732 /* SettingsView.swift in Sources */,
+				DE87CCFACCA26F56574B3614 /* ShelfRowView.swift in Sources */,
+				5363ED59F8877499DDEF2191 /* SpanTelemetryAPIService.swift in Sources */,
+				D9DB67C4CAFDCC1A323505D1 /* SpanTelemetryRepository.swift in Sources */,
+				985FED6D57233214A402B140 /* SpanUploadScheduler.swift in Sources */,
+				0096E26C8E24B1D4D4BF185E /* TabRoute.swift in Sources */,
+				3128C47007FDFE21A24956D6 /* TelemetryDTOs.swift in Sources */,
+				548F43D46869296BF7F792B6 /* TocSheet.swift in Sources */,
+				6F453EA095EF44E93680BD6F /* TransportKey.swift in Sources */,
+				8988533EC34A4BF8CCBF1BBF /* UserProfile.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4261F28D2D2ECC97427DC36F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04348D0DD6203C6E53F0F072 /* InkYomi */;
+			targetProxy = 78D2A4679027828A1F9AF40A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A8171436061BEE36C558BEF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = InkYomi/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = shop.inkcolors.InkYomi;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BAED0499E22D78E5D58EEE30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		C253D521746C5610EB0FA73D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = shop.inkcolors.InkYomiTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/InkYomi.app/InkYomi";
+			};
+			name = Debug;
+		};
+		C7FA89FA1AD21FD11BCB7216 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = shop.inkcolors.InkYomiTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/InkYomi.app/InkYomi";
+			};
+			name = Release;
+		};
+		D97F08EE0CFEF50092C873B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		DD946982988401F0EAE95239 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = InkYomi/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = shop.inkcolors.InkYomi;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		19A817EBE396ECD9B7C41A43 /* Build configuration list for PBXNativeTarget "InkYomiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C253D521746C5610EB0FA73D /* Debug */,
+				C7FA89FA1AD21FD11BCB7216 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9EB3B9DD266A97A0C3A6900A /* Build configuration list for PBXProject "InkYomi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAED0499E22D78E5D58EEE30 /* Debug */,
+				D97F08EE0CFEF50092C873B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C45D3405CE120890B65D5177 /* Build configuration list for PBXNativeTarget "InkYomi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD946982988401F0EAE95239 /* Debug */,
+				A8171436061BEE36C558BEF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5C5F5B83DFD8B4DADCDC776F /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/readium/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.1;
+			};
+		};
+		867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/readium/swift-toolkit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
+		C83071FE1B834FB60E71516A /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0934A3364709AEE044311766 /* ReadiumZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C5F5B83DFD8B4DADCDC776F /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ReadiumZIPFoundation;
+		};
+		0B26992E06FDEDE70EFE4C91 /* ReadiumNavigator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = ReadiumNavigator;
+		};
+		41D8B7C5A0C6E8724395BDF5 /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C83071FE1B834FB60E71516A /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		4C18982B8F8D5EA4312A1E26 /* ReadiumShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = ReadiumShared;
+		};
+		8E4C6F70B3246F89B9E51734 /* ReadiumStreamer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */;
+			productName = ReadiumStreamer;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 09D5BF9F8E5639F97EE56D28 /* Project object */;
+}

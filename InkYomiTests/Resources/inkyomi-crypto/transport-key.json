@@ -1,0 +1,11 @@
+{
+  "info": "inkyomi/v1/transport",
+  "vectors": [
+    {
+      "name": "fixed secret + license id",
+      "transportSecretHex": "abababababababababababababababababababababababababababababababab",
+      "licenseId": "lic-uuid-001",
+      "expectedHex": "a499ad56f0814ecf72cb8cead1f05f61c9f094516216890e65b6d1647b3ba176"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserdata
+*.xcworkspace/xcuserdata/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Swift Package Manager
+.swiftpm/
+Packages/
+Package.pins
+.build/
+
+# CocoaPods (if ever used)
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Secrets & credentials
+*.env
+.env.*
+*.key
+*.pem
+!InkYomi/Resources/inkyomi-provider-cert.pem
+*.p8
+credentials.json
+secrets.json
+GoogleService-Info.plist
+
+# Misc
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.moved-aside
+*.hmap
+*.cer
+*.p12
+*.mobileprovision
+timeline.xctimeline
+playground.xcworkspace
