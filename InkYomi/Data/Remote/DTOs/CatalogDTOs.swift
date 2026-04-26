@@ -62,6 +62,7 @@ struct HeroSlideDto: Decodable {
     let bannerImageUrl: String?
     let bannerAlt: String?
     let linkText: String?
+    let bannerSettings: BannerSettingsDto?
     let book: HeroSlideBookDto?
 
     func toDomain() -> HeroSlide {
@@ -70,7 +71,35 @@ struct HeroSlideDto: Decodable {
             eyebrow: eyebrow,
             slideType: slideType,
             bannerImageUrl: bannerImageUrl,
+            bannerSettings: bannerSettings?.toDomain(),
             book: book?.toDomain()
+        )
+    }
+}
+
+/// Decoder for the server's `banner_settings` JSONB payload. Server emits
+/// camelCase keys inside this object (the outer envelope is snake_case);
+/// `convertFromSnakeCase` passes camelCase keys through unchanged.
+struct BannerSettingsDto: Decodable {
+    let focalX: Double?
+    let focalY: Double?
+    let customZoom: Double?
+    let mobileFocalX: Double?
+    let mobileFocalY: Double?
+    let mobileZoom: Double?
+    let mobileBannerUrl: String?
+    let slideClickable: Bool?
+
+    func toDomain() -> BannerSettings {
+        BannerSettings(
+            focalX: focalX,
+            focalY: focalY,
+            customZoom: customZoom,
+            mobileFocalX: mobileFocalX,
+            mobileFocalY: mobileFocalY,
+            mobileZoom: mobileZoom,
+            mobileBannerUrl: mobileBannerUrl,
+            slideClickable: slideClickable
         )
     }
 }
