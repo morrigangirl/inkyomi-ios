@@ -4,6 +4,7 @@ import SwiftData
 struct HomeView: View {
     @Environment(DependencyContainer.self) private var container
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = HomeViewModel()
 
     var body: some View {
@@ -29,6 +30,7 @@ struct HomeView: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.immediately)
         .refreshable {
             await viewModel.refresh()
         }
@@ -68,9 +70,14 @@ struct HomeView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(viewModel.continueReading) { item in
+                        let coverWidth = CoverSize.continueRow.width(for: hSizeClass)
                         NavigationLink(value: item.bookId) {
                             VStack(alignment: .leading, spacing: 4) {
-                                BookCoverView(url: item.coverUrl, width: 100, height: 150)
+                                BookCoverView(
+                                    url: item.coverUrl,
+                                    width: coverWidth,
+                                    height: CoverSize.continueRow.height(for: hSizeClass)
+                                )
                                 Text(item.title)
                                     .font(.caption)
                                     .lineLimit(2)
@@ -78,8 +85,9 @@ struct HomeView: View {
                                 ProgressView(value: Double(item.progressPercent))
                                     .tint(Color.inkPrimary)
                             }
-                            .frame(width: 100)
+                            .frame(width: coverWidth)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal)
@@ -100,6 +108,7 @@ struct HomeView: View {
                         NavigationLink(value: book.id) {
                             BookCardView(book: book)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal)

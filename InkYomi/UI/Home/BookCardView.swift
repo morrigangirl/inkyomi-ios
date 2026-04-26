@@ -2,10 +2,15 @@ import SwiftUI
 
 struct BookCardView: View {
     let book: Book
+    @Environment(\.horizontalSizeClass) private var hSizeClass
 
     var body: some View {
         HStack(spacing: 12) {
-            BookCoverView(url: book.coverUrl, width: 60, height: 90)
+            BookCoverView(
+                url: book.coverUrl,
+                width: CoverSize.thumb.width(for: hSizeClass),
+                height: CoverSize.thumb.height(for: hSizeClass)
+            )
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(book.title)
@@ -20,7 +25,7 @@ struct BookCardView: View {
                 }
 
                 if let hook = book.hook {
-                    Text(hook)
+                    Text(hook.htmlStripped())
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)

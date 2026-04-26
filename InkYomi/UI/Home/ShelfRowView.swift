@@ -2,8 +2,10 @@ import SwiftUI
 
 struct ShelfRowView: View {
     let shelf: Shelf
+    @Environment(\.horizontalSizeClass) private var hSizeClass
 
     var body: some View {
+        let coverWidth = CoverSize.shelf.width(for: hSizeClass)
         VStack(alignment: .leading, spacing: 12) {
             Text(shelf.title)
                 .font(.inkHeadline)
@@ -14,7 +16,11 @@ struct ShelfRowView: View {
                     ForEach(shelf.books) { book in
                         NavigationLink(value: book.id) {
                             VStack(alignment: .leading, spacing: 4) {
-                                BookCoverView(url: book.coverUrl, width: 120, height: 180)
+                                BookCoverView(
+                                    url: book.coverUrl,
+                                    width: coverWidth,
+                                    height: CoverSize.shelf.height(for: hSizeClass)
+                                )
                                 Text(book.title)
                                     .font(.caption)
                                     .lineLimit(2)
@@ -26,8 +32,9 @@ struct ShelfRowView: View {
                                         .lineLimit(1)
                                 }
                             }
-                            .frame(width: 120)
+                            .frame(width: coverWidth)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal)

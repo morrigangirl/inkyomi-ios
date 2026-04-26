@@ -3,6 +3,7 @@ import SwiftUI
 struct LendingCatalogView: View {
     @Environment(DependencyContainer.self) private var container
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = LendingCatalogViewModel()
 
     var onBorrowSuccess: ((String) -> Void)?
@@ -85,9 +86,10 @@ struct LendingCatalogView: View {
     }
 
     private var catalogGrid: some View {
-        ScrollView {
+        let cardRange = GridColumns.adaptiveRange(for: hSizeClass)
+        return ScrollView {
             LazyVGrid(columns: [
-                GridItem(.adaptive(minimum: 140, maximum: 180), spacing: 16)
+                GridItem(.adaptive(minimum: cardRange.min, maximum: cardRange.max), spacing: 16)
             ], spacing: 16) {
                 ForEach(viewModel.publications) { pub in
                     LendingBookCard(

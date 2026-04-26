@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LibraryView: View {
     @Environment(DependencyContainer.self) private var container
+    @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = LibraryViewModel()
     @State private var readerBookId: String?
 
@@ -86,14 +87,20 @@ struct LibraryView: View {
                     description: Text("Books you purchase will appear here.")
                 )
             } else {
+                let thumbRange = GridColumns.adaptiveThumbRange(for: hSizeClass)
+                let coverWidth = CoverSize.continueRow.width(for: hSizeClass)
                 ScrollView {
                     LazyVGrid(columns: [
-                        GridItem(.adaptive(minimum: 100, maximum: 140), spacing: 16)
+                        GridItem(.adaptive(minimum: thumbRange.min, maximum: thumbRange.max), spacing: 16)
                     ], spacing: 16) {
                         ForEach(viewModel.ownedBooks) { book in
                             NavigationLink(value: book.id) {
                                 VStack(spacing: 4) {
-                                    BookCoverView(url: book.coverUrl, width: 100, height: 150)
+                                    BookCoverView(
+                                        url: book.coverUrl,
+                                        width: coverWidth,
+                                        height: CoverSize.continueRow.height(for: hSizeClass)
+                                    )
                                     Text(book.title)
                                         .font(.caption)
                                         .lineLimit(2)
@@ -105,6 +112,7 @@ struct LibraryView: View {
                                     }
                                 }
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                     .padding()
@@ -130,9 +138,10 @@ struct LibraryView: View {
                     .tint(Color.inkPrimary)
                 }
             } else {
+                let cardRange = GridColumns.adaptiveRange(for: hSizeClass)
                 ScrollView {
                     LazyVGrid(columns: [
-                        GridItem(.adaptive(minimum: 140, maximum: 180), spacing: 16)
+                        GridItem(.adaptive(minimum: cardRange.min, maximum: cardRange.max), spacing: 16)
                     ], spacing: 20) {
                         ForEach(viewModel.borrowedBooks) { loan in
                             BorrowedBookCard(
