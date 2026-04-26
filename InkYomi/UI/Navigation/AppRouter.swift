@@ -15,7 +15,7 @@ struct AppRouter: View {
             case .unauthenticated:
                 AuthNavHost()
             case .authenticated:
-                MainTabView()
+                AdaptiveMainShell()
             }
         }
     }
@@ -43,15 +43,28 @@ enum AuthRoute: Hashable {
     case forgotPassword
 }
 
+/// Picks `TabView` on compact (iPhone, iPad Split View ≤ 1/3) and
+/// `NavigationSplitView` on regular (iPad full / wide split).
+struct AdaptiveMainShell: View {
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+
+    var body: some View {
+        if hSizeClass == .regular {
+            MainSplitView()
+        } else {
+            MainTabView()
+        }
+    }
+}
+
 struct MainTabView: View {
     @Environment(DependencyContainer.self) private var container
     @State private var selectedTab: TabRoute = .home
-    @State private var showingReader = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
             ForEach(TabRoute.allCases) { tab in
-                tabContent(for: tab)
+                tabRoot(for: tab)
                     .tabItem {
                         Label(tab.title, systemImage: tab.systemImage)
                     }
@@ -70,32 +83,85 @@ struct MainTabView: View {
     }
 
     @ViewBuilder
-    private func tabContent(for tab: TabRoute) -> some View {
+    private func tabRoot(for tab: TabRoute) -> some View {
         switch tab {
-        case .home:
-            NavigationStack {
-                HomeView()
-                    .navigationDestination(for: String.self) { bookId in
-                        BookDetailView(bookId: bookId)
-                    }
+        case .home:     HomeRoot()
+        case .library:  LibraryRoot()
+        case .settings: SettingsRoot()
+        }
+    }
+}
+
+struct MainSplitView: View {
+    @Environment(DependencyContainer.self) private var container
+    @State private var selection: TabRoute? = .home
+    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
+
+    var body: some View {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            List(TabRoute.allCases, selection: $selection) { tab in
+                Label(tab.title, systemImage: tab.systemImage)
+                    .tag(tab)
             }
-        case .library:
-            NavigationStack {
-                LibraryView()
-                    .navigationDestination(for: String.self) { bookId in
-                        BookDetailView(bookId: bookId)
-                    }
-                    .navigationDestination(for: LibraryRoute.self) { route in
-                        switch route {
-                        case .lendingCatalog:
-                            LendingCatalogView()
-                        }
-                    }
+            .listStyle(.sidebar)
+            .navigationTitle("InkYomi")
+        } detail: {
+            if let selection {
+                tabRoot(for: selection)
+            } else {
+                ContentUnavailableView("Pick a section", systemImage: "sidebar.left")
             }
-        case .settings:
-            NavigationStack {
-                SettingsView()
-            }
+        }
+        .tint(Color.inkPrimary)
+        .task {
+            await container.loanRenewalCoordinator.renewExpiringSoon()
+        }
+    }
+
+    @ViewBuilder
+    private func tabRoot(for tab: TabRoute) -> some View {
+        switch tab {
+        case .home:     HomeRoot()
+        case .library:  LibraryRoot()
+        case .settings: SettingsRoot()
+        }
+    }
+}
+
+// MARK: - Per-tab root NavigationStacks (shared by MainTabView and MainSplitView)
+
+private struct HomeRoot: View {
+    var body: some View {
+        NavigationStack {
+            HomeView()
+                .navigationDestination(for: String.self) { bookId in
+                    BookDetailView(bookId: bookId)
+                }
+        }
+    }
+}
+
+private struct LibraryRoot: View {
+    var body: some View {
+        NavigationStack {
+            LibraryView()
+                .navigationDestination(for: String.self) { bookId in
+                    BookDetailView(bookId: bookId)
+                }
+                .navigationDestination(for: LibraryRoute.self) { route in
+                    switch route {
+                    case .lendingCatalog:
+                        LendingCatalogView()
+                    }
+                }
+        }
+    }
+}
+
+private struct SettingsRoot: View {
+    var body: some View {
+        NavigationStack {
+            SettingsView()
         }
     }
 }
