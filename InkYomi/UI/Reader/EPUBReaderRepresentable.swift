@@ -38,6 +38,8 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     nonisolated(unsafe) private var hrefObserver: Any?
     nonisolated(unsafe) private var bookmarkObserver: Any?
     nonisolated(unsafe) private var preferencesObserver: Any?
+    nonisolated(unsafe) private var goBackwardObserver: Any?
+    nonisolated(unsafe) private var goForwardObserver: Any?
 
     init(publication: Publication, initialLocator: Locator?, viewModel: ReaderViewModel) {
         self.publication = publication
@@ -125,6 +127,28 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
                 nav.submitPreferences(self.buildPreferences())
             }
         }
+
+        goBackwardObserver = NotificationCenter.default.addObserver(
+            forName: .readerGoBackward,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, let nav = self.navigator else { return }
+                _ = await nav.goBackward(options: NavigatorGoOptions())
+            }
+        }
+
+        goForwardObserver = NotificationCenter.default.addObserver(
+            forName: .readerGoForward,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, let nav = self.navigator else { return }
+                _ = await nav.goForward(options: NavigatorGoOptions())
+            }
+        }
     }
 
     // MARK: - EPUBNavigatorDelegate / NavigatorDelegate / VisualNavigatorDelegate
@@ -178,5 +202,7 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         if let obs = hrefObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = bookmarkObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = preferencesObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = goBackwardObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = goForwardObserver { NotificationCenter.default.removeObserver(obs) }
     }
 }

@@ -86,6 +86,23 @@ struct ReaderView: View {
                 HighlightEditorSheet(viewModel: viewModel)
             }
         }
+        .background(keyboardShortcuts)
+    }
+
+    private var keyboardShortcuts: some View {
+        HStack(spacing: 0) {
+            Button("Previous Page") {
+                NotificationCenter.default.post(name: .readerGoBackward, object: nil)
+            }
+            .keyboardShortcut(.leftArrow, modifiers: .command)
+
+            Button("Next Page") {
+                NotificationCenter.default.post(name: .readerGoForward, object: nil)
+            }
+            .keyboardShortcut(.rightArrow, modifiers: .command)
+        }
+        .opacity(0)
+        .frame(width: 0, height: 0)
     }
 
     // MARK: - Subviews
@@ -223,4 +240,7 @@ extension Notification.Name {
     static let readerNavigateToHref = Notification.Name("readerNavigateToHref")
     static let readerAddBookmark = Notification.Name("readerAddBookmark")
     static let readerPreferencesChanged = Notification.Name("readerPreferencesChanged")
+    static let readerGoBackward = Notification.Name("readerGoBackward")
+    static let readerGoForward = Notification.Name("readerGoForward")
+    static let focusHomeSearch = Notification.Name("focusHomeSearch")
 }

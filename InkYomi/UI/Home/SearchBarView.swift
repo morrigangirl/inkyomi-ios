@@ -6,6 +6,7 @@ struct SearchBarView: View {
     let onClear: () -> Void
 
     @State private var text = ""
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         HStack {
@@ -15,6 +16,9 @@ struct SearchBarView: View {
             TextField("Search books...", text: $text)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+                .focused($isFocused)
+                .submitLabel(.search)
+                .onSubmit { isFocused = false }
                 .onChange(of: text) { _, newValue in
                     onQueryChanged(newValue)
                 }
@@ -23,6 +27,7 @@ struct SearchBarView: View {
                 Button {
                     text = ""
                     onClear()
+                    isFocused = false
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.secondary)
@@ -32,5 +37,8 @@ struct SearchBarView: View {
         .padding(10)
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+        .onReceive(NotificationCenter.default.publisher(for: .focusHomeSearch)) { _ in
+            isFocused = true
+        }
     }
 }

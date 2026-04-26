@@ -72,6 +72,7 @@ struct MainTabView: View {
             }
         }
         .tint(Color.inkPrimary)
+        .background(tabShortcuts)
         .task {
             // Foreground half of the silent renewal pair (the other being
             // the 24h `LoanRenewalScheduler` BGProcessingTask). Fired once
@@ -89,6 +90,16 @@ struct MainTabView: View {
         case .library:  LibraryRoot()
         case .settings: SettingsRoot()
         }
+    }
+
+    private var tabShortcuts: some View {
+        HStack(spacing: 0) {
+            Button("Home")     { selectedTab = .home }    .keyboardShortcut("1", modifiers: .command)
+            Button("Library")  { selectedTab = .library } .keyboardShortcut("2", modifiers: .command)
+            Button("Settings") { selectedTab = .settings }.keyboardShortcut("3", modifiers: .command)
+        }
+        .opacity(0)
+        .frame(width: 0, height: 0)
     }
 }
 
@@ -113,6 +124,7 @@ struct MainSplitView: View {
             }
         }
         .tint(Color.inkPrimary)
+        .background(splitShortcuts)
         .task {
             await container.loanRenewalCoordinator.renewExpiringSoon()
         }
@@ -125,6 +137,16 @@ struct MainSplitView: View {
         case .library:  LibraryRoot()
         case .settings: SettingsRoot()
         }
+    }
+
+    private var splitShortcuts: some View {
+        HStack(spacing: 0) {
+            Button("Home")     { selection = .home }    .keyboardShortcut("1", modifiers: .command)
+            Button("Library")  { selection = .library } .keyboardShortcut("2", modifiers: .command)
+            Button("Settings") { selection = .settings }.keyboardShortcut("3", modifiers: .command)
+        }
+        .opacity(0)
+        .frame(width: 0, height: 0)
     }
 }
 

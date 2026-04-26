@@ -34,6 +34,7 @@ struct HomeView: View {
         .refreshable {
             await viewModel.refresh()
         }
+        .background(searchShortcut)
         .navigationTitle("InkYomi")
         .task {
             viewModel.configure(catalogRepository: container.catalogRepository, libraryRepository: container.libraryRepository, modelContext: modelContext)
@@ -93,6 +94,15 @@ struct HomeView: View {
                 .padding(.horizontal)
             }
         }
+    }
+
+    private var searchShortcut: some View {
+        Button("Find") {
+            NotificationCenter.default.post(name: .focusHomeSearch, object: nil)
+        }
+        .keyboardShortcut("f", modifiers: .command)
+        .opacity(0)
+        .frame(width: 0, height: 0)
     }
 
     private var searchResultsSection: some View {
