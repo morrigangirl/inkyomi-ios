@@ -222,4 +222,5 @@ struct ReaderView: View {
 extension Notification.Name {
     static let readerNavigateToHref = Notification.Name("readerNavigateToHref")
     static let readerAddBookmark = Notification.Name("readerAddBookmark")
+    static let readerPreferencesChanged = Notification.Name("readerPreferencesChanged")
 }

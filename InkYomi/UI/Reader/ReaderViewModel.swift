@@ -65,6 +65,7 @@ final class ReaderViewModel {
     var pageMargins: Double = 1.0
     var fontFamily: String = "serif"
     var theme: ReaderTheme = .light
+    var pageLayout: ReaderPageLayout = .auto
 
     // MARK: - Private
     let bookId: String
@@ -393,6 +394,7 @@ final class ReaderViewModel {
         pageMargins = prefs.pageMargins
         fontFamily = prefs.fontFamily
         theme = prefs.theme
+        pageLayout = prefs.pageLayout
     }
 
     func updateFontScale(_ scale: Double) {
@@ -420,6 +422,11 @@ final class ReaderViewModel {
         saveSettings()
     }
 
+    func updatePageLayout(_ newLayout: ReaderPageLayout) {
+        pageLayout = newLayout
+        saveSettings()
+    }
+
     private func saveSettings() {
         guard let prefs = readerPreferences else { return }
         prefs.fontSize = fontScale
@@ -427,6 +434,8 @@ final class ReaderViewModel {
         prefs.pageMargins = pageMargins
         prefs.fontFamily = fontFamily
         prefs.theme = theme
+        prefs.pageLayout = pageLayout
+        NotificationCenter.default.post(name: .readerPreferencesChanged, object: nil)
     }
 
     // MARK: - Search

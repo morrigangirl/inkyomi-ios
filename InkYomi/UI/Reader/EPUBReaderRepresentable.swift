@@ -37,6 +37,7 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     private var navigator: EPUBNavigatorViewController?
     nonisolated(unsafe) private var hrefObserver: Any?
     nonisolated(unsafe) private var bookmarkObserver: Any?
+    nonisolated(unsafe) private var preferencesObserver: Any?
 
     init(publication: Publication, initialLocator: Locator?, viewModel: ReaderViewModel) {
         self.publication = publication
@@ -113,6 +114,17 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
                 }
             }
         }
+
+        preferencesObserver = NotificationCenter.default.addObserver(
+            forName: .readerPreferencesChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, let nav = self.navigator else { return }
+                nav.submitPreferences(self.buildPreferences())
+            }
+        }
     }
 
     // MARK: - EPUBNavigatorDelegate / NavigatorDelegate / VisualNavigatorDelegate
@@ -149,6 +161,12 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
             prefs.textColor = ReadiumNavigator.Color(hex: "#CCCCCC")
         }
 
+        switch viewModel.pageLayout {
+        case .auto:   prefs.spread = nil       // Readium decides based on screen size
+        case .single: prefs.spread = .never
+        case .double: prefs.spread = .always
+        }
+
         return prefs
     }
 
@@ -159,5 +177,6 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     deinit {
         if let obs = hrefObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = bookmarkObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = preferencesObserver { NotificationCenter.default.removeObserver(obs) }
     }
 }

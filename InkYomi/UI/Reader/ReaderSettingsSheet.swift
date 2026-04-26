@@ -80,11 +80,24 @@ struct ReaderSettingsSheet: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
                 }
+
+                // Page Layout
+                Section("Page Layout") {
+                    Picker("Layout", selection: Binding(
+                        get: { viewModel.pageLayout },
+                        set: { viewModel.updatePageLayout($0) }
+                    )) {
+                        ForEach(ReaderPageLayout.allCases, id: \.self) { layout in
+                            Text(layout.label).tag(layout)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
             }
             .navigationTitle("Reader Settings")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     private func themeButton(_ theme: ReaderTheme) -> some View {

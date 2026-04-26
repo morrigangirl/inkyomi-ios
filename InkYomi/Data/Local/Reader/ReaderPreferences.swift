@@ -19,6 +19,9 @@ final class ReaderPreferences {
     var theme: ReaderTheme {
         didSet { UserDefaults.standard.set(theme.rawValue, forKey: "reader.theme") }
     }
+    var pageLayout: ReaderPageLayout {
+        didSet { UserDefaults.standard.set(pageLayout.rawValue, forKey: "reader.pageLayout") }
+    }
 
     init() {
         let defaults = UserDefaults.standard
@@ -27,6 +30,7 @@ final class ReaderPreferences {
         self.pageMargins = defaults.object(forKey: "reader.pageMargins") as? Double ?? 16.0
         self.fontFamily = defaults.string(forKey: "reader.fontFamily") ?? "System"
         self.theme = ReaderTheme(rawValue: defaults.string(forKey: "reader.theme") ?? "") ?? .light
+        self.pageLayout = ReaderPageLayout(rawValue: defaults.string(forKey: "reader.pageLayout") ?? "") ?? .auto
     }
 }
 
@@ -34,4 +38,18 @@ enum ReaderTheme: String, CaseIterable, Sendable {
     case light = "light"
     case sepia = "sepia"
     case dark = "dark"
+}
+
+enum ReaderPageLayout: String, CaseIterable, Sendable {
+    case auto = "auto"      // Readium decides based on screen size
+    case single = "single"  // Always one page
+    case double = "double"  // Always two-page spread
+
+    var label: String {
+        switch self {
+        case .auto: "Auto"
+        case .single: "Single page"
+        case .double: "Two pages"
+        }
+    }
 }
