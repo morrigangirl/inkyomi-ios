@@ -7,6 +7,8 @@ struct SettingsView: View {
     @State private var showTermsWeb = false
     @State private var showDeleteConfirm = false
 
+    @AppStorage(AppearancePreference.storageKey) private var appearanceRaw = AppearancePreference.system.rawValue
+
     private var versionString: String {
         let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
@@ -24,6 +26,14 @@ struct SettingsView: View {
                         title: "Profile",
                         subtitle: "Email, devices, sign out"
                     )
+                }
+            }
+
+            Section("Appearance") {
+                Picker("Theme", selection: $appearanceRaw) {
+                    ForEach(AppearancePreference.allCases) { pref in
+                        Text(pref.label).tag(pref.rawValue)
+                    }
                 }
             }
 

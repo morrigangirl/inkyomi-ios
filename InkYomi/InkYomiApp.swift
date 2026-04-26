@@ -6,6 +6,11 @@ import BackgroundTasks
 struct InkYomiApp: App {
     @State private var container = DependencyContainer.shared
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage(AppearancePreference.storageKey) private var appearanceRaw = AppearancePreference.system.rawValue
+
+    private var appearance: AppearancePreference {
+        AppearancePreference(rawValue: appearanceRaw) ?? .system
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -13,6 +18,7 @@ struct InkYomiApp: App {
                 .environment(container)
                 .environment(container.appState)
                 .modelContainer(container.modelContainer)
+                .preferredColorScheme(appearance.colorScheme)
                 .onOpenURL { url in
                     container.deepLinkHandler.handle(url)
                 }

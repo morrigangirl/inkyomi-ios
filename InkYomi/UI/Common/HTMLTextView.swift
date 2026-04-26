@@ -23,7 +23,7 @@ struct HTMLTextView: View {
         </style></head><body>\(html)</body></html>
         """
         guard let data = wrapped.data(using: .utf8),
-              let nsAttr = try? NSAttributedString(
+              let nsAttr = try? NSMutableAttributedString(
                 data: data,
                 options: [
                     .documentType: NSAttributedString.DocumentType.html,
@@ -32,6 +32,12 @@ struct HTMLTextView: View {
                 documentAttributes: nil
               )
         else { return nil }
+        // The HTML parser bakes black foreground/white background into every
+        // character. Strip them so the SwiftUI .foregroundStyle on the wrapper
+        // (and the system's dark-mode handling) takes effect.
+        let range = NSRange(location: 0, length: nsAttr.length)
+        nsAttr.removeAttribute(.foregroundColor, range: range)
+        nsAttr.removeAttribute(.backgroundColor, range: range)
         return try? AttributedString(nsAttr, including: \.uiKit)
     }
 }
