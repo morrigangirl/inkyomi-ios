@@ -218,6 +218,31 @@ actor BookRepositoryImpl: BookRepository {
         return file
     }
 
+    // MARK: - Metadata Cache
+
+    @MainActor
+    func cacheBookMetadata(bookId: String, title: String, authorName: String?, coverUrl: String?) async {
+        let context = modelContainer.mainContext
+        let bid = bookId
+        let descriptor = FetchDescriptor<CachedBookModel>(
+            predicate: #Predicate { $0.bookId == bid }
+        )
+        if let cached = try? context.fetch(descriptor).first {
+            if cached.title.isEmpty { cached.title = title }
+            if cached.authorName == nil { cached.authorName = authorName }
+            if cached.coverUrl == nil { cached.coverUrl = coverUrl }
+        } else {
+            let cached = CachedBookModel(
+                bookId: bookId,
+                title: title,
+                authorName: authorName,
+                coverUrl: coverUrl
+            )
+            context.insert(cached)
+        }
+        try? context.save()
+    }
+
     // MARK: - Reading Position
 
     @MainActor

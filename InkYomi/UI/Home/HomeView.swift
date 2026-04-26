@@ -34,7 +34,7 @@ struct HomeView: View {
         }
         .navigationTitle("InkYomi")
         .task {
-            viewModel.configure(catalogRepository: container.catalogRepository, modelContext: modelContext)
+            viewModel.configure(catalogRepository: container.catalogRepository, libraryRepository: container.libraryRepository, modelContext: modelContext)
             await viewModel.loadLandingPage()
         }
     }

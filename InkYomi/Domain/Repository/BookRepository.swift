@@ -7,6 +7,7 @@ enum BookSource: String, Sendable {
 
 protocol BookRepository: Sendable {
     func downloadBook(bookId: String, source: BookSource) async throws -> URL
+    func cacheBookMetadata(bookId: String, title: String, authorName: String?, coverUrl: String?) async
     func updateLocation(_ location: ReaderLocation) async throws
     func getLocation(bookId: String) async -> ReaderLocation?
     func addBookmark(bookId: String, locatorJson: String, chapterTitle: String?, label: String?) async throws -> String

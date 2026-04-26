@@ -87,8 +87,7 @@ struct BookDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("About this book")
                             .font(.headline)
-                        Text(description)
-                            .font(.body)
+                        HTMLTextView(html: description)
                             .foregroundStyle(.secondary)
                     }
                     .padding(.horizontal)
@@ -102,7 +101,15 @@ struct BookDetailView: View {
     private func actionButton(for book: BookDetail) -> some View {
         if book.owned {
             Button {
-                showReader = true
+                Task {
+                    await container.bookRepository.cacheBookMetadata(
+                        bookId: book.id,
+                        title: book.title,
+                        authorName: book.authorName,
+                        coverUrl: book.coverUrl
+                    )
+                    showReader = true
+                }
             } label: {
                 Label("Read", systemImage: "book.fill")
                     .frame(maxWidth: .infinity)

@@ -25,10 +25,12 @@ final class HomeViewModel {
 
     private var searchTask: Task<Void, Never>?
     private var catalogRepository: (any CatalogRepository)?
+    private var libraryRepository: (any LibraryRepository)?
     private var modelContext: ModelContext?
 
-    func configure(catalogRepository: any CatalogRepository, modelContext: ModelContext) {
+    func configure(catalogRepository: any CatalogRepository, libraryRepository: any LibraryRepository, modelContext: ModelContext) {
         self.catalogRepository = catalogRepository
+        self.libraryRepository = libraryRepository
         self.modelContext = modelContext
     }
 
@@ -100,7 +102,17 @@ final class HomeViewModel {
             sortBy: [SortDescriptor(\.lastOpenedAt, order: .reverse)]
         )
         guard let books = try? modelContext.fetch(descriptor) else { return }
-        continueReading = Array(books.prefix(Constants.continueReadingLimit)).map {
+        let items = Array(books.prefix(Constants.continueReadingLimit))
+
+        // Backfill missing cover URLs from the library API
+        let missingCovers = items.filter { $0.coverUrl == nil }
+        if !missingCovers.isEmpty {
+            Task {
+                await backfillCovers(for: missingCovers)
+            }
+        }
+
+        continueReading = items.map {
             ContinueReadingItem(
                 bookId: $0.bookId,
                 title: $0.title,
@@ -108,6 +120,30 @@ final class HomeViewModel {
                 coverUrl: $0.coverUrl,
                 progressPercent: $0.progressPercent
             )
+        }
+    }
+
+    private func backfillCovers(for books: [CachedBookModel]) async {
+        guard let libraryRepository, let modelContext else { return }
+        guard let ownedBooks = try? await libraryRepository.getOwnedBooks() else { return }
+        let coverMap = Dictionary(ownedBooks.compactMap { b in
+            b.coverUrl.map { (b.id, $0) }
+        }, uniquingKeysWith: { first, _ in first })
+
+        var updated = false
+        for cached in books {
+            if let coverUrl = coverMap[cached.bookId] {
+                cached.coverUrl = coverUrl
+                if cached.title.isEmpty, let lib = ownedBooks.first(where: { $0.id == cached.bookId }) {
+                    cached.title = lib.title
+                    cached.authorName = lib.authorName
+                }
+                updated = true
+            }
+        }
+        if updated {
+            try? modelContext.save()
+            loadContinueReading()
         }
     }
 }
