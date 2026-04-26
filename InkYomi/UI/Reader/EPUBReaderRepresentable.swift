@@ -186,9 +186,15 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         }
 
         switch viewModel.pageLayout {
-        case .auto:   prefs.spread = nil       // Readium decides based on screen size
-        case .single: prefs.spread = .never
-        case .double: prefs.spread = .always
+        case .auto:
+            prefs.spread = nil           // Readium decides spread by screen size
+            prefs.columnCount = nil      // and likewise for column count
+        case .single:
+            prefs.spread = .never
+            prefs.columnCount = .one     // force single column on reflowable EPUBs
+        case .double:
+            prefs.spread = .always
+            prefs.columnCount = .two
         }
 
         return prefs
