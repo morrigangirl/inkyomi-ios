@@ -3,7 +3,14 @@ import SwiftUI
 struct HeroCarouselView: View {
     let slides: [HeroSlide]
     @Environment(\.horizontalSizeClass) private var hSizeClass
+    @Environment(\.verticalSizeClass) private var vSizeClass
     @State private var currentIndex = 0
+
+    /// iPhone in portrait: compact width + regular height. Banner images get
+    /// awkwardly cropped at this aspect, so we fit-not-fill there only.
+    private var isPhonePortrait: Bool {
+        hSizeClass == .compact && vSizeClass == .regular
+    }
 
     var body: some View {
         TabView(selection: $currentIndex) {
@@ -45,13 +52,18 @@ struct HeroCarouselView: View {
 
     @ViewBuilder
     private func bannerSlide(url: URL, slide: HeroSlide) -> some View {
-        let alignment = focalAlignment(for: slide.bannerSettings)
+        let fitMode: ContentMode = isPhonePortrait ? .fit : .fill
+        // .fit is centered; focal-point alignment only matters for .fill cropping.
+        let alignment: Alignment = isPhonePortrait
+            ? .center
+            : focalAlignment(for: slide.bannerSettings)
         GeometryReader { geo in
             ZStack(alignment: .bottomLeading) {
+                Color.inkPrimary.opacity(0.1)   // letterbox fill when .fit leaves gaps
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .aspectRatio(contentMode: fitMode)
                 } placeholder: {
                     Rectangle().fill(Color.inkPrimary.opacity(0.1))
                 }
