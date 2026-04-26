@@ -240,6 +240,7 @@ extension Notification.Name {
     static let readerNavigateToHref = Notification.Name("readerNavigateToHref")
     static let readerAddBookmark = Notification.Name("readerAddBookmark")
     static let readerPreferencesChanged = Notification.Name("readerPreferencesChanged")
+    static let readerPageLayoutChanged = Notification.Name("readerPageLayoutChanged")
     static let readerGoBackward = Notification.Name("readerGoBackward")
     static let readerGoForward = Notification.Name("readerGoForward")
     static let focusHomeSearch = Notification.Name("focusHomeSearch")

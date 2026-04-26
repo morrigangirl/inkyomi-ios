@@ -38,6 +38,7 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     nonisolated(unsafe) private var hrefObserver: Any?
     nonisolated(unsafe) private var bookmarkObserver: Any?
     nonisolated(unsafe) private var preferencesObserver: Any?
+    nonisolated(unsafe) private var pageLayoutObserver: Any?
     nonisolated(unsafe) private var goBackwardObserver: Any?
     nonisolated(unsafe) private var goForwardObserver: Any?
 
@@ -55,11 +56,11 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setupNavigator()
+        setupNavigator(at: initialLocator)
         setupNotificationObservers()
     }
 
-    private func setupNavigator() {
+    private func setupNavigator(at locator: Locator?) {
         do {
             let config = EPUBNavigatorViewController.Configuration(
                 preferences: buildPreferences(),
@@ -68,7 +69,7 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
 
             let nav = try EPUBNavigatorViewController(
                 publication: publication,
-                initialLocation: initialLocator,
+                initialLocation: locator,
                 config: config
             )
 
@@ -86,6 +87,17 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         } catch {
             viewModel.error = "Failed to create navigator: \(error.localizedDescription)"
         }
+    }
+
+    private func reloadNavigator() {
+        let resumeLocator = navigator?.currentLocation ?? initialLocator
+        if let nav = navigator {
+            nav.willMove(toParent: nil)
+            nav.view.removeFromSuperview()
+            nav.removeFromParent()
+            self.navigator = nil
+        }
+        setupNavigator(at: resumeLocator)
     }
 
     private func setupNotificationObservers() {
@@ -125,6 +137,17 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
             Task { @MainActor [weak self] in
                 guard let self, let nav = self.navigator else { return }
                 nav.submitPreferences(self.buildPreferences())
+            }
+        }
+
+        pageLayoutObserver = NotificationCenter.default.addObserver(
+            forName: .readerPageLayoutChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.reloadNavigator()
             }
         }
 
@@ -208,6 +231,7 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         if let obs = hrefObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = bookmarkObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = preferencesObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = pageLayoutObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = goBackwardObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = goForwardObserver { NotificationCenter.default.removeObserver(obs) }
     }

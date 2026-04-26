@@ -425,6 +425,11 @@ final class ReaderViewModel {
     func updatePageLayout(_ newLayout: ReaderPageLayout) {
         pageLayout = newLayout
         saveSettings()
+        // Readium's `applyPreferences()` only invalidates pagination on a few
+        // settings (spread, scroll, fit, ...). columnCount changes only update
+        // CSS, which WebKit doesn't reliably reflow. Force a full navigator
+        // reload to actually repaginate.
+        NotificationCenter.default.post(name: .readerPageLayoutChanged, object: nil)
     }
 
     private func saveSettings() {
