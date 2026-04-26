@@ -69,6 +69,6 @@ struct HighlightEditorSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 }

@@ -2,10 +2,15 @@ import SwiftUI
 
 struct LoginView: View {
     @Environment(DependencyContainer.self) private var container
+    @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = LoginViewModel()
     var navigateToForgotPassword: () -> Void
 
     var body: some View {
+        let isRegular = hSizeClass == .regular
+        let logoMaxWidth: CGFloat = isRegular ? 360 : 260
+        let formMaxWidth: CGFloat = isRegular ? 440 : .infinity
+
         VStack(spacing: 32) {
             Spacer()
 
@@ -13,7 +18,7 @@ struct LoginView: View {
             Image("Logo")
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: 260)
+                .frame(maxWidth: logoMaxWidth)
                 .accessibilityLabel("InkYomi")
 
             // Form fields
@@ -64,5 +69,7 @@ struct LoginView: View {
 
             Spacer()
         }
+        .frame(maxWidth: formMaxWidth)
+        .frame(maxWidth: .infinity)
     }
 }
