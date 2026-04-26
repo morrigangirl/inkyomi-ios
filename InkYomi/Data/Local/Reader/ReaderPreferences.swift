@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import UIKit
 
 /// UserDefaults-backed reader settings.
 @MainActor @Observable
@@ -30,7 +31,10 @@ final class ReaderPreferences {
         self.pageMargins = defaults.object(forKey: "reader.pageMargins") as? Double ?? 16.0
         self.fontFamily = defaults.string(forKey: "reader.fontFamily") ?? "System"
         self.theme = ReaderTheme(rawValue: defaults.string(forKey: "reader.theme") ?? "") ?? .light
-        self.pageLayout = ReaderPageLayout(rawValue: defaults.string(forKey: "reader.pageLayout") ?? "") ?? .auto
+        let defaultLayout: ReaderPageLayout =
+            UIDevice.current.userInterfaceIdiom == .pad ? .single : .auto
+        self.pageLayout = ReaderPageLayout(rawValue: defaults.string(forKey: "reader.pageLayout") ?? "")
+            ?? defaultLayout
     }
 }
 
