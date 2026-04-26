@@ -40,17 +40,22 @@ actor NativeAuthRepository: AuthRepository {
 
     func refresh() async throws {
         guard let refreshToken = try keychain.readString(forKey: "refreshToken") else {
-            await signOut()
-            throw APIError.unauthorized
+            // No token — terminal. Caller decides whether to sign out;
+            // for the standalone `refresh()` API we don't auto-signOut.
+            throw AuthFailure.noRefreshToken
         }
 
-        let response = try await authAPI.refresh(
-            refreshToken: refreshToken,
-            deviceId: appState.deviceId
-        )
-        storeTokens(response)
-        await MainActor.run {
-            appState.authState = .authenticated(response.user.toDomain())
+        do {
+            let response = try await authAPI.refresh(
+                refreshToken: refreshToken,
+                deviceId: appState.deviceId
+            )
+            storeTokens(response)
+            await MainActor.run {
+                appState.authState = .authenticated(response.user.toDomain())
+            }
+        } catch {
+            throw AuthFailure.classify(error)
         }
     }
 
@@ -99,8 +104,17 @@ actor NativeAuthRepository: AuthRepository {
             do {
                 try await self.refresh()
                 return await self.cachedAccessToken
-            } catch {
+            } catch let failure as AuthFailure where failure.terminal {
+                // Server-driven sign-out: explicit `invalid_grant` /
+                // `unauthorized_client` / `invalid_token` from the auth
+                // server. Wipe local state and bounce to login.
                 await self.signOut()
+                return nil
+            } catch {
+                // Transient (network down, 5xx, ambiguous 401, timeout).
+                // Keep the user signed in — this individual API call will
+                // fail without auth, but the next one retries. This is the
+                // Kindle-style "stay logged in" behavior.
                 return nil
             }
         }
@@ -111,6 +125,12 @@ actor NativeAuthRepository: AuthRepository {
     }
 
     /// Attempt to restore session from stored tokens on app launch.
+    ///
+    /// Kindle-style sticky semantics: a launch with a stored profile keeps
+    /// the user signed in even if the immediate refresh fails for transient
+    /// reasons (offline launch, server hiccup). Only an explicit terminal
+    /// rejection from the auth server (or no refresh token at all) drops
+    /// the user back to the login screen.
     func restoreSession() async {
         if cachedAccessToken != nil, let expiry = cachedExpiry, Date() < expiry {
             if let profile = storedUserProfile() {
@@ -121,18 +141,36 @@ actor NativeAuthRepository: AuthRepository {
             }
         }
 
-        // Try refreshing
-        if (try? keychain.readString(forKey: "refreshToken")) != nil {
-            do {
-                try await refresh()
-                return
-            } catch {
-                // Fall through to unauthenticated
+        let storedProfile = storedUserProfile()
+
+        guard (try? keychain.readString(forKey: "refreshToken")) != nil else {
+            await MainActor.run {
+                appState.authState = .unauthenticated
             }
+            return
         }
 
-        await MainActor.run {
-            appState.authState = .unauthenticated
+        do {
+            try await refresh()
+        } catch let failure as AuthFailure where failure.terminal {
+            // Server explicitly rejected the stored refresh token — sign
+            // out and surface the login screen.
+            await signOut()
+        } catch {
+            // Transient failure. Keep the user signed in with whatever
+            // cached profile we have so the app surfaces useful UI rather
+            // than bouncing them to login on every offline cold start.
+            // The next access-token request will retry; if connectivity
+            // returns the session resumes seamlessly.
+            if let profile = storedProfile {
+                await MainActor.run {
+                    appState.authState = .authenticated(profile)
+                }
+            } else {
+                await MainActor.run {
+                    appState.authState = .unauthenticated
+                }
+            }
         }
     }
 

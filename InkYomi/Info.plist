@@ -48,10 +48,24 @@
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
         <string>shop.inkcolors.InkYomi.spanUpload</string>
+        <string>shop.inkcolors.InkYomi.loanRenewal</string>
     </array>
     <key>UIBackgroundModes</key>
     <array>
         <string>processing</string>
     </array>
+    <!--
+      Strict App Transport Security: no cleartext, no exceptions. The app
+      only ever talks to https://inkcolors.shop. If staging needs HTTP at
+      some point, add a per-domain exception here rather than disabling
+      ATS globally.
+    -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSAllowsLocalNetworking</key>
+        <false/>
+    </dict>
 </dict>
 </plist>

@@ -23,11 +23,13 @@ struct InkYomiApp: App {
                     await container.spanTelemetryRepository.drainAll()
                 }
                 SpanUploadScheduler.scheduleUpload()
+                LoanRenewalScheduler.scheduleRenewal()
             }
         }
     }
 
     init() {
         SpanUploadScheduler.registerTask(container: DependencyContainer.shared)
+        LoanRenewalScheduler.registerTask(container: DependencyContainer.shared)
     }
 }

@@ -38,6 +38,8 @@ final class DependencyContainer: @unchecked Sendable {
     let lendingRepository: LendingRepositoryImpl
     let spanTelemetryRepository: SpanTelemetryRepository
     let bookRepository: BookRepositoryImpl
+    let storageRepository: StorageRepository
+    let loanRenewalCoordinator: LoanRenewalCoordinator
 
     // Reader & Downloads
     let readerPreferences: ReaderPreferences
@@ -135,5 +137,9 @@ final class DependencyContainer: @unchecked Sendable {
 
         // Reader preferences
         self.readerPreferences = MainActor.assumeIsolated { ReaderPreferences() }
+
+        // Storage management + proactive loan renewal
+        self.storageRepository = StorageRepository()
+        self.loanRenewalCoordinator = LoanRenewalCoordinator(lendingRepository: lendingRepository)
     }
 }

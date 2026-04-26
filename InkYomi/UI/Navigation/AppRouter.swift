@@ -44,6 +44,7 @@ enum AuthRoute: Hashable {
 }
 
 struct MainTabView: View {
+    @Environment(DependencyContainer.self) private var container
     @State private var selectedTab: TabRoute = .home
     @State private var showingReader = false
 
@@ -58,6 +59,14 @@ struct MainTabView: View {
             }
         }
         .tint(Color.inkPrimary)
+        .task {
+            // Foreground half of the silent renewal pair (the other being
+            // the 24h `LoanRenewalScheduler` BGProcessingTask). Fired once
+            // when the app surfaces in an authenticated state. Best-effort,
+            // never blocks the UI, never surfaces errors — the on-open
+            // auto-renew is the last-resort safety net.
+            await container.loanRenewalCoordinator.renewExpiringSoon()
+        }
     }
 
     @ViewBuilder

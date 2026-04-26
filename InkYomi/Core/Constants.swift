@@ -38,6 +38,7 @@ enum Constants {
 
     enum BackgroundTask {
         static let spanUpload = "shop.inkcolors.InkYomi.spanUpload"
+        static let loanRenewal = "shop.inkcolors.InkYomi.loanRenewal"
     }
 
     enum DRM {

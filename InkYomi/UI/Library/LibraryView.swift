@@ -215,12 +215,21 @@ private struct BorrowedBookCard: View {
     let onReturn: () -> Void
     let onRenew: () -> Void
 
+    private var display: LoanDisplay { loan.toDisplay() }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            BookCoverView(url: loan.coverUrl, width: nil, height: 200)
-                .frame(maxWidth: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .onTapGesture(perform: onRead)
+            ZStack(alignment: .topLeading) {
+                BookCoverView(url: loan.coverUrl, width: nil, height: 200)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .onTapGesture(perform: onRead)
+
+                if !loan.isTerminal {
+                    DueDateBadge(label: display.dueLabel, urgency: display.urgency)
+                        .padding(6)
+                }
+            }
 
             Text(loan.title ?? "Unknown")
                 .font(.caption)
@@ -235,17 +244,10 @@ private struct BorrowedBookCard: View {
                     .lineLimit(1)
             }
 
-            // Due date
-            if let due = loan.dueAt {
-                if loan.isExpired {
-                    Text("Expired")
-                        .font(.caption2)
-                        .foregroundStyle(.red)
-                } else {
-                    Text("Due \(due, style: .date)")
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
-                }
+            if !loan.isTerminal, let renewalLabel = display.renewalLabel {
+                Text(renewalLabel)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
 
             // Actions
@@ -272,6 +274,21 @@ private struct BorrowedBookCard: View {
                 }
             }
         }
+    }
+}
+
+private struct DueDateBadge: View {
+    let label: String
+    let urgency: LoanUrgency
+
+    var body: some View {
+        Text(label)
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(urgency.foregroundColor)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(urgency.backgroundColor)
+            .clipShape(Capsule())
     }
 }
 
