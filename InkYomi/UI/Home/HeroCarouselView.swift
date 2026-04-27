@@ -3,14 +3,7 @@ import SwiftUI
 struct HeroCarouselView: View {
     let slides: [HeroSlide]
     @Environment(\.horizontalSizeClass) private var hSizeClass
-    @Environment(\.verticalSizeClass) private var vSizeClass
     @State private var currentIndex = 0
-
-    /// iPhone in portrait: compact width + regular height. Banner images get
-    /// awkwardly cropped at this aspect, so we fit-not-fill there only.
-    private var isPhonePortrait: Bool {
-        hSizeClass == .compact && vSizeClass == .regular
-    }
 
     var body: some View {
         TabView(selection: $currentIndex) {
@@ -20,7 +13,11 @@ struct HeroCarouselView: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .automatic))
-        .frame(height: HeroHeight.height(for: hSizeClass))
+        // 5:2 matches the production banner asset spec (e.g. 2400×960). The
+        // slot resizes with phone width but keeps the same aspect on every
+        // device, so compliant banners fill the slot edge-to-edge with no
+        // letterbox. Off-spec banners get a graceful centre-crop.
+        .aspectRatio(5.0 / 2.0, contentMode: .fit)
     }
 
     @ViewBuilder
@@ -52,26 +49,23 @@ struct HeroCarouselView: View {
 
     @ViewBuilder
     private func bannerSlide(url: URL, slide: HeroSlide) -> some View {
-        let fitMode: ContentMode = isPhonePortrait ? .fit : .fill
-        // .fit is centered; focal-point alignment only matters for .fill cropping.
-        let alignment: Alignment = isPhonePortrait
-            ? .center
-            : focalAlignment(for: slide.bannerSettings)
-        GeometryReader { geo in
-            ZStack(alignment: .bottomLeading) {
-                Color.inkPrimary.opacity(0.1)   // letterbox fill when .fit leaves gaps
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: fitMode)
-                } placeholder: {
-                    Rectangle().fill(Color.inkPrimary.opacity(0.1))
-                }
-                .frame(width: geo.size.width, height: geo.size.height, alignment: alignment)
-                .clipped()
-
-                textOverlay(slide)
+        // The carousel slot is now pinned to 5:2 (banner asset spec), so a
+        // compliant banner fills it perfectly with `.scaledToFill()`. The
+        // `.clipped()` keeps off-spec assets from spilling over the corners.
+        // Focal-point alignment via `bannerSettings` is preserved for the
+        // off-spec case so the important part of the image stays visible.
+        ZStack(alignment: .bottomLeading) {
+            AsyncImage(url: url) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                Color.inkPrimary.opacity(0.1)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: focalAlignment(for: slide.bannerSettings))
+            .clipped()
+
+            textOverlay(slide)
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }

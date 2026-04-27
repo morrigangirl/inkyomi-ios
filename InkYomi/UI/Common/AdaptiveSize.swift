@@ -27,6 +27,10 @@ extension CoverSize {
     }
 }
 
+/// Reserved for future use. The hero carousel now sizes itself via
+/// `.aspectRatio(5.0/2.0, contentMode: .fit)` to match the 2400×960 banner
+/// asset spec, so this fixed-height fallback is no longer referenced.
+/// Kept in case iPad layouts need a different sizing strategy later.
 enum HeroHeight {
     static func height(for sizeClass: UserInterfaceSizeClass?) -> CGFloat {
         sizeClass == .regular ? 320 : 200
