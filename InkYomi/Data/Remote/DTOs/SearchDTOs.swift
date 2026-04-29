@@ -10,6 +10,32 @@ import Foundation
 
 // MARK: - Search
 
+/// Wraps a string field that the backend sometimes serializes as a
+/// number. The contract type is `string`, but historic seed data and
+/// some response paths emit raw integers (e.g. `"seriesNumber":3`).
+/// kotlinx-serialization on Android coerces type mismatches silently;
+/// Swift's `JSONDecoder` does not, so this wrapper does it explicitly.
+struct StringOrNumber: Decodable, Sendable {
+    let value: String?
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() { value = nil; return }
+        if let s = try? c.decode(String.self) { value = s; return }
+        if let i = try? c.decode(Int.self) { value = String(i); return }
+        if let d = try? c.decode(Double.self) {
+            // Don't render trailing `.0` for integer-valued doubles.
+            if d.rounded() == d, abs(d) < Double(Int.max) {
+                value = String(Int(d))
+            } else {
+                value = String(d)
+            }
+            return
+        }
+        value = nil
+    }
+}
+
 struct SearchResultBookDto: Decodable, Sendable {
     let id: String
     let slug: String
@@ -33,7 +59,7 @@ struct SearchResultBookDto: Decodable, Sendable {
     let ratingAvg: Double?
     let ratingCount: Int?
     let seriesName: String?
-    let seriesNumber: String?
+    let seriesNumber: StringOrNumber?
 
     func toDomain() -> SearchResultBook {
         SearchResultBook(
@@ -59,7 +85,7 @@ struct SearchResultBookDto: Decodable, Sendable {
             ratingAvg: ratingAvg,
             ratingCount: ratingCount,
             seriesName: seriesName,
-            seriesNumber: seriesNumber
+            seriesNumber: seriesNumber?.value
         )
     }
 }
