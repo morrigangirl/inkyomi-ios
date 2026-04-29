@@ -162,12 +162,11 @@ private struct ResultCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            BookCoverView(
-                url: book.coverCardUrl ?? book.coverUrl ?? book.coverThumbUrl,
-                width: nil,
-                height: 210
-            )
-            .aspectRatio(2.0 / 3.0, contentMode: .fit)
+            // Cover fills the column width and respects the 2:3 spine
+            // ratio. `BookCoverView` is built around fixed dimensions
+            // (used by horizontal shelves), so for the grid case we use
+            // a `GridCoverImage` wrapper that grows to the proposed width.
+            GridCoverImage(url: book.coverCardUrl ?? book.coverUrl ?? book.coverThumbUrl)
             Text(book.title)
                 .font(.caption)
                 .lineLimit(2)
@@ -184,6 +183,58 @@ private struct ResultCard: View {
                     .foregroundStyle(Color.inkPrimary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// Cover wrapper for grid cells: fills the proposed width and clips to
+/// a 2:3 aspect ratio. Mirrors `BookCoverView`'s look (rounded corners,
+/// soft shadow, on-failure placeholder) but does not require an explicit
+/// width/height up-front.
+private struct GridCoverImage: View {
+    let url: String?
+
+    private var resolvedURL: URL? {
+        guard let urlString = url, !urlString.isEmpty else { return nil }
+        if let absolute = URL(string: urlString), absolute.scheme != nil {
+            return absolute
+        }
+        return URL(string: urlString, relativeTo: URL(string: "https://inkcolors.shop"))
+    }
+
+    var body: some View {
+        Group {
+            if let imageUrl = resolvedURL {
+                CachedAsyncImage(url: imageUrl) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure:
+                        placeholder
+                    default:
+                        placeholder.overlay(ProgressView())
+                    }
+                }
+            } else {
+                placeholder
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .aspectRatio(2.0 / 3.0, contentMode: .fit)
+        .clipped()
+        .clipShape(RoundedRectangle(cornerRadius: 6))
+        .shadow(radius: 2)
+    }
+
+    private var placeholder: some View {
+        RoundedRectangle(cornerRadius: 6)
+            .fill(Color.inkPrimary.opacity(0.1))
+            .overlay {
+                Image(systemName: "book.closed.fill")
+                    .foregroundStyle(Color.inkPrimary.opacity(0.3))
+            }
     }
 }
 
