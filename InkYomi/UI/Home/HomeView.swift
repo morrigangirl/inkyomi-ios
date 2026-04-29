@@ -10,17 +10,17 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                SearchBarView(
-                    query: viewModel.searchQuery,
-                    onQueryChanged: { viewModel.onSearchQueryChanged($0) },
-                    onClear: { viewModel.clearSearch() }
-                )
+                // Tap-to-navigate search bar — opens the Phase 2 typeahead
+                // overlay. The legacy inline-search behaviour is gated
+                // behind a debug fallback that's no longer wired through.
+                NavigationLink(value: SearchRoute.searchOverlay) {
+                    SearchBarLink()
+                }
+                .buttonStyle(.plain)
                 .padding(.horizontal)
                 .padding(.bottom, 8)
 
-                if viewModel.searchResults != nil {
-                    searchResultsSection
-                } else if viewModel.isLoading {
+                if viewModel.isLoading {
                     ProgressView()
                         .frame(maxWidth: .infinity, minHeight: 300)
                 } else if let landingPage = viewModel.landingPage {
@@ -37,7 +37,12 @@ struct HomeView: View {
         .background(searchShortcut)
         .navigationTitle("InkYomi")
         .task {
-            viewModel.configure(catalogRepository: container.catalogRepository, libraryRepository: container.libraryRepository, modelContext: modelContext)
+            viewModel.configure(
+                catalogRepository: container.catalogRepository,
+                discoveryRepository: container.discoveryRepository,
+                libraryRepository: container.libraryRepository,
+                modelContext: modelContext
+            )
             await viewModel.loadLandingPage()
         }
     }
@@ -55,9 +60,19 @@ struct HomeView: View {
                 continueReadingSection
             }
 
+            // Trending now (Phase 1 — new)
+            if !viewModel.trending.isEmpty {
+                TrendingRowView(books: viewModel.trending)
+            }
+
             // Shelves
             ForEach(page.shelves) { shelf in
                 ShelfRowView(shelf: shelf)
+            }
+
+            // Browse the catalog (Phase 1 — new)
+            if !viewModel.browseHub.isEmpty {
+                BrowseHubSection(groups: viewModel.browseHub)
             }
         }
     }
@@ -124,5 +139,23 @@ struct HomeView: View {
                 .padding(.horizontal)
             }
         }
+    }
+}
+
+/// Non-editable search-bar look-alike that opens the Phase 2 typeahead
+/// overlay when tapped. Dropped from the inline-search path along with
+/// the discovery revamp Phase 2.
+private struct SearchBarLink: View {
+    var body: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            Text("Search books, authors, tags…")
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding(10)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

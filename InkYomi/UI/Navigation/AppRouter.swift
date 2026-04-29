@@ -153,11 +153,29 @@ struct MainSplitView: View {
 // MARK: - Per-tab root NavigationStacks (shared by MainTabView and MainSplitView)
 
 private struct HomeRoot: View {
+    @State private var path = NavigationPath()
+
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             HomeView()
                 .navigationDestination(for: String.self) { bookId in
                     BookDetailView(bookId: bookId)
+                }
+                .navigationDestination(for: SearchRoute.self) { route in
+                    switch route {
+                    case .searchOverlay:
+                        SearchView { query in
+                            path.append(SearchRoute.results(query: query))
+                        }
+                    case .results(let q, let tagType, let tagSlug, let authorId, let seriesId):
+                        SearchResultsView(
+                            initialQuery: q,
+                            prefilledTagType: tagType,
+                            prefilledTagSlug: tagSlug,
+                            authorId: authorId,
+                            seriesId: seriesId
+                        )
+                    }
                 }
         }
     }

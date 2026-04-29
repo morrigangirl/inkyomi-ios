@@ -7,10 +7,20 @@ final class BookDetailViewModel {
     var isLoading = false
     var error: String?
 
-    private var catalogRepository: (any CatalogRepository)?
+    /// "More like this" rail. Fetched in parallel with the book detail
+    /// once `book.icin` is known. Failure is silent — the rail simply
+    /// doesn't render.
+    var relatedBooks: [RelatedBook] = []
 
-    func configure(catalogRepository: any CatalogRepository) {
+    private var catalogRepository: (any CatalogRepository)?
+    private var discoveryRepository: (any DiscoveryRepository)?
+
+    func configure(
+        catalogRepository: any CatalogRepository,
+        discoveryRepository: any DiscoveryRepository
+    ) {
         self.catalogRepository = catalogRepository
+        self.discoveryRepository = discoveryRepository
     }
 
     func loadBook(idOrSlug: String) async {
@@ -18,10 +28,27 @@ final class BookDetailViewModel {
         isLoading = true
         error = nil
         do {
-            bookDetail = try await catalogRepository.getBookDetail(idOrSlug: idOrSlug)
+            let book = try await catalogRepository.getBookDetail(idOrSlug: idOrSlug)
+            bookDetail = book
+            isLoading = false
+            // Related-books fetch needs the seed `icin` (URL parameter
+            // on the backend route), not the UUID. Failure is silent —
+            // the rail just doesn't render.
+            if let icin = book.icin {
+                await loadRelated(icin: icin)
+            }
         } catch {
+            isLoading = false
             self.error = error.localizedDescription
         }
-        isLoading = false
+    }
+
+    private func loadRelated(icin: String) async {
+        guard let discoveryRepository else { return }
+        do {
+            relatedBooks = try await discoveryRepository.getRelated(icin: icin)
+        } catch {
+            // Soft enhancement — no error surfaced on failure.
+        }
     }
 }

@@ -23,13 +23,28 @@ final class HomeViewModel {
     var isSearching = false
     var continueReading: [ContinueReadingItem] = []
 
+    /// Phase 1 of the discovery revamp: top-line trending feed,
+    /// rendered as a single horizontal row above Featured shelves.
+    var trending: [TrendingBook] = []
+    /// Phase 1 of the discovery revamp: server-driven groups of
+    /// "discovery tiles" (genre / mood / trope / identity / browse-views)
+    /// rendered as the Browse Hub section below shelves.
+    var browseHub: [BrowseHubGroup] = []
+
     private var searchTask: Task<Void, Never>?
     private var catalogRepository: (any CatalogRepository)?
+    private var discoveryRepository: (any DiscoveryRepository)?
     private var libraryRepository: (any LibraryRepository)?
     private var modelContext: ModelContext?
 
-    func configure(catalogRepository: any CatalogRepository, libraryRepository: any LibraryRepository, modelContext: ModelContext) {
+    func configure(
+        catalogRepository: any CatalogRepository,
+        discoveryRepository: any DiscoveryRepository,
+        libraryRepository: any LibraryRepository,
+        modelContext: ModelContext
+    ) {
         self.catalogRepository = catalogRepository
+        self.discoveryRepository = discoveryRepository
         self.libraryRepository = libraryRepository
         self.modelContext = modelContext
     }
@@ -38,11 +53,21 @@ final class HomeViewModel {
         guard let catalogRepository else { return }
         isLoading = true
         error = nil
-        do {
-            landingPage = try await catalogRepository.getLandingPage()
-        } catch {
-            self.error = error.localizedDescription
+        // Fan out the three home-feed network calls in parallel.
+        // Trending + browse-hub failures are swallowed so an outage on
+        // one new endpoint doesn't blank the Home screen.
+        async let landing: LandingPage? = try? catalogRepository.getLandingPage()
+        async let trendingFeed: [TrendingBook] = (try? await discoveryRepository?.getTrending(limit: 12)) ?? []
+        async let browseHubGroups: [BrowseHubGroup] = (try? await discoveryRepository?.getBrowseHub()) ?? []
+
+        let (landingResolved, trendingResolved, hubResolved) = await (landing, trendingFeed, browseHubGroups)
+        if let landingResolved {
+            landingPage = landingResolved
+        } else {
+            error = "Failed to load home"
         }
+        trending = trendingResolved
+        browseHub = hubResolved
         isLoading = false
         loadContinueReading()
     }
@@ -50,11 +75,14 @@ final class HomeViewModel {
     func refresh() async {
         guard let catalogRepository else { return }
         isRefreshing = true
-        do {
-            landingPage = try await catalogRepository.getLandingPage()
-        } catch {
-            self.error = error.localizedDescription
-        }
+        async let landing: LandingPage? = try? catalogRepository.getLandingPage()
+        async let trendingFeed: [TrendingBook] = (try? await discoveryRepository?.getTrending(limit: 12)) ?? []
+        async let browseHubGroups: [BrowseHubGroup] = (try? await discoveryRepository?.getBrowseHub()) ?? []
+
+        let (landingResolved, trendingResolved, hubResolved) = await (landing, trendingFeed, browseHubGroups)
+        if let landingResolved { landingPage = landingResolved }
+        trending = trendingResolved
+        browseHub = hubResolved
         isRefreshing = false
         loadContinueReading()
     }

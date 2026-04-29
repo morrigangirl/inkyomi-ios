@@ -1,0 +1,186 @@
+import Foundation
+import Observation
+
+@MainActor @Observable
+final class SearchResultsViewModel {
+    var query: String = ""
+    var filters: SearchFilters = SearchFilters()
+    var sort: SearchSortOrder = .relevance
+    var isLoading: Bool = false
+    var books: [SearchResultBook] = []
+    var total: Int = 0
+    var facets: [FacetGroup] = []
+    var spellSuggest: String?
+    var errorMessage: String?
+
+    /// Pagination state. `currentPage` is the most recent page that
+    /// successfully loaded; `isLoadingMore` is the post-first-page
+    /// fetch flag (separate from `isLoading` so the UI doesn't blank
+    /// the existing grid while appending).
+    var currentPage: Int = 1
+    var isLoadingMore: Bool = false
+    var hasMore: Bool = false
+
+    static let limit: Int = 24
+
+    private var repository: (any SearchRepository)?
+    private var initialized: Bool = false
+
+    func configure(repository: any SearchRepository) {
+        self.repository = repository
+    }
+
+    /// Apply the initial search context. Called once from
+    /// `SearchResultsView` with whatever pre-applied filter the
+    /// navigator passed (e.g. tagType+tagSlug from a browse-hub tile,
+    /// or just a free-text query from the search bar).
+    func initialize(
+        query: String? = nil,
+        prefilledTagType: TagType? = nil,
+        prefilledTagSlug: String? = nil,
+        authorId: String? = nil,
+        seriesId: String? = nil
+    ) async {
+        guard !initialized else { return }
+        initialized = true
+        var filters = SearchFilters()
+        if let prefilledTagType, let slug = prefilledTagSlug, !slug.isEmpty {
+            filters.tagSlugs = [prefilledTagType: [slug]]
+        }
+        filters.authorId = authorId
+        filters.seriesId = seriesId
+        // Defensive default: only ask the backend for relevance ranking when
+        // we have a free-text query to rank against. With no `q`, the backend's
+        // relevance fallback referenced `bp.score` without joining
+        // book_popularity (fixed in pearlescent-dream branch
+        // fix/search-v2-relevance-no-query-bp-bug). Until that fix deploys,
+        // defaulting to NEWEST avoids the failing path.
+        let initialSort: SearchSortOrder
+        if let query, !query.trimmingCharacters(in: .whitespaces).isEmpty {
+            initialSort = .relevance
+        } else {
+            initialSort = .newest
+        }
+        self.query = query ?? ""
+        self.filters = filters
+        self.sort = initialSort
+        await runSearch()
+    }
+
+    func setSort(_ newSort: SearchSortOrder) async {
+        guard newSort != sort else { return }
+        sort = newSort
+        await runSearch()
+    }
+
+    func setQuery(_ newQuery: String) async {
+        guard newQuery != query else { return }
+        query = newQuery
+        await runSearch()
+    }
+
+    // MARK: - Filter manipulation
+
+    func toggleTagFilter(type: TagType, slug: String) {
+        filters = filters.toggleTag(type: type, slug: slug)
+    }
+
+    func setPriceRange(_ minUsd: Double?, _ maxUsd: Double?) {
+        filters.priceMin = minUsd
+        filters.priceMax = maxUsd
+    }
+
+    func setRatingMin(_ rating: Double?) {
+        filters.ratingMin = rating
+    }
+
+    /// Re-run the search with the user's filter changes (called from
+    /// the Apply button). */
+    func applyFilters() async { await runSearch() }
+
+    func clearFilters() async {
+        filters = SearchFilters()
+        await runSearch()
+    }
+
+    func removeTagFilter(type: TagType, slug: String) async {
+        filters = filters.toggleTag(type: type, slug: slug)
+        await runSearch()
+    }
+
+    func removeAuthor() async {
+        filters.authorId = nil
+        await runSearch()
+    }
+
+    func removeSeries() async {
+        filters.seriesId = nil
+        await runSearch()
+    }
+
+    func removePriceRange() async {
+        filters.priceMin = nil
+        filters.priceMax = nil
+        await runSearch()
+    }
+
+    func removeRating() async {
+        filters.ratingMin = nil
+        await runSearch()
+    }
+
+    // MARK: - Pagination
+
+    /// Fetch the next page and append. No-op if a page fetch is already
+    /// in flight or if we've already pulled everything (`hasMore=false`).
+    /// Errors append silently — the user keeps the existing results and
+    /// a tiny spinner just disappears.
+    func loadMore() async {
+        guard let repository, !isLoading, !isLoadingMore, hasMore else { return }
+        isLoadingMore = true
+        let nextPage = currentPage + 1
+        do {
+            let results = try await repository.search(
+                query: query.isEmpty ? nil : query,
+                filters: filters,
+                sort: sort,
+                page: nextPage,
+                limit: Self.limit
+            )
+            let merged = books + results.books
+            isLoadingMore = false
+            books = merged
+            total = results.total
+            currentPage = nextPage
+            hasMore = merged.count < results.total && !results.books.isEmpty
+        } catch {
+            isLoadingMore = false
+        }
+    }
+
+    private func runSearch() async {
+        guard let repository else { return }
+        isLoading = true
+        errorMessage = nil
+        do {
+            let results = try await repository.search(
+                query: query.isEmpty ? nil : query,
+                filters: filters,
+                sort: sort,
+                page: 1,
+                limit: Self.limit
+            )
+            isLoading = false
+            books = results.books
+            total = results.total
+            facets = results.facets
+            sort = results.sort
+            spellSuggest = results.spellSuggest
+            currentPage = 1
+            hasMore = results.books.count < results.total
+        } catch {
+            isLoading = false
+            errorMessage = error.localizedDescription
+        }
+    }
+}

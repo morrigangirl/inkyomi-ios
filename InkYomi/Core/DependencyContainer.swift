@@ -21,6 +21,8 @@ final class DependencyContainer: @unchecked Sendable {
 
     // Services
     let catalogAPIService: CatalogAPIService
+    let discoveryAPIService: DiscoveryAPIService
+    let searchAPIService: SearchAPIService
     let entitlementAPIService: EntitlementAPIService
     let checkoutAPIService: CheckoutAPIService
     let deviceAPIService: DeviceAPIService
@@ -32,6 +34,8 @@ final class DependencyContainer: @unchecked Sendable {
     // Repositories
     let authRepository: NativeAuthRepository
     let catalogRepository: CatalogRepositoryImpl
+    let discoveryRepository: DiscoveryRepositoryImpl
+    let searchRepository: SearchRepositoryImpl
     let libraryRepository: LibraryRepositoryImpl
     let checkoutRepository: CheckoutRepositoryImpl
     let deviceRepository: DeviceRepositoryImpl
@@ -40,6 +44,9 @@ final class DependencyContainer: @unchecked Sendable {
     let bookRepository: BookRepositoryImpl
     let storageRepository: StorageRepository
     let loanRenewalCoordinator: LoanRenewalCoordinator
+
+    // Preferences
+    let recentSearches: RecentSearchesPreferences
 
     // Reader & Downloads
     let readerPreferences: ReaderPreferences
@@ -90,6 +97,17 @@ final class DependencyContainer: @unchecked Sendable {
         // Catalog
         self.catalogAPIService = CatalogAPIService(client: apiClient)
         self.catalogRepository = CatalogRepositoryImpl(api: catalogAPIService)
+
+        // Discovery (browse-hub, trending, related books)
+        self.discoveryAPIService = DiscoveryAPIService(client: apiClient)
+        self.discoveryRepository = DiscoveryRepositoryImpl(api: discoveryAPIService)
+
+        // Search v2 (FTS + faceted + typeahead)
+        self.searchAPIService = SearchAPIService(client: apiClient)
+        self.searchRepository = SearchRepositoryImpl(api: searchAPIService)
+
+        // Recent search history (UserDefaults-backed; MainActor-isolated)
+        self.recentSearches = MainActor.assumeIsolated { RecentSearchesPreferences() }
 
         // Library & Checkout
         self.entitlementAPIService = EntitlementAPIService(client: apiClient)

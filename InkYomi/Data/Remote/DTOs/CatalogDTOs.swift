@@ -44,6 +44,7 @@ struct ShelfBookDto: Decodable {
             id: bookId,
             title: title,
             slug: slug,
+            icin: icin,
             coverUrl: coverCardUrl ?? coverUrl,
             authorName: authorName,
             priceUsd: priceUsd.flatMap { Double($0) },
@@ -120,6 +121,7 @@ struct HeroSlideBookDto: Decodable {
             id: id,
             title: title,
             slug: slug,
+            icin: icin,
             coverUrl: coverCardUrl ?? coverUrl,
             authorName: authorName,
             priceUsd: nil,
@@ -173,6 +175,7 @@ struct BookDetailResponse: Decodable {
             title: title,
             subtitle: subtitle,
             slug: slug,
+            icin: icin,
             hook: hook,
             shortDescription: shortDescription,
             fullDescription: fullDescription,
@@ -185,7 +188,7 @@ struct BookDetailResponse: Decodable {
             ratingCount: ratingCount,
             owned: owned ?? false,
             authors: (authors ?? []).map { $0.toDomain() },
-            tags: (tags ?? []).map { $0.label },
+            tags: (tags ?? []).map { $0.toDomain() },
             categories: (categories ?? []).map { $0.toDomain() }
         )
     }
@@ -207,6 +210,16 @@ struct TagDto: Decodable {
     let id: String
     let label: String
     let slug: String
+    let tagType: String?
+
+    func toDomain() -> Tag {
+        Tag(
+            id: id,
+            label: label,
+            slug: slug,
+            tagType: TagType.fromWire(tagType)
+        )
+    }
 }
 
 // MARK: - Search
@@ -240,6 +253,7 @@ struct SearchResultDto: Decodable {
             id: id,
             title: title,
             slug: slug,
+            icin: icin,
             coverUrl: coverCardUrl ?? coverUrl,
             authorName: authorName,
             priceUsd: nil,

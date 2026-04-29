@@ -3,6 +3,90 @@
 ## Unreleased
 
 ### Added
+- **Discovery revamp port — Phases 1, 2, and 3.** Brings the iOS app
+  to parity with the Android sibling's discovery overhaul (LCP-Reader
+  branch). All wiring is mobile-only — backend endpoints have been
+  live since pearlescent-dream commit `8bbe9e3`.
+  - **Phase 1: Home revamp.**
+    - **Trending now** — single horizontal row of the top 12 trending
+      books (`GET /api/data/books/trending?limit=12`), inserted between
+      Continue Reading and Featured shelves.
+    - **Browse the catalog** — vertical stack of section headers, each
+      with a 2-column grid of "discovery tiles" pulled from
+      `GET /api/data/categories/browse-hub`. Each tile shows a 3-cover
+      fanned montage, the label, and the book count. Group key →
+      tag-type mapping (`by-genre` → genre, `by-mood` → tone, etc.); tile
+      taps route to a pre-filtered `SearchResultsView`. Non-tag groups
+      (`by-series`, `by-character`, `featured`) render but their tile
+      taps are inert until entity-based search lands.
+    - `HomeViewModel` fans out the three home-feed network calls
+      (landing-page, trending, browse-hub) in parallel via `async let`.
+      Trending + browse-hub failures are swallowed so an outage on one
+      new endpoint doesn't blank the Home screen.
+    - The Home search bar is no longer an editable inline field — it's
+      now a tap-to-navigate `SearchBarLink` that opens the Phase 2
+      typeahead overlay.
+  - **Phase 2: Search experience.**
+    - **`SearchView`** — typeahead overlay. Auto-focuses, debounces
+      250 ms to `/api/search/v2/suggest`, renders four grouped sections
+      (Books / Authors / Series / Tags). Each row navigates: book →
+      `BookDetailView`, author → `SearchResultsView?authorId=…`, series
+      → `SearchResultsView?seriesId=…`, tag → `SearchResultsView`
+      pre-filtered by tag_type + slug. Empty-query state shows recent
+      searches with per-row × and a Clear button (or a hint when none
+      persisted yet). Footer "Search for '<query>'" routes the raw
+      query to full results.
+    - **`SearchResultsView`** — full-screen results. Toolbar Sort menu
+      (8 options from `SearchSortOrder`), Filter button with active-count
+      badge, active-filter chip strip below the toolbar, adaptive
+      `LazyVGrid` of result cards, infinite-scroll pagination via
+      `onAppear` triggered when within 6 items of the loaded count.
+      Filter sheet (Material-style `.presentationDetents([.medium, .large])`)
+      with chip-cloud facet groups for the 8 tag types, paired
+      Min/Max price `Slider`s (0..$50, $0/$50+ map to `nil`), and a
+      single-thumb rating `Slider` (0..5 step 0.5).
+    - `SearchViewModel` + `SearchResultsViewModel` use the
+      `@MainActor @Observable` + `.configure()` pattern; cancellation
+      uses `Task { try? await Task.sleep ... }` for debounce.
+    - New `RecentSearchesPreferences` (UserDefaults-backed,
+      `MainActor @Observable`, last 10, case-insensitive dedupe,
+      MIN_LENGTH=2). Wired into `DependencyContainer.recentSearches`.
+    - Defensive sort: blank-query searches default to `.newest` to
+      avoid the pearlescent-dream relevance fallback bug
+      (`fix/search-v2-relevance-no-query-bp-bug` not yet deployed).
+  - **Phase 3: BookDetail polish.**
+    - "More like this" rail at the bottom of `BookDetailView` (compact
+      and regular layouts). Fetches `GET /api/data/books/:icin/related`
+      after `book.icin` is known. Up to 12 covers in a horizontal
+      `ScrollView`, each card showing cover + title + author + the
+      strongest backend-provided "reason" line ("Same series", "Shares:
+      Fantasy, Romance"). Tap → another BookDetail. Soft enhancement:
+      failures are silent.
+    - **Clickable tag chips**. Tap a tag → `SearchResultsView` filtered
+      by that tag's `tag_type` axis + slug. Required threading
+      `tag_type` through the wire format: `TagDto` gained a
+      `tagType: String?` field, the `Tag` domain struct (new) carries
+      `tagType: TagType?`, and `BookDetail.tags` is now `[Tag]` (was
+      `[String]`). Tags whose `tag_type` didn't decode (legacy
+      responses) become inert chips.
+    - **Clickable author**. When `book.authors` has at least one entry,
+      the "by …" line is primary-tinted and routes to
+      `SearchResultsView?authorId=…`. Falls back to inert text when
+      only the legacy flat `authorName` is set.
+  - New domain models: `BrowseHubGroup`, `BrowseHubTile`, `TrendingBook`,
+    `RelatedBook`, `Tag`, `TagType`, `SearchSortOrder`, `FacetGroup`,
+    `FacetItem`, `SearchFilters`, `SearchResultBook`, `SearchResults`,
+    `SuggestBook`, `SuggestEntity`, `SuggestTag`, `SuggestResults`.
+    Existing `Book` extended with `icin: String?`; existing `BookDetail`
+    extended with `icin: String?` and tag list upgraded to `[Tag]`.
+  - New data layer: `DiscoveryAPIService`, `SearchAPIService`,
+    `DiscoveryDTOs`, `SearchDTOs`, `DiscoveryRepository(Impl)`,
+    `SearchRepository(Impl)`, `RecentSearchesPreferences`. Wired into
+    `DependencyContainer`.
+  - New navigation route: `SearchRoute` (`Hashable` enum with cases
+    `.searchOverlay` / `.results(query, tagType, tagSlug, authorId, seriesId)`),
+    registered on `HomeRoot`'s `NavigationStack`.
+
 - Kindle-style sticky sessions. The session is now restored on app launch even when the access token has aged out and the immediate refresh fails for transient reasons (network down, server 5xx, ambiguous 401 with no `invalid_grant` body) — the user stays signed in with the cached profile and the next access-token request retries. New `AuthFailure` enum carries an explicit `terminal` flag, set true only when the auth server returns one of `invalid_grant` / `unauthorized_client` / `invalid_token` (RFC 6749 token-error JSON body). Manual sign-out via Settings → Profile → Sign out is unchanged and remains the canonical user-driven way out. Mirrors the Android `NativeAuthRepository` work shipped 2026-04-25.
 - Proactive silent loan renewal. New `LoanRenewalCoordinator` (actor) walks active loans and silently renews any with `dueAt` within 48h that still have renewals available (`canRenew == true`). Triggered from two surfaces: a 24h `BGProcessingTask` (`LoanRenewalScheduler`, network-required, scheduled on app background and registered in `InkYomiApp.init`) and a one-shot fire from `MainTabView.task` once the user is in an authenticated state. The existing on-open auto-renew in `BookRepositoryImpl.ensureLendingDownloaded` is the third layer. Per-loan renewal failures are logged and swallowed; the BGTask always completes successfully so it never enters retry-with-backoff for normal "not yet eligible" rejections. Identifier `shop.inkcolors.InkYomi.loanRenewal` registered in `Info.plist` under `BGTaskSchedulerPermittedIdentifiers`.
 - Account / Profile screen at Settings → Profile. Initials avatar bubble, email + display name, registered device count (live from `GET /api/data/devices`) with chevron link to the existing `DeviceListView`, and the destructive Sign out button (relocated from the Settings root).

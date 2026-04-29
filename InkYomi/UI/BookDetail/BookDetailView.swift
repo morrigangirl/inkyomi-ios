@@ -20,7 +20,10 @@ struct BookDetailView: View {
         .navigationTitle(viewModel.bookDetail?.title ?? "Book")
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            viewModel.configure(catalogRepository: container.catalogRepository)
+            viewModel.configure(
+                catalogRepository: container.catalogRepository,
+                discoveryRepository: container.discoveryRepository
+            )
             await viewModel.loadBook(idOrSlug: bookId)
         }
     }
@@ -57,6 +60,7 @@ struct BookDetailView: View {
 
                 tagsRow(book)
                 descriptionSection(book)
+                relatedBooksRow
             }
             .padding(.vertical)
         }
@@ -84,6 +88,7 @@ struct BookDetailView: View {
                         titleBlock(book)
                         tagsRow(book)
                         descriptionSection(book)
+                        relatedBooksRow
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -107,8 +112,15 @@ struct BookDetailView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            if let author = book.authorName {
-                Text(author)
+            if let author = book.authors.first {
+                NavigationLink(value: SearchRoute.results(authorId: author.id)) {
+                    Text(author.name)
+                        .font(.subheadline)
+                        .foregroundStyle(Color.inkPrimary)
+                }
+                .buttonStyle(.plain)
+            } else if let authorName = book.authorName {
+                Text(authorName)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -132,16 +144,78 @@ struct BookDetailView: View {
         if !book.tags.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(book.tags, id: \.self) { tag in
-                        Text(tag)
-                            .font(.caption)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .background(Color.inkPrimary.opacity(0.1))
-                            .clipShape(Capsule())
+                    ForEach(book.tags) { tag in
+                        if let type = tag.tagType {
+                            // Phase 3: tag with a known tag_type → tap routes
+                            // to filtered SearchResultsView.
+                            NavigationLink(value: SearchRoute.results(tagType: type, tagSlug: tag.slug)) {
+                                Text(tag.label)
+                                    .font(.caption)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background(Color.inkPrimary.opacity(0.15))
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            // Legacy tag without `tag_type` — render as
+                            // an inert chip for visual consistency.
+                            Text(tag.label)
+                                .font(.caption)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.inkPrimary.opacity(0.1))
+                                .clipShape(Capsule())
+                        }
                     }
                 }
                 .padding(.horizontal, hSizeClass == .regular ? 0 : 16)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var relatedBooksRow: some View {
+        if !viewModel.relatedBooks.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("More like this")
+                    .font(.headline)
+                    .padding(.horizontal, hSizeClass == .regular ? 0 : 16)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .top, spacing: 12) {
+                        ForEach(viewModel.relatedBooks) { related in
+                            NavigationLink(value: related.book.id) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    BookCoverView(
+                                        url: related.book.coverCardUrl ?? related.book.coverUrl ?? related.book.coverThumbUrl,
+                                        width: 110,
+                                        height: 165
+                                    )
+                                    Text(related.book.title)
+                                        .font(.caption)
+                                        .lineLimit(2)
+                                        .foregroundStyle(.primary)
+                                    if let author = related.book.authorName {
+                                        Text(author)
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                            .lineLimit(1)
+                                    }
+                                    if let reason = related.reasons.first {
+                                        Text(reason)
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                            .lineLimit(2)
+                                    }
+                                }
+                                .frame(width: 110)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, hSizeClass == .regular ? 0 : 16)
+                }
             }
         }
     }

@@ -5,6 +5,10 @@ struct BookDetail: Identifiable, Equatable, Sendable {
     let title: String
     let subtitle: String?
     let slug: String
+    /// Public-facing book identifier — used to key the related-books
+    /// endpoint. Optional because not every detail response has been
+    /// migrated to surface it.
+    let icin: String?
     let hook: String?
     let shortDescription: String?
     let fullDescription: String?
@@ -17,11 +21,11 @@ struct BookDetail: Identifiable, Equatable, Sendable {
     let ratingCount: Int?
     let owned: Bool
     let authors: [Author]
-    let tags: [String]
+    let tags: [Tag]
     let categories: [Category]
 }
 
-struct Author: Equatable, Sendable {
+struct Author: Equatable, Sendable, Hashable {
     let id: String
     let name: String
 }
