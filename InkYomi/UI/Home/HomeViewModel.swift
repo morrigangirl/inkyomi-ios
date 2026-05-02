@@ -50,13 +50,45 @@ final class HomeViewModel {
     }
 
     func loadLandingPage() async {
-        guard let catalogRepository else { return }
+        guard catalogRepository != nil else { return }
         isLoading = true
         error = nil
-        // Fan out the three home-feed network calls in parallel.
-        // Trending + browse-hub failures are swallowed so an outage on
-        // one new endpoint doesn't blank the Home screen.
-        async let landing: LandingPage? = try? catalogRepository.getLandingPage()
+        await fetchHomeData()
+        isLoading = false
+        loadContinueReading()
+    }
+
+    func refresh() async {
+        guard catalogRepository != nil else { return }
+        isRefreshing = true
+        await fetchHomeData()
+        isRefreshing = false
+        loadContinueReading()
+    }
+
+    /// Fetch the Home payload. Tries the combined `/api/data/discover/home`
+    /// endpoint first (one round trip) and falls back to the legacy
+    /// three-call fanout on failure (older backends 404 the route).
+    ///
+    /// In the fanout fallback, landing-page is the only "must succeed"
+    /// call; trending + browse-hub failures are swallowed so an outage
+    /// on one new endpoint doesn't blank the whole Home screen.
+    private func fetchHomeData() async {
+        // Combined endpoint — one round trip. Backends predating the
+        // discover/home commit return 404; we treat any failure as a
+        // signal to fall back so the user never sees a blank Home just
+        // because the new endpoint isn't deployed yet.
+        if let combined = try? await discoveryRepository?.getDiscoverHome(trendingLimit: 12) {
+            landingPage = combined.landingPage
+            browseHub = combined.browseHub
+            trending = combined.trending
+            return
+        }
+
+        // Legacy fanout — three parallel calls. Used when the combined
+        // endpoint is unavailable; behaviorally identical to the
+        // pre-uplift code path.
+        async let landing: LandingPage? = try? catalogRepository?.getLandingPage()
         async let trendingFeed: [TrendingBook] = (try? await discoveryRepository?.getTrending(limit: 12)) ?? []
         async let browseHubGroups: [BrowseHubGroup] = (try? await discoveryRepository?.getBrowseHub()) ?? []
 
@@ -68,23 +100,6 @@ final class HomeViewModel {
         }
         trending = trendingResolved
         browseHub = hubResolved
-        isLoading = false
-        loadContinueReading()
-    }
-
-    func refresh() async {
-        guard let catalogRepository else { return }
-        isRefreshing = true
-        async let landing: LandingPage? = try? catalogRepository.getLandingPage()
-        async let trendingFeed: [TrendingBook] = (try? await discoveryRepository?.getTrending(limit: 12)) ?? []
-        async let browseHubGroups: [BrowseHubGroup] = (try? await discoveryRepository?.getBrowseHub()) ?? []
-
-        let (landingResolved, trendingResolved, hubResolved) = await (landing, trendingFeed, browseHubGroups)
-        if let landingResolved { landingPage = landingResolved }
-        trending = trendingResolved
-        browseHub = hubResolved
-        isRefreshing = false
-        loadContinueReading()
     }
 
     func onSearchQueryChanged(_ query: String) {

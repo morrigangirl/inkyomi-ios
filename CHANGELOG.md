@@ -3,6 +3,17 @@
 ## Unreleased
 
 ### Added
+- **Combined Home payload via `/api/data/discover/home`.** The Home
+  open is now one round trip instead of three (landing-page +
+  browse-hub + trending). New `DiscoveryRepository.getDiscoverHome`
+  is the primary fetch path; on failure (404 on a backend that
+  hasn't deployed the discover/home route yet, or any 5xx) the
+  ViewModel silently falls back to the legacy three-call fanout, so
+  this ships safely before or after the backend deploy. Pearlescent-
+  dream extracted the three handler bodies into shared loader
+  functions and added the new combined endpoint.
+
+### Added
 - **Discovery revamp port — Phases 1, 2, and 3.** Brings the iOS app
   to parity with the Android sibling's discovery overhaul (LCP-Reader
   branch). All wiring is mobile-only — backend endpoints have been

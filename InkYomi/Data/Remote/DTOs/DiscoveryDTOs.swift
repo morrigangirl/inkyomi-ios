@@ -20,6 +20,24 @@ struct BrowseHubResponseDto: Decodable, Sendable {
     let groups: [BrowseHubGroupDto]
 }
 
+// MARK: - Combined Home (Phase 3 backend uplift)
+
+/// Combined Home payload returned by `GET /api/data/discover/home`.
+/// Composes the three independent endpoints — landing-page, browse-hub,
+/// and trending — so mobile can open Home with one round trip instead
+/// of three. The sub-DTOs are reused unchanged so each sub-payload maps
+/// onto the same code paths the standalone fetches feed.
+///
+/// Not marked `Sendable` because `LandingPageResponse` doesn't currently
+/// carry the conformance — it predates Swift 6's strict checking. The
+/// caller (`HomeViewModel.loadLandingPage`) immediately maps to domain
+/// types, so the lack of Sendable doesn't constrain real consumers.
+struct DiscoverHomeResponseDto: Decodable {
+    let landingPage: LandingPageResponse
+    let browseHub: BrowseHubResponseDto
+    let trending: TrendingResponseDto
+}
+
 struct BrowseHubGroupDto: Decodable, Sendable {
     let key: String
     let label: String

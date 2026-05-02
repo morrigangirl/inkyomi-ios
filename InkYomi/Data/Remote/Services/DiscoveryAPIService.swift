@@ -26,6 +26,19 @@ struct DiscoveryAPIService: Sendable {
         ))
     }
 
+    /// Combined Home payload — landing-page + browse-hub + trending in
+    /// one round trip. Returns failure (404 / 5xx) when the route isn't
+    /// deployed yet; `HomeViewModel` falls back to the per-endpoint
+    /// fanout in that case.
+    func getDiscoverHome(trendingLimit: Int? = nil) async throws -> DiscoverHomeResponseDto {
+        var items: [URLQueryItem] = []
+        if let trendingLimit { items.append(URLQueryItem(name: "trendingLimit", value: String(trendingLimit))) }
+        return try await client.request(Endpoint(
+            path: "data/discover/home",
+            queryItems: items.isEmpty ? nil : items
+        ))
+    }
+
     /// "More like this" — Jaccard tag overlap + series/author boost.
     func getRelated(icin: String) async throws -> RelatedBookResponseDto {
         try await client.request(Endpoint(path: "data/books/\(icin)/related"))

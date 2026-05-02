@@ -8,12 +8,7 @@ struct CatalogRepositoryImpl: CatalogRepository, Sendable {
     }
 
     func getLandingPage() async throws -> LandingPage {
-        let response = try await api.getLandingPage()
-        return LandingPage(
-            shelves: response.shelves.map { $0.toDomain() },
-            heroSlides: response.heroSlides.map { $0.toDomain() },
-            categories: response.categories.map { $0.toDomain() }
-        )
+        try await api.getLandingPage().toDomain()
     }
 
     func getBookDetail(idOrSlug: String) async throws -> BookDetail {
@@ -24,5 +19,19 @@ struct CatalogRepositoryImpl: CatalogRepository, Sendable {
     func searchBooks(query: String) async throws -> [Book] {
         let response = try await api.search(query: query)
         return response.data.map { $0.toDomain() }
+    }
+}
+
+/// Mapper extracted to a top-level extension so other repositories
+/// (notably `DiscoveryRepositoryImpl.getDiscoverHome`) can reuse it
+/// when an embedded `LandingPageResponse` arrives as part of a
+/// composite payload.
+extension LandingPageResponse {
+    func toDomain() -> LandingPage {
+        LandingPage(
+            shelves: shelves.map { $0.toDomain() },
+            heroSlides: heroSlides.map { $0.toDomain() },
+            categories: categories.map { $0.toDomain() }
+        )
     }
 }
