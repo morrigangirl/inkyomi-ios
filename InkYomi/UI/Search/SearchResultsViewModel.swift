@@ -49,12 +49,13 @@ final class SearchResultsViewModel {
         }
         filters.authorId = authorId
         filters.seriesId = seriesId
-        // Defensive default: only ask the backend for relevance ranking when
-        // we have a free-text query to rank against. With no `q`, the backend's
-        // relevance fallback referenced `bp.score` without joining
-        // book_popularity (fixed in pearlescent-dream branch
-        // fix/search-v2-relevance-no-query-bp-bug). Until that fix deploys,
-        // defaulting to NEWEST avoids the failing path.
+        // Default to NEWEST when there's no free-text query: a
+        // tag-filtered or entity-filtered browse view has no FTS
+        // context for relevance ranking, so newest-first is the most
+        // useful ordering. RELEVANCE only when there's a `q` to rank
+        // against. (Pearlescent-dream's no-`q` relevance bug —
+        // `bp.score` referenced without joining `book_popularity` —
+        // was fixed in commit `aef4be5` and is live in prod.)
         let initialSort: SearchSortOrder
         if let query, !query.trimmingCharacters(in: .whitespaces).isEmpty {
             initialSort = .relevance
