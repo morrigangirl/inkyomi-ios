@@ -24,25 +24,49 @@ final class SearchResultsViewModel {
     static let limit: Int = 24
 
     private var repository: (any SearchRepository)?
+    private var savedSearchesRepository: (any SavedSearchesRepository)?
     private var initialized: Bool = false
 
-    func configure(repository: any SearchRepository) {
+    func configure(
+        repository: any SearchRepository,
+        savedSearchesRepository: (any SavedSearchesRepository)? = nil
+    ) {
         self.repository = repository
+        self.savedSearchesRepository = savedSearchesRepository
     }
 
     /// Apply the initial search context. Called once from
     /// `SearchResultsView` with whatever pre-applied filter the
     /// navigator passed (e.g. tagType+tagSlug from a browse-hub tile,
-    /// or just a free-text query from the search bar).
+    /// or just a free-text query from the search bar, or a
+    /// `savedSearchId` from the saved-searches list).
     func initialize(
         query: String? = nil,
         prefilledTagType: TagType? = nil,
         prefilledTagSlug: String? = nil,
         authorId: String? = nil,
-        seriesId: String? = nil
+        seriesId: String? = nil,
+        savedSearchId: String? = nil
     ) async {
         guard !initialized else { return }
         initialized = true
+
+        // If the navigator passed a savedSearchId, fetch the saved
+        // search and apply its query+filters+sort directly. Falls
+        // through to the default-init branch on lookup failure so the
+        // user still sees a valid (empty) state rather than a hang.
+        if let savedSearchId,
+           let repo = savedSearchesRepository,
+           let all = try? await repo.list(),
+           let saved = all.first(where: { $0.id == savedSearchId }) {
+            self.query = saved.query ?? ""
+            self.filters = saved.filters
+            self.sort = saved.sort
+                ?? (saved.query?.isEmpty == false ? .relevance : .newest)
+            await runSearch()
+            return
+        }
+
         var filters = SearchFilters()
         if let prefilledTagType, let slug = prefilledTagSlug, !slug.isEmpty {
             filters.tagSlugs = [prefilledTagType: [slug]]
@@ -66,6 +90,19 @@ final class SearchResultsViewModel {
         self.filters = filters
         self.sort = initialSort
         await runSearch()
+    }
+
+    /// Save the current query+filters+sort as a named saved search.
+    /// Failure is silent — user keeps results.
+    func saveCurrentSearch(name: String) async {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, let repo = savedSearchesRepository else { return }
+        _ = try? await repo.create(
+            name: trimmed,
+            query: query.isEmpty ? nil : query,
+            filters: filters,
+            sort: sort
+        )
     }
 
     func setSort(_ newSort: SearchSortOrder) async {

@@ -23,6 +23,7 @@ final class DependencyContainer: @unchecked Sendable {
     let catalogAPIService: CatalogAPIService
     let discoveryAPIService: DiscoveryAPIService
     let searchAPIService: SearchAPIService
+    let savedSearchesAPIService: SavedSearchesAPIService
     let entitlementAPIService: EntitlementAPIService
     let checkoutAPIService: CheckoutAPIService
     let deviceAPIService: DeviceAPIService
@@ -36,6 +37,7 @@ final class DependencyContainer: @unchecked Sendable {
     let catalogRepository: CatalogRepositoryImpl
     let discoveryRepository: DiscoveryRepositoryImpl
     let searchRepository: SearchRepositoryImpl
+    let savedSearchesRepository: SavedSearchesRepositoryImpl
     let libraryRepository: LibraryRepositoryImpl
     let checkoutRepository: CheckoutRepositoryImpl
     let deviceRepository: DeviceRepositoryImpl
@@ -105,6 +107,10 @@ final class DependencyContainer: @unchecked Sendable {
         // Search v2 (FTS + faceted + typeahead)
         self.searchAPIService = SearchAPIService(client: apiClient)
         self.searchRepository = SearchRepositoryImpl(api: searchAPIService)
+
+        // Saved searches CRUD
+        self.savedSearchesAPIService = SavedSearchesAPIService(client: apiClient)
+        self.savedSearchesRepository = SavedSearchesRepositoryImpl(api: savedSearchesAPIService)
 
         // Recent search history (UserDefaults-backed; MainActor-isolated)
         self.recentSearches = MainActor.assumeIsolated { RecentSearchesPreferences() }

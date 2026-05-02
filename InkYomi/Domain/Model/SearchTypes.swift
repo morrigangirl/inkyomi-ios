@@ -75,7 +75,7 @@ struct FacetItem: Identifiable, Sendable, Hashable {
 
 /// Filter state. Tag slugs are grouped by tag type (AND across types, OR
 /// within a type per the backend contract). Other filters are flat.
-struct SearchFilters: Sendable, Equatable {
+struct SearchFilters: Sendable, Equatable, Hashable {
     var tagSlugs: [TagType: [String]] = [:]
     var authorId: String? = nil
     var seriesId: String? = nil

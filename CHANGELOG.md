@@ -3,6 +3,30 @@
 ## Unreleased
 
 ### Added
+- **Saved searches.** Bookmark a query+filter+sort combo and recall
+  it with one tap. Backed by the new pearlescent-dream
+  `/api/data/saved-searches` endpoints (migration 061).
+  - **Save**: bookmark toolbar button in `SearchResultsView`'s filter
+    sheet; visible only when filters or query are non-default. Tap →
+    `.alert(...)` with text field (default = query or comma-joined
+    tag slugs). Confirm → POST.
+  - **List**: new "Saved searches" Section in `SearchView`'s empty-
+    query state, above the existing Recent Searches section. Each
+    row shows the name + a small subtitle summarising the filters.
+    Swipe-to-delete on the row.
+  - **Apply**: tap a saved row → routes to
+    `SearchRoute.results(savedSearchId:)`; the ViewModel fetches the
+    saved search via the repo and applies its query+filters+sort,
+    bypassing the URL-encoded prefilledTagType/Slug path.
+  - New `SavedSearch` domain model + `SavedSearchesAPIService` +
+    `SavedSearchesDTOs` + `SavedSearchesRepository(Impl)`.
+    `AnyJSONObject`/`AnyJSONValue` opaque-JSON helpers + `SearchFilters
+    ↔ AnyJSONObject` translator alongside the repo so the saved
+    blob round-trips cleanly through the backend's opaque jsonb
+    column. `HTTPMethod` enum gained `.patch` so the update endpoint
+    can use the right verb.
+
+### Added
 - **Combined Home payload via `/api/data/discover/home`.** The Home
   open is now one round trip instead of three (landing-page +
   browse-hub + trending). New `DiscoveryRepository.getDiscoverHome`

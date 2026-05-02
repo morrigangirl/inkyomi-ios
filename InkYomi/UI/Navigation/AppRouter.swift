@@ -164,16 +164,22 @@ private struct HomeRoot: View {
                 .navigationDestination(for: SearchRoute.self) { route in
                     switch route {
                     case .searchOverlay:
-                        SearchView { query in
-                            path.append(SearchRoute.results(query: query))
-                        }
-                    case .results(let q, let tagType, let tagSlug, let authorId, let seriesId):
+                        SearchView(
+                            onSubmitQuery: { query in
+                                path.append(SearchRoute.results(query: query))
+                            },
+                            onApplySavedSearch: { savedSearchId in
+                                path.append(SearchRoute.results(savedSearchId: savedSearchId))
+                            }
+                        )
+                    case .results(let q, let tagType, let tagSlug, let authorId, let seriesId, let savedSearchId):
                         SearchResultsView(
                             initialQuery: q,
                             prefilledTagType: tagType,
                             prefilledTagSlug: tagSlug,
                             authorId: authorId,
-                            seriesId: seriesId
+                            seriesId: seriesId,
+                            savedSearchId: savedSearchId
                         )
                     }
                 }

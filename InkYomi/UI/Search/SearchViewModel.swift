@@ -16,12 +16,38 @@ final class SearchViewModel {
 
     private var suggestTask: Task<Void, Never>?
     private var repository: (any SearchRepository)?
+    private var savedSearchesRepository: (any SavedSearchesRepository)?
     /// Reference to the shared recents store, surfaced to the view.
     var recentSearches: RecentSearchesPreferences?
+    /// Saved searches surfaced above the recents list in the empty
+    /// state. Loaded on configure(); deleted in-place via the row's
+    /// trailing action.
+    private(set) var savedSearches: [SavedSearch] = []
 
-    func configure(repository: any SearchRepository, recentSearches: RecentSearchesPreferences) {
+    func configure(
+        repository: any SearchRepository,
+        recentSearches: RecentSearchesPreferences,
+        savedSearches savedSearchesRepository: any SavedSearchesRepository
+    ) {
         self.repository = repository
         self.recentSearches = recentSearches
+        self.savedSearchesRepository = savedSearchesRepository
+        Task { await self.refreshSavedSearches() }
+    }
+
+    func refreshSavedSearches() async {
+        guard let repo = savedSearchesRepository else { return }
+        if let list = try? await repo.list() {
+            savedSearches = list
+        }
+        // Failure is silent — section just stays empty.
+    }
+
+    func deleteSavedSearch(_ id: String) async {
+        guard let repo = savedSearchesRepository else { return }
+        if (try? await repo.delete(id: id)) != nil {
+            savedSearches.removeAll { $0.id == id }
+        }
     }
 
     func onQueryChanged(_ newQuery: String) {

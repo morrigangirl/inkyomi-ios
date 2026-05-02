@@ -8,12 +8,31 @@ struct SearchResultsView: View {
     let prefilledTagSlug: String?
     let authorId: String?
     let seriesId: String?
+    let savedSearchId: String?
+
+    init(
+        initialQuery: String? = nil,
+        prefilledTagType: TagType? = nil,
+        prefilledTagSlug: String? = nil,
+        authorId: String? = nil,
+        seriesId: String? = nil,
+        savedSearchId: String? = nil
+    ) {
+        self.initialQuery = initialQuery
+        self.prefilledTagType = prefilledTagType
+        self.prefilledTagSlug = prefilledTagSlug
+        self.authorId = authorId
+        self.seriesId = seriesId
+        self.savedSearchId = savedSearchId
+    }
 
     @State private var viewModel = SearchResultsViewModel()
     @Environment(DependencyContainer.self) private var container
     @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var showFilters = false
     @State private var showSortMenu = false
+    @State private var showSaveDialog = false
+    @State private var saveDialogName = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -61,6 +80,7 @@ struct SearchResultsView: View {
             FiltersSheet(
                 facets: viewModel.facets,
                 filters: viewModel.filters,
+                canSave: viewModel.filters.activeCount > 0 || !viewModel.query.isEmpty,
                 onToggleTag: { type, slug in
                     viewModel.toggleTagFilter(type: type, slug: slug)
                 },
@@ -81,20 +101,50 @@ struct SearchResultsView: View {
                         await viewModel.applyFilters()
                         showFilters = false
                     }
+                },
+                onSave: {
+                    showFilters = false
+                    saveDialogName = defaultSaveName
+                    showSaveDialog = true
                 }
             )
             .presentationDetents([.medium, .large])
         }
+        .alert("Save this search", isPresented: $showSaveDialog) {
+            TextField("Name", text: $saveDialogName)
+            Button("Save") {
+                let trimmed = saveDialogName.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    Task { await viewModel.saveCurrentSearch(name: trimmed) }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
         .task {
-            viewModel.configure(repository: container.searchRepository)
+            viewModel.configure(
+                repository: container.searchRepository,
+                savedSearchesRepository: container.savedSearchesRepository
+            )
             await viewModel.initialize(
                 query: initialQuery,
                 prefilledTagType: prefilledTagType,
                 prefilledTagSlug: prefilledTagSlug,
                 authorId: authorId,
-                seriesId: seriesId
+                seriesId: seriesId,
+                savedSearchId: savedSearchId
             )
         }
+    }
+
+    /// Default name to pre-fill in the Save dialog: prefer the live
+    /// query, then a comma-joined list of selected tag slugs, otherwise
+    /// a generic placeholder the user can edit.
+    private var defaultSaveName: String {
+        let trimmedQuery = viewModel.query.trimmingCharacters(in: .whitespaces)
+        if !trimmedQuery.isEmpty { return trimmedQuery }
+        let slugs = viewModel.filters.tagSlugs.values.flatMap { $0 }
+        if !slugs.isEmpty { return slugs.joined(separator: ", ") }
+        return "Untitled search"
     }
 
     @ViewBuilder
@@ -320,11 +370,13 @@ private struct FilterChipView: View {
 private struct FiltersSheet: View {
     let facets: [FacetGroup]
     let filters: SearchFilters
+    let canSave: Bool
     let onToggleTag: (TagType, String) -> Void
     let onPriceRangeChange: (Double?, Double?) -> Void
     let onRatingChange: (Double?) -> Void
     let onClear: () -> Void
     let onApply: () -> Void
+    let onSave: () -> Void
 
     @State private var priceLo: Double = 0
     @State private var priceHi: Double = priceMaxUsd
@@ -390,6 +442,14 @@ private struct FiltersSheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Clear all", role: .destructive, action: onClear)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if canSave {
+                        Button(action: onSave) {
+                            Image(systemName: "bookmark")
+                                .accessibilityLabel("Save this search")
+                        }
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Apply") {

@@ -14,9 +14,16 @@ struct SearchView: View {
     /// Dismissal action passed to navigation. We rely on the parent
     /// NavigationStack's `path` for popping.
     let onSubmitQuery: (String) -> Void
+    /// Tap on a saved search row → parent navigates to a results
+    /// screen pre-loaded with the saved filter set.
+    let onApplySavedSearch: (_ savedSearchId: String) -> Void
 
-    init(onSubmitQuery: @escaping (String) -> Void) {
+    init(
+        onSubmitQuery: @escaping (String) -> Void,
+        onApplySavedSearch: @escaping (String) -> Void = { _ in }
+    ) {
         self.onSubmitQuery = onSubmitQuery
+        self.onApplySavedSearch = onApplySavedSearch
     }
 
     var body: some View {
@@ -51,7 +58,11 @@ struct SearchView: View {
         .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            viewModel.configure(repository: container.searchRepository, recentSearches: container.recentSearches)
+            viewModel.configure(
+                repository: container.searchRepository,
+                recentSearches: container.recentSearches,
+                savedSearches: container.savedSearchesRepository
+            )
             // Focus on first appearance.
             try? await Task.sleep(nanoseconds: 80_000_000)
             isFocused = true
@@ -87,34 +98,64 @@ struct SearchView: View {
 
     @ViewBuilder
     private var recentsList: some View {
-        if let store = viewModel.recentSearches, !store.recentQueries.isEmpty {
+        let hasSaved = !viewModel.savedSearches.isEmpty
+        let hasRecents = (viewModel.recentSearches?.recentQueries.isEmpty == false)
+        if hasSaved || hasRecents {
             List {
-                Section {
-                    ForEach(store.recentQueries, id: \.self) { q in
-                        HStack {
-                            Image(systemName: "clock.arrow.circlepath")
-                                .foregroundStyle(.secondary)
-                            Text(q)
-                            Spacer()
-                            Button(role: .destructive) {
-                                store.remove(q)
-                            } label: {
-                                Image(systemName: "xmark.circle")
+                if hasSaved {
+                    Section("Saved searches") {
+                        ForEach(viewModel.savedSearches) { saved in
+                            HStack(spacing: 12) {
+                                Image(systemName: "bookmark")
                                     .foregroundStyle(.secondary)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(saved.name)
+                                    Text(savedSearchSubtitle(saved))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
                             }
-                            .buttonStyle(.plain)
+                            .contentShape(Rectangle())
+                            .onTapGesture { onApplySavedSearch(saved.id) }
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    Task { await viewModel.deleteSavedSearch(saved.id) }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                         }
-                        .contentShape(Rectangle())
-                        .onTapGesture { submit(q) }
                     }
-                } header: {
-                    HStack {
-                        Text("Recent searches")
-                        Spacer()
-                        Button("Clear", role: .destructive) {
-                            store.clear()
+                }
+                if hasRecents, let store = viewModel.recentSearches {
+                    Section {
+                        ForEach(store.recentQueries, id: \.self) { q in
+                            HStack {
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .foregroundStyle(.secondary)
+                                Text(q)
+                                Spacer()
+                                Button(role: .destructive) {
+                                    store.remove(q)
+                                } label: {
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture { submit(q) }
                         }
-                        .font(.caption)
+                    } header: {
+                        HStack {
+                            Text("Recent searches")
+                            Spacer()
+                            Button("Clear", role: .destructive) {
+                                store.clear()
+                            }
+                            .font(.caption)
+                        }
                     }
                 }
             }
@@ -128,6 +169,18 @@ struct SearchView: View {
                 .padding(.horizontal, 24)
                 .frame(maxWidth: .infinity)
         }
+    }
+
+    /// Compact summary of a saved search's filter state for the row
+    /// subtitle. Mirrors the Android `SavedSearchRow` formatting.
+    private func savedSearchSubtitle(_ saved: SavedSearch) -> String {
+        var parts: [String] = []
+        if let q = saved.query, !q.isEmpty { parts.append("\"\(q)\"") }
+        let tagCount = saved.filters.tagSlugs.values.reduce(0) { $0 + $1.count }
+        if tagCount > 0 { parts.append("\(tagCount) tag\(tagCount == 1 ? "" : "s")") }
+        if saved.filters.priceMin != nil || saved.filters.priceMax != nil { parts.append("Price") }
+        if saved.filters.ratingMin != nil { parts.append("Rating") }
+        return parts.isEmpty ? "All books" : parts.joined(separator: " · ")
     }
 
     @ViewBuilder

@@ -58,6 +58,7 @@
 		5291D00F853EBD469FAB5D7B /* InkyomiContentProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F49D4C5A5B14FD22043CF3D /* InkyomiContentProtection.swift */; };
 		52F39AE36091E54F76A4C121 /* TrendingBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ED30003ED077680CF3B821 /* TrendingBook.swift */; };
 		5363ED59F8877499DDEF2191 /* SpanTelemetryAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46073C86CA71A9E846F6616E /* SpanTelemetryAPIService.swift */; };
+		53EAD86FDB705CCC1B35A183 /* SavedSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA932455B40E332A16B40CD /* SavedSearch.swift */; };
 		547EEBCFB081C204F64DDDAA /* SafariViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B425D900E89037548B855DDC /* SafariViewRepresentable.swift */; };
 		548F43D46869296BF7F792B6 /* TocSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE59CC463C9DCF3B2068DEB /* TocSheet.swift */; };
 		5586B88617CED9DF8C61133E /* ReadiumStreamer in Frameworks */ = {isa = PBXBuildFile; productRef = 8E4C6F70B3246F89B9E51734 /* ReadiumStreamer */; };
@@ -78,6 +79,7 @@
 		6F453EA095EF44E93680BD6F /* TransportKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4C132F36363EE9E7134986 /* TransportKey.swift */; };
 		6FB29C4939D338B2FFEBFC1D /* EncryptionXmlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5775B5275805C7B245647D /* EncryptionXmlParser.swift */; };
 		7005570EFDE1F7D034DFB1A1 /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9EC0925C902D885DBF43087 /* AuthRepository.swift */; };
+		710F09FCD32877571A761F88 /* SavedSearchesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2ADDB3949CA0538FCD74B7 /* SavedSearchesRepository.swift */; };
 		738749F437B8A48786BBF6CF /* HeroCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFFAA6EFCE65949DF0AB9EB /* HeroCarouselView.swift */; };
 		74C97618620CB5C46B6E64E7 /* SearchRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACD6D0162D189EADA70B2C4 /* SearchRoute.swift */; };
 		7629BBC1DC158206DF567FF9 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C11263B922F44284305776 /* ForgotPasswordViewModel.swift */; };
@@ -102,6 +104,7 @@
 		931D1CEE6F3161B3556D9AEB /* BrowseHubSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A6FF94762114D1F14E19C6 /* BrowseHubSection.swift */; };
 		95351AC21960764676BE3515 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA22A4073C456495D0E7693 /* LandingPage.swift */; };
 		956B223C12FC0A2F3A811A76 /* LendingRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFB29B953AB4C01431DCE20 /* LendingRepositoryImpl.swift */; };
+		97D665297E920DFEA98DE177 /* SavedSearchesRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291CF71D36CEFF1D752CE7CF /* SavedSearchesRepositoryImpl.swift */; };
 		985FED6D57233214A402B140 /* SpanUploadScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84F66C2D2EF6399D1F850C4 /* SpanUploadScheduler.swift */; };
 		9E7EFDA721270E39D6E695EA /* ReaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AE71C4C213F43AA185D393 /* ReaderViewModel.swift */; };
 		9ED426112A542D812CCCD7A9 /* ReadiumShared in Frameworks */ = {isa = PBXBuildFile; productRef = 4C18982B8F8D5EA4312A1E26 /* ReadiumShared */; };
@@ -114,6 +117,7 @@
 		A42099996D29C1E23E343C53 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE480D4B3800AEDA46D2D7D /* LoginView.swift */; };
 		A4FF1BA3515A0AEDC6878E4E /* EPUBReaderRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37817BE8446267A160E82E1 /* EPUBReaderRepresentable.swift */; };
 		A65F398530AFE026B18EDC8E /* SearchRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8601365556E8054DD5A0E7B8 /* SearchRepositoryImpl.swift */; };
+		A7E4FC6A4CC8C6B94D000951 /* SavedSearchesDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB2F6747522374F0D874E4 /* SavedSearchesDTOs.swift */; };
 		A852B17791DCFBA2C1EA1449 /* LoanDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862A07058ABDCDF934755AF /* LoanDisplay.swift */; };
 		A8F675171DAEFB58126BA560 /* AuthAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C80CD09F7839396144B1E54 /* AuthAPIService.swift */; };
 		A9A449B6AECDC2D30277ECDA /* AdaptiveSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ABBA325FEEB775895CB9A8 /* AdaptiveSize.swift */; };
@@ -151,6 +155,7 @@
 		DE87CCFACCA26F56574B3614 /* ShelfRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */; };
 		DF58AEB195A157A8E5915F09 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F56669AAB96B841532765C /* Tag.swift */; };
 		DF7C348656869A30C0681870 /* DeviceRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D35CC53CBF1B97EE942666 /* DeviceRepositoryImpl.swift */; };
+		E0CEBC345F3FFEAB7E4087F3 /* SavedSearchesAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9050510AAFDE6FDCE5A5AA /* SavedSearchesAPIService.swift */; };
 		E7697D7CBEAE64693F614A2B /* InkYomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */; };
 		E9405F17808FA7A7FBFF87E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96C6F33106806D96613CCBAD /* Assets.xcassets */; };
 		EB22D9D4F447ED666A664356 /* AuthFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 127F5B58D4AFFD91B6C996BA /* AuthFailure.swift */; };
@@ -195,6 +200,7 @@
 		21E15A0A2B74628E414B5F1B /* SearchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRepository.swift; sourceTree = "<group>"; };
 		24B22F5B67A2FBB3E36574EA /* CanonicalJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalJSON.swift; sourceTree = "<group>"; };
 		26ED30003ED077680CF3B821 /* TrendingBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingBook.swift; sourceTree = "<group>"; };
+		291CF71D36CEFF1D752CE7CF /* SavedSearchesRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearchesRepositoryImpl.swift; sourceTree = "<group>"; };
 		2941468B24AD0B7A8ED48660 /* CheckoutAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutAPIService.swift; sourceTree = "<group>"; };
 		29739591B5050B6DDE5EDC81 /* LibraryBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBook.swift; sourceTree = "<group>"; };
 		2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkYomiApp.swift; sourceTree = "<group>"; };
@@ -205,6 +211,7 @@
 		2EFB29B953AB4C01431DCE20 /* LendingRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingRepositoryImpl.swift; sourceTree = "<group>"; };
 		31C876E658A49403343F3C8A /* InkYomiTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkYomiTheme.swift; sourceTree = "<group>"; };
 		39272FD01C070F0793C35449 /* TabRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabRoute.swift; sourceTree = "<group>"; };
+		3A2ADDB3949CA0538FCD74B7 /* SavedSearchesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearchesRepository.swift; sourceTree = "<group>"; };
 		3ACD6D0162D189EADA70B2C4 /* SearchRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRoute.swift; sourceTree = "<group>"; };
 		3AFF6B7FA0169CBD4530E7F9 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		3B5775B5275805C7B245647D /* EncryptionXmlParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionXmlParser.swift; sourceTree = "<group>"; };
@@ -213,6 +220,7 @@
 		3CDEC4E63A038A0B316611EC /* RecentSearchesPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSearchesPreferences.swift; sourceTree = "<group>"; };
 		3F49D4C5A5B14FD22043CF3D /* InkyomiContentProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiContentProtection.swift; sourceTree = "<group>"; };
 		3F60281E3A645AC0EF849D09 /* InstrumentedLocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentedLocationModel.swift; sourceTree = "<group>"; };
+		3FA932455B40E332A16B40CD /* SavedSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearch.swift; sourceTree = "<group>"; };
 		401A0967073CBA36F053CED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		40CE64A51B19248A8E9E798F /* LoanCacheModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoanCacheModel.swift; sourceTree = "<group>"; };
 		43FFBF5DCFC0985BBC5985A1 /* DiscoveryRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryRepositoryImpl.swift; sourceTree = "<group>"; };
@@ -251,6 +259,7 @@
 		763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAPIService.swift; sourceTree = "<group>"; };
 		7B6F4D08031363E246E3047D /* HighlightModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightModel.swift; sourceTree = "<group>"; };
 		7BAB07CA8880172D17C700A1 /* BookmarkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkModel.swift; sourceTree = "<group>"; };
+		7C9050510AAFDE6FDCE5A5AA /* SavedSearchesAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearchesAPIService.swift; sourceTree = "<group>"; };
 		7CB971B7C64E410B3457F2BB /* DeviceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRepository.swift; sourceTree = "<group>"; };
 		7D9948C5EE780F43BDBCA1A0 /* SearchResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewModel.swift; sourceTree = "<group>"; };
 		8423BA7ED48CAF132F841442 /* HighlightEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightEditorSheet.swift; sourceTree = "<group>"; };
@@ -328,6 +337,7 @@
 		F53D22AB1CD8109C9E4BF01B /* EntitlementAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitlementAPIService.swift; sourceTree = "<group>"; };
 		F71A68E9EA61AE542361FBB4 /* BookDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetail.swift; sourceTree = "<group>"; };
 		F9EC0925C902D885DBF43087 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
+		FBCB2F6747522374F0D874E4 /* SavedSearchesDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearchesDTOs.swift; sourceTree = "<group>"; };
 		FE3AF692A822E6125FB0127C /* SpanTelemetryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanTelemetryRepository.swift; sourceTree = "<group>"; };
 		FF80D2D10C2D04EE10E21EE3 /* TrendingRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -370,6 +380,7 @@
 				BD01D017644DDFD9B5D27FB5 /* DiscoveryRepository.swift */,
 				8527E7A7DE150BDE0A735BB7 /* LendingRepository.swift */,
 				CAE49CE010BE1197522CE693 /* LibraryRepository.swift */,
+				3A2ADDB3949CA0538FCD74B7 /* SavedSearchesRepository.swift */,
 				21E15A0A2B74628E414B5F1B /* SearchRepository.swift */,
 			);
 			path = Repository;
@@ -459,6 +470,7 @@
 				695966B1CA470983E6010862 /* LibraryRepositoryImpl.swift */,
 				CCEF560866D27C7FF3891AE1 /* LoanRenewalCoordinator.swift */,
 				D6A7AA2588ED8845E80F9434 /* NativeAuthRepository.swift */,
+				291CF71D36CEFF1D752CE7CF /* SavedSearchesRepositoryImpl.swift */,
 				8601365556E8054DD5A0E7B8 /* SearchRepositoryImpl.swift */,
 				FE3AF692A822E6125FB0127C /* SpanTelemetryRepository.swift */,
 				4FDADBB75D11015D280879ED /* StorageRepository.swift */,
@@ -554,6 +566,7 @@
 				9CFF379565BD466ECB46F135 /* OpdsCatalogDTOs.swift */,
 				50AE9721B363A692275BD802 /* OpdsDTOs.swift */,
 				3C0967CA50D1FF05D6C574EC /* ReaderDTOs.swift */,
+				FBCB2F6747522374F0D874E4 /* SavedSearchesDTOs.swift */,
 				12484DD2C522EF2897F73EC2 /* SearchDTOs.swift */,
 				A0891F61A1F07B34BEB8A1DD /* TelemetryDTOs.swift */,
 			);
@@ -601,6 +614,7 @@
 				013BA04594342D71BB89669B /* OpdsCatalogAPIService.swift */,
 				A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */,
 				6570844B345A501CE53C03B2 /* ReaderAPIService.swift */,
+				7C9050510AAFDE6FDCE5A5AA /* SavedSearchesAPIService.swift */,
 				DD2E47FF07E533FC35155420 /* SearchAPIService.swift */,
 				46073C86CA71A9E846F6616E /* SpanTelemetryAPIService.swift */,
 			);
@@ -812,6 +826,7 @@
 				BBCF7446717AB840B07AD61C /* LoanInfo.swift */,
 				528ABB26CDBAB2161AC79DEC /* ReaderModels.swift */,
 				C23C21B010DA91ADA3709399 /* RelatedBook.swift */,
+				3FA932455B40E332A16B40CD /* SavedSearch.swift */,
 				06039CF2AB69345FCB0093AF /* SearchTypes.swift */,
 				87F56669AAB96B841532765C /* Tag.swift */,
 				26ED30003ED077680CF3B821 /* TrendingBook.swift */,
@@ -1061,6 +1076,11 @@
 				3741939B41202562909A55B1 /* RecentSearchesPreferences.swift in Sources */,
 				029CF1C749ED53781A99BD53 /* RelatedBook.swift in Sources */,
 				547EEBCFB081C204F64DDDAA /* SafariViewRepresentable.swift in Sources */,
+				53EAD86FDB705CCC1B35A183 /* SavedSearch.swift in Sources */,
+				E0CEBC345F3FFEAB7E4087F3 /* SavedSearchesAPIService.swift in Sources */,
+				A7E4FC6A4CC8C6B94D000951 /* SavedSearchesDTOs.swift in Sources */,
+				710F09FCD32877571A761F88 /* SavedSearchesRepository.swift in Sources */,
+				97D665297E920DFEA98DE177 /* SavedSearchesRepositoryImpl.swift in Sources */,
 				386663C040EB5E355CEB400F /* SearchAPIService.swift in Sources */,
 				812DFDA31AE447C5DE050B1F /* SearchBarView.swift in Sources */,
 				CFFC2A5A4CF0AE55D95CAB34 /* SearchDTOs.swift in Sources */,

@@ -7,13 +7,14 @@ enum SearchRoute: Hashable, Codable {
     case searchOverlay
 
     /// Full-screen results, optionally pre-filtered by query, tag, author,
-    /// or series. Mirrors the Android route
-    /// `search/results?q=&tagType=&tagSlug=&authorId=&seriesId=`.
+    /// series, or a previously-saved search id. Mirrors the Android route
+    /// `search/results?q=&tagType=&tagSlug=&authorId=&seriesId=&savedSearchId=`.
     case results(
         query: String? = nil,
         tagType: TagType? = nil,
         tagSlug: String? = nil,
         authorId: String? = nil,
-        seriesId: String? = nil
+        seriesId: String? = nil,
+        savedSearchId: String? = nil
     )
 }
