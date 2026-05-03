@@ -54,7 +54,14 @@ struct SearchView: View {
             .padding(.top, 8)
 
             content
+
+            // Pin everything to the top — without this Spacer, the two
+            // short children (bar + empty-state hint) get centered in
+            // the available area until the keyboard slides in 80ms
+            // later and avoidance snaps them up.
+            Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.inline)
         .task {
