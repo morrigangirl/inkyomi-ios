@@ -3,21 +3,48 @@ import SwiftUI
 struct HeroCarouselView: View {
     let slides: [HeroSlide]
     @Environment(\.horizontalSizeClass) private var hSizeClass
-    @State private var currentIndex = 0
+    @State private var currentIndex: Int? = 0
 
     var body: some View {
-        TabView(selection: $currentIndex) {
-            ForEach(Array(slides.enumerated()), id: \.element.id) { index, slide in
-                heroSlideCard(slide)
-                    .tag(index)
+        // Native iOS 17 paged horizontal scroll. We deliberately avoid
+        // `TabView(.page)` here: the UIPageViewController it wraps eats
+        // short tap gestures before NavigationLink can pick them up, so
+        // hero slides with `book` payloads stopped navigating reliably.
+        VStack(spacing: 8) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 0) {
+                    ForEach(Array(slides.enumerated()), id: \.element.id) { index, slide in
+                        heroSlideCard(slide)
+                            // Fill the ScrollView's width. 5:2 matches the
+                            // production banner asset spec (e.g. 2400×960);
+                            // compliant banners fill the slot edge-to-edge.
+                            .containerRelativeFrame(.horizontal)
+                            .aspectRatio(5.0 / 2.0, contentMode: .fit)
+                            .id(index)
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(id: $currentIndex)
+
+            if slides.count > 1 {
+                pageIndicator
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .automatic))
-        // 5:2 matches the production banner asset spec (e.g. 2400×960). The
-        // slot resizes with phone width but keeps the same aspect on every
-        // device, so compliant banners fill the slot edge-to-edge with no
-        // letterbox. Off-spec banners get a graceful centre-crop.
-        .aspectRatio(5.0 / 2.0, contentMode: .fit)
+    }
+
+    private var pageIndicator: some View {
+        HStack(spacing: 6) {
+            ForEach(0..<slides.count, id: \.self) { index in
+                Circle()
+                    .fill((currentIndex ?? 0) == index
+                          ? Color.inkPrimary
+                          : Color.inkPrimary.opacity(0.3))
+                    .frame(width: 6, height: 6)
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: currentIndex)
     }
 
     @ViewBuilder
