@@ -162,7 +162,11 @@ struct BookDetailResponse: Decodable {
     let priceUsd: String?
     let isPurchasable: Bool?
     let isNewRelease: Bool?
-    let ratingAvg: Double?
+    // Server emits rating averages as decimal-encoded strings (e.g.
+    // "5.00") to preserve precision; null when no ratings yet. Decoding
+    // as Double would throw `typeMismatch` for any rated book, surfacing
+    // as "invalid format" on the detail screen.
+    let ratingAvg: String?
     let ratingCount: Int?
     let owned: Bool?
     let authors: [AuthorDto]?
@@ -184,7 +188,7 @@ struct BookDetailResponse: Decodable {
             priceUsd: priceUsd.flatMap { Double($0) },
             isPurchasable: isPurchasable ?? false,
             isNewRelease: isNewRelease ?? false,
-            ratingAvg: ratingAvg,
+            ratingAvg: ratingAvg.flatMap { Double($0) },
             ratingCount: ratingCount,
             owned: owned ?? false,
             authors: (authors ?? []).map { $0.toDomain() },
