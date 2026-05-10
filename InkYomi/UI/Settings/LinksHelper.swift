@@ -11,6 +11,20 @@ enum InkColorsLinks {
     static let supportEmail = "support@inkcolors.shop"
     static let privacyEmail = "privacy@inkcolors.shop"
     static let websiteURL = URL(string: "https://inkcolors.shop")!
+
+    /// Canonical public book page on inkcolors.shop, e.g.
+    /// `https://inkcolors.shop/books/US-J46BK79SN1`. Falls back to the
+    /// site root when no ICIN is available.
+    static func bookURL(icin: String?) -> URL {
+        guard
+            let icin,
+            let encoded = icin.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+            let url = URL(string: "https://inkcolors.shop/books/\(encoded)")
+        else {
+            return websiteURL
+        }
+        return url
+    }
 }
 
 /// Drop-in `SafariServices.SFSafariViewController` wrapper. Used for

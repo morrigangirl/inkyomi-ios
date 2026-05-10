@@ -8,7 +8,6 @@ final class DependencyContainer: @unchecked Sendable {
 
     let appState: AppState
     let modelContainer: ModelContainer
-    let deepLinkHandler: DeepLinkHandler
 
     // Security
     let authKeychain: KeychainManager
@@ -25,7 +24,6 @@ final class DependencyContainer: @unchecked Sendable {
     let searchAPIService: SearchAPIService
     let savedSearchesAPIService: SavedSearchesAPIService
     let entitlementAPIService: EntitlementAPIService
-    let checkoutAPIService: CheckoutAPIService
     let deviceAPIService: DeviceAPIService
     let opdsCatalogAPIService: OpdsCatalogAPIService
     let opdsLendingAPIService: OpdsLendingAPIService
@@ -39,7 +37,6 @@ final class DependencyContainer: @unchecked Sendable {
     let searchRepository: SearchRepositoryImpl
     let savedSearchesRepository: SavedSearchesRepositoryImpl
     let libraryRepository: LibraryRepositoryImpl
-    let checkoutRepository: CheckoutRepositoryImpl
     let deviceRepository: DeviceRepositoryImpl
     let lendingRepository: LendingRepositoryImpl
     let spanTelemetryRepository: SpanTelemetryRepository
@@ -62,7 +59,6 @@ final class DependencyContainer: @unchecked Sendable {
     private init() {
         let appState = AppState()
         self.appState = appState
-        self.deepLinkHandler = DeepLinkHandler()
 
         // SwiftData
         do {
@@ -115,11 +111,9 @@ final class DependencyContainer: @unchecked Sendable {
         // Recent search history (UserDefaults-backed; MainActor-isolated)
         self.recentSearches = MainActor.assumeIsolated { RecentSearchesPreferences() }
 
-        // Library & Checkout
+        // Library
         self.entitlementAPIService = EntitlementAPIService(client: apiClient)
-        self.checkoutAPIService = CheckoutAPIService(client: apiClient)
         self.libraryRepository = LibraryRepositoryImpl(entitlementAPI: entitlementAPIService, modelContainer: modelContainer)
-        self.checkoutRepository = CheckoutRepositoryImpl(api: checkoutAPIService)
 
         // Device
         self.deviceAPIService = DeviceAPIService(client: apiClient)

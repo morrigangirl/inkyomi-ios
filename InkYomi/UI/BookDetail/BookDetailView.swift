@@ -4,6 +4,7 @@ struct BookDetailView: View {
     let bookId: String
     @Environment(DependencyContainer.self) private var container
     @Environment(\.horizontalSizeClass) private var hSizeClass
+    @Environment(\.openURL) private var openURL
     @State private var viewModel = BookDetailViewModel()
     @State private var showReader = false
 
@@ -255,11 +256,11 @@ struct BookDetailView: View {
             .fullScreenCover(isPresented: $showReader) {
                 ReaderView(bookId: bookId)
             }
-        } else if book.isPurchasable, let price = book.priceUsd {
+        } else if book.isPurchasable {
             Button {
-                // Add to cart
+                openURL(InkColorsLinks.bookURL(icin: book.icin))
             } label: {
-                Label(String(format: "Add to Cart - $%.2f", price), systemImage: "cart.badge.plus")
+                Label("View on inkcolors.shop", systemImage: "safari")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)

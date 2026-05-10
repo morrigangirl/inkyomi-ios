@@ -14,12 +14,6 @@ enum Constants {
     static let maxLoanRenewals = 2
     static let decryptionCacheSize = 16
 
-    enum URLScheme {
-        static let scheme = "inkcolors"
-        static let checkoutSuccess = "inkcolors://checkout/success"
-        static let checkoutCancel = "inkcolors://checkout/cancel"
-    }
-
     enum Keychain {
         static let authService = "shop.inkcolors.InkYomi.auth"
         static let transportService = "shop.inkcolors.InkYomi.transport"
