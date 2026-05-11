@@ -10,6 +10,11 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: ""
+    # Recommended-settings opt-ins (Xcode 15/16). Mirroring what
+    # Xcode's "Validate Project Settings" dialog suggests — declared
+    # here so they survive `xcodegen generate`.
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES"
+    STRING_CATALOG_GENERATE_SYMBOLS: "YES"
 
 packages:
   Nuke:
