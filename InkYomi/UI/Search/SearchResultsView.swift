@@ -6,6 +6,14 @@ struct SearchResultsView: View {
     let initialQuery: String?
     let prefilledTagType: TagType?
     let prefilledTagSlug: String?
+    /// Pre-applied multi-axis filter — used by Browse Hub "Browse Views"
+    /// tiles whose server-resolved category collapses to slugs across
+    /// multiple tag types. Mutually exclusive with the single-axis
+    /// `prefilledTagType`+`prefilledTagSlug` path.
+    let prefilledTagFilters: [TagType: [String]]?
+    /// Optional screen title override (used when there's no free-text
+    /// query to display, e.g. a Browse Views tile).
+    let titleOverride: String?
     let authorId: String?
     let seriesId: String?
     let savedSearchId: String?
@@ -14,6 +22,8 @@ struct SearchResultsView: View {
         initialQuery: String? = nil,
         prefilledTagType: TagType? = nil,
         prefilledTagSlug: String? = nil,
+        prefilledTagFilters: [TagType: [String]]? = nil,
+        titleOverride: String? = nil,
         authorId: String? = nil,
         seriesId: String? = nil,
         savedSearchId: String? = nil
@@ -21,6 +31,8 @@ struct SearchResultsView: View {
         self.initialQuery = initialQuery
         self.prefilledTagType = prefilledTagType
         self.prefilledTagSlug = prefilledTagSlug
+        self.prefilledTagFilters = prefilledTagFilters
+        self.titleOverride = titleOverride
         self.authorId = authorId
         self.seriesId = seriesId
         self.savedSearchId = savedSearchId
@@ -52,7 +64,7 @@ struct SearchResultsView: View {
             }
             content
         }
-        .navigationTitle(viewModel.query.isEmpty ? "Browse" : viewModel.query)
+        .navigationTitle(resolvedTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -129,11 +141,20 @@ struct SearchResultsView: View {
                 query: initialQuery,
                 prefilledTagType: prefilledTagType,
                 prefilledTagSlug: prefilledTagSlug,
+                prefilledTagFilters: prefilledTagFilters,
                 authorId: authorId,
                 seriesId: seriesId,
                 savedSearchId: savedSearchId
             )
         }
+    }
+
+    /// Title shown in the nav bar. When the caller passes an explicit
+    /// title (Browse Views tile), use it; otherwise fall through to the
+    /// live query or the generic "Browse" placeholder.
+    private var resolvedTitle: String {
+        if let titleOverride, !titleOverride.isEmpty { return titleOverride }
+        return viewModel.query.isEmpty ? "Browse" : viewModel.query
     }
 
     /// Default name to pre-fill in the Save dialog: prefer the live

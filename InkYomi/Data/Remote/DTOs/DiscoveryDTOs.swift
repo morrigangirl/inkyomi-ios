@@ -43,6 +43,17 @@ struct BrowseHubGroupDto: Decodable, Sendable {
     let label: String
     let tiles: [BrowseHubTileDto]
 
+    // Server emits `groupKey` at the group level (tile-level is `key`).
+    // convertFromSnakeCase passes both through unchanged, so we have to
+    // map explicitly here; otherwise the whole `/data/discover/home`
+    // response fails to decode and silently falls through to the fanout
+    // path.
+    private enum CodingKeys: String, CodingKey {
+        case key = "groupKey"
+        case label
+        case tiles
+    }
+
     func toDomain() -> BrowseHubGroup {
         BrowseHubGroup(
             key: key,
@@ -60,16 +71,30 @@ struct BrowseHubTileDto: Decodable, Sendable {
     let href: String?
     let icon: String?
     let color: String?
+    /// Server-resolved per-axis tag-filter spec. Keys are tag_type
+    /// strings ("identity", "genre", …) — we map them to the iOS
+    /// `TagType` enum in `toDomain()` and drop axes we don't model.
+    let filters: [String: [String]]?
 
     func toDomain() -> BrowseHubTile {
-        BrowseHubTile(
+        var typedFilters: [TagType: [String]]? = nil
+        if let filters, !filters.isEmpty {
+            var mapped: [TagType: [String]] = [:]
+            for (raw, slugs) in filters {
+                guard let type = TagType(rawValue: raw) else { continue }
+                mapped[type] = slugs
+            }
+            if !mapped.isEmpty { typedFilters = mapped }
+        }
+        return BrowseHubTile(
             key: key,
             label: label,
             bookCount: bookCount ?? 0,
             coverMontageUrls: coverMontageUrls ?? [],
             href: href ?? "",
             icon: icon,
-            color: color
+            color: color,
+            filters: typedFilters
         )
     }
 }

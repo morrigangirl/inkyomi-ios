@@ -17,4 +17,10 @@ enum SearchRoute: Hashable, Codable {
         seriesId: String? = nil,
         savedSearchId: String? = nil
     )
+
+    /// Browse Hub "Browse Views" tiles — the server resolves the
+    /// category's `tag_filter` into per-axis slug buckets and we feed
+    /// them straight into `SearchFilters.tagSlugs`. `label` becomes the
+    /// screen title since these tiles don't carry a free-text query.
+    case resultsWithFilters(filters: [TagType: [String]], label: String)
 }

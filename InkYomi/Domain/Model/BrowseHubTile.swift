@@ -28,6 +28,13 @@ struct BrowseHubTile: Identifiable, Sendable {
     let href: String
     let icon: String?
     let color: String?
+    /// Server-resolved per-axis tag-filter spec (built from
+    /// `site_categories.tag_filter`). Lets in-app navigation replicate
+    /// the catalog's `?category=` filter without a separate API surface.
+    /// Within an axis: OR; across axes: AND. Nil for tiles whose
+    /// category has no `tag_filter` configured — fall through to the
+    /// single-tag axis mapping or the external URL.
+    let filters: [TagType: [String]]?
 
     var id: String { key }
 }

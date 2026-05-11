@@ -44,6 +44,7 @@ final class SearchResultsViewModel {
         query: String? = nil,
         prefilledTagType: TagType? = nil,
         prefilledTagSlug: String? = nil,
+        prefilledTagFilters: [TagType: [String]]? = nil,
         authorId: String? = nil,
         seriesId: String? = nil,
         savedSearchId: String? = nil
@@ -68,7 +69,13 @@ final class SearchResultsViewModel {
         }
 
         var filters = SearchFilters()
-        if let prefilledTagType, let slug = prefilledTagSlug, !slug.isEmpty {
+        if let prefilledTagFilters, !prefilledTagFilters.isEmpty {
+            // Multi-axis (Browse Hub "Browse Views" tile) takes priority:
+            // server already resolved the category into per-type slug
+            // buckets, so we apply them directly. Single-axis params are
+            // ignored in this case.
+            filters.tagSlugs = prefilledTagFilters.filter { !$0.value.isEmpty }
+        } else if let prefilledTagType, let slug = prefilledTagSlug, !slug.isEmpty {
             filters.tagSlugs = [prefilledTagType: [slug]]
         }
         filters.authorId = authorId

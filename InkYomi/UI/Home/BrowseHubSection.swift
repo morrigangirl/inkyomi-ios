@@ -23,6 +23,7 @@ struct BrowseHubSection: View {
 
 private struct BrowseHubGroupView: View {
     let group: BrowseHubGroup
+    @Environment(\.openURL) private var openURL
 
     private let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 12),
@@ -36,18 +37,27 @@ private struct BrowseHubGroupView: View {
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
 
+            // Tile content has transparent areas (rounded background
+            // tint + rotated cover montage). Without `.contentShape(.rect)`
+            // SwiftUI only registers taps over opaque pixels, leaving
+            // dead zones across most of the card.
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(group.tiles) { tile in
                     if let route = tile.searchRoute(for: group.key) {
                         NavigationLink(value: route) {
                             BrowseHubTileCard(tile: tile)
+                                .contentShape(.rect)
+                        }
+                        .buttonStyle(.plain)
+                    } else if let externalURL = tile.externalURL() {
+                        Button {
+                            openURL(externalURL)
+                        } label: {
+                            BrowseHubTileCard(tile: tile)
+                                .contentShape(.rect)
                         }
                         .buttonStyle(.plain)
                     } else {
-                        // by-series, by-character, featured groups don't
-                        // map to tag-type filters yet (need entity-based
-                        // search support). Render the tile but make it
-                        // inert so it stays visually consistent.
                         BrowseHubTileCard(tile: tile)
                     }
                 }
@@ -144,7 +154,23 @@ private extension BrowseHubTile {
     /// Map the `(groupKey, tileKey)` pair to a Phase 2 search route. The
     /// group key indicates which tag-type axis ("by-genre" → `.genre`,
     /// "by-mood" → `.tone`, etc.) and the tile key is the slug.
+    ///
+    /// Unmapped groups (today: "browse-views", which holds curated
+    /// composite tiles whose `href` is `/catalog?category=<slug>` —
+    /// not a tag axis the iOS search API exposes) fall back to a
+    /// free-text search on the tile label so the user still goes
+    /// somewhere useful instead of hitting a dead tile.
     func searchRoute(for groupKey: String) -> SearchRoute? {
+        // Server-resolved per-axis filter wins when present — used for
+        // Browse Views tiles (`groupKey == "browse-views"`) whose
+        // backing category resolves to slugs across multiple tag
+        // types. Built from `site_categories.tag_filter` server-side.
+        if let filters, !filters.isEmpty {
+            return .resultsWithFilters(filters: filters, label: label)
+        }
+
+        // Otherwise the group key indicates a single tag-type axis and
+        // the tile key is the slug on that axis.
         let type: TagType?
         switch groupKey {
         case "by-genre":     type = .genre
@@ -158,5 +184,13 @@ private extension BrowseHubTile {
         }
         guard let type else { return nil }
         return .results(tagType: type, tagSlug: key)
+    }
+
+    /// Absolute URL for the tile when the iOS search API can't replicate
+    /// its filter (today: "browse-views" tiles use `/catalog?category=…`
+    /// which is web-only). Falling back to the website matches what
+    /// the user would see by clicking the same tile on inkcolors.shop.
+    func externalURL() -> URL? {
+        URL(string: href, relativeTo: InkColorsLinks.websiteURL)?.absoluteURL
     }
 }

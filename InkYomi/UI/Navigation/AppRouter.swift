@@ -47,12 +47,23 @@ enum AuthRoute: Hashable {
 /// `NavigationSplitView` on regular (iPad full / wide split).
 struct AdaptiveMainShell: View {
     @Environment(\.horizontalSizeClass) private var hSizeClass
+    @Environment(DependencyContainer.self) private var container
 
     var body: some View {
-        if hSizeClass == .regular {
-            MainSplitView()
-        } else {
-            MainTabView()
+        Group {
+            if hSizeClass == .regular {
+                MainSplitView()
+            } else {
+                MainTabView()
+            }
+        }
+        .task {
+            // Register this device with the server so it shows up in
+            // Settings → Devices with the correct platform string.
+            // Without this, login's auto-create row falls back to the
+            // server's default platform ("android") for iOS devices.
+            // Best-effort — we'll retry on next launch on failure.
+            try? await container.deviceRepository.ensureRegistered()
         }
     }
 }
@@ -180,6 +191,11 @@ private struct HomeRoot: View {
                             authorId: authorId,
                             seriesId: seriesId,
                             savedSearchId: savedSearchId
+                        )
+                    case .resultsWithFilters(let filters, let label):
+                        SearchResultsView(
+                            prefilledTagFilters: filters,
+                            titleOverride: label
                         )
                     }
                 }
