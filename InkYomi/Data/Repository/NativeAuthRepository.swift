@@ -17,8 +17,17 @@ actor NativeAuthRepository: AuthRepository {
         self.keychain = keychain
         self.appState = appState
 
-        // Restore cached access token from UserDefaults
-        self.cachedAccessToken = UserDefaults.standard.string(forKey: Constants.UserDefaultsKeys.accessToken)
+        // Restore cached access token from the Keychain. The expiry is a
+        // plain timestamp, not a secret, so it stays in UserDefaults
+        // (cheap, no Keychain prompt on app launch). Migration: any
+        // pre-existing UserDefaults-stored access token is moved into
+        // the Keychain on first launch under this build to avoid
+        // forcing a re-login.
+        if let legacyToken = UserDefaults.standard.string(forKey: Constants.UserDefaultsKeys.accessToken) {
+            try? keychain.save(legacyToken, forKey: Constants.Keychain.accessTokenKey)
+            UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.accessToken)
+        }
+        self.cachedAccessToken = try? keychain.readString(forKey: Constants.Keychain.accessTokenKey)
         if let expiryInterval = UserDefaults.standard.object(forKey: Constants.UserDefaultsKeys.accessTokenExpiry) as? TimeInterval {
             self.cachedExpiry = Date(timeIntervalSince1970: expiryInterval)
         }
@@ -68,6 +77,8 @@ actor NativeAuthRepository: AuthRepository {
         cachedExpiry = nil
         refreshTask = nil
 
+        // Legacy UserDefaults access token key — keep the removal in
+        // case a previous build left one behind.
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.accessToken)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.accessTokenExpiry)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileId)
@@ -182,7 +193,12 @@ actor NativeAuthRepository: AuthRepository {
         let expiry = Date(timeIntervalSince1970: Double(response.expiresAt) / 1000.0)
         cachedExpiry = expiry
 
-        UserDefaults.standard.set(response.accessToken, forKey: Constants.UserDefaultsKeys.accessToken)
+        // Access token → Keychain (encrypted at rest, sandboxed per app,
+        // not included in iCloud/iTunes backups by default).
+        try? keychain.save(response.accessToken, forKey: Constants.Keychain.accessTokenKey)
+        // Expiry is a public timestamp — UserDefaults is fine. Keeps
+        // restoreSession() cheap by avoiding a Keychain round-trip
+        // just to know whether the cached token is still valid.
         UserDefaults.standard.set(expiry.timeIntervalSince1970, forKey: Constants.UserDefaultsKeys.accessTokenExpiry)
 
         try? keychain.save(response.refreshToken, forKey: "refreshToken")

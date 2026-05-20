@@ -68,7 +68,13 @@ struct DeviceKeyManager {
 
         switch status {
         case errSecSuccess:
-            return (result as! SecKey)
+            // Keychain returned `errSecSuccess` but we still defensively
+            // type-check the result — a force cast here would crash the
+            // auth path on the (rare) "successful but wrong type" path.
+            guard let key = result, CFGetTypeID(key) == SecKeyGetTypeID() else {
+                throw DeviceKeyError.keyRetrievalFailed(errSecInvalidKeyRef)
+            }
+            return (key as! SecKey)  // safe: type checked above
         case errSecItemNotFound:
             return nil
         default:

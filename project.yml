@@ -65,3 +65,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: shop.inkcolors.InkYomiTests
+        # Let Xcode synthesize the test bundle's Info.plist; we don't
+        # carry one in the repo. Without this, `xcodebuild test` fails
+        # with: "target does not have an Info.plist file and one is
+        # not being generated automatically."
+        GENERATE_INFOPLIST_FILE: "YES"

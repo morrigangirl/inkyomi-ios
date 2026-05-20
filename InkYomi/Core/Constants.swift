@@ -19,6 +19,10 @@ enum Constants {
         static let transportService = "shop.inkcolors.InkYomi.transport"
         static let passphraseService = "shop.inkcolors.InkYomi.passphrase"
         static let deviceKeyService = "shop.inkcolors.InkYomi.deviceKey"
+        /// Keychain key (inside the authService) for the bearer access
+        /// token. Previously stored in UserDefaults; migrated on first
+        /// launch of builds carrying this key.
+        static let accessTokenKey = "accessToken"
     }
 
     enum UserDefaultsKeys {
