@@ -41,6 +41,7 @@ struct HomeView: View {
                 catalogRepository: container.catalogRepository,
                 discoveryRepository: container.discoveryRepository,
                 libraryRepository: container.libraryRepository,
+                lendingRepository: container.lendingRepository,
                 modelContext: modelContext
             )
             await viewModel.loadLandingPage()

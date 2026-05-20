@@ -35,17 +35,20 @@ final class HomeViewModel {
     private var catalogRepository: (any CatalogRepository)?
     private var discoveryRepository: (any DiscoveryRepository)?
     private var libraryRepository: (any LibraryRepository)?
+    private var lendingRepository: (any LendingRepository)?
     private var modelContext: ModelContext?
 
     func configure(
         catalogRepository: any CatalogRepository,
         discoveryRepository: any DiscoveryRepository,
         libraryRepository: any LibraryRepository,
+        lendingRepository: any LendingRepository,
         modelContext: ModelContext
     ) {
         self.catalogRepository = catalogRepository
         self.discoveryRepository = discoveryRepository
         self.libraryRepository = libraryRepository
+        self.lendingRepository = lendingRepository
         self.modelContext = modelContext
     }
 
@@ -55,7 +58,7 @@ final class HomeViewModel {
         error = nil
         await fetchHomeData()
         isLoading = false
-        loadContinueReading()
+        await loadContinueReading()
     }
 
     func refresh() async {
@@ -63,7 +66,7 @@ final class HomeViewModel {
         isRefreshing = true
         await fetchHomeData()
         isRefreshing = false
-        loadContinueReading()
+        await loadContinueReading()
     }
 
     /// Fetch the Home payload. Tries the combined `/api/data/discover/home`
@@ -138,14 +141,50 @@ final class HomeViewModel {
         isSearching = false
     }
 
-    private func loadContinueReading() {
+    private func loadContinueReading() async {
         guard let modelContext else { return }
+
+        // Local candidates: books the user has actually opened and
+        // hasn't finished. We persist these locally so reading state
+        // survives offline / fresh launches, but the rail must
+        // additionally pass an entitlement check (below) so a book
+        // the user no longer has access to — unpublished, refunded,
+        // returned, expired, or revoked — silently drops out.
         let descriptor = FetchDescriptor<CachedBookModel>(
             predicate: #Predicate { $0.lastOpenedAt != nil && $0.progressPercent < 0.98 },
             sortBy: [SortDescriptor(\.lastOpenedAt, order: .reverse)]
         )
-        guard let books = try? modelContext.fetch(descriptor) else { return }
-        let items = Array(books.prefix(Constants.continueReadingLimit))
+        guard let candidates = try? modelContext.fetch(descriptor) else { return }
+
+        // Pull a fresh view of the OPDS lending shelf before reading
+        // the local loan cache. Without this, a loan the server has
+        // since revoked / returned / unpublished still shows up as
+        // "active" locally and the filter below would let the book
+        // stay in the Continue Reading rail. syncShelf reconciles
+        // (vanished loans → returned + EPUB + secret cleanup) so
+        // getActiveLoans returns current truth. Best-effort —
+        // network failure falls through to whatever we already had
+        // cached, so the rail still loads offline.
+        try? await lendingRepository?.syncShelf()
+
+        // Cross-reference candidates against the user's current
+        // accessible bookIds: owned (server entitlements) ∪ active or
+        // ready borrowed loans (local LoanCacheModel — now fresh
+        // after the syncShelf above). On any network/data failure we
+        // fall through to the unfiltered candidate list so a flaky
+        // connection doesn't blank the rail; the next refresh will
+        // tighten it.
+        let filtered: [CachedBookModel]
+        if let owned = try? await libraryRepository?.getOwnedBooks(),
+           let active = try? await lendingRepository?.getActiveLoans() {
+            let accessible = Set(owned.map { $0.id })
+                .union(active.map { $0.bookId })
+            filtered = candidates.filter { accessible.contains($0.bookId) }
+        } else {
+            filtered = candidates
+        }
+
+        let items = Array(filtered.prefix(Constants.continueReadingLimit))
 
         // Backfill missing cover URLs from the library API
         let missingCovers = items.filter { $0.coverUrl == nil }
@@ -186,7 +225,7 @@ final class HomeViewModel {
         }
         if updated {
             try? modelContext.save()
-            loadContinueReading()
+            await loadContinueReading()
         }
     }
 }
