@@ -12,6 +12,7 @@
 		04B75B633796AA9A7313037F /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F43D0BBA9515E4CBAD6B35 /* String+HTML.swift */; };
 		0A2AAAF7CCBAAB612523D0B5 /* LoanCacheModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CE64A51B19248A8E9E798F /* LoanCacheModel.swift */; };
 		0A79740EC4C0AFE47CE1E3D5 /* DiscoveryDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AE8E28F304149654DBFDA0 /* DiscoveryDTOs.swift */; };
+		0E026B770D89B971D4F195AD /* SpanObserverBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4959FA95E7F73E4D62E003 /* SpanObserverBridge.swift */; };
 		0F2AFF416148EF9282130FDF /* DeviceListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752022A2FDD99BA9C5CAFB00 /* DeviceListViewModel.swift */; };
 		129A35C30DF5D532D04743DB /* OpdsDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AE9721B363A692275BD802 /* OpdsDTOs.swift */; };
 		12C946D481DAB2977F4B46B5 /* DeviceAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */; };
@@ -113,6 +114,7 @@
 		A65F398530AFE026B18EDC8E /* SearchRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8601365556E8054DD5A0E7B8 /* SearchRepositoryImpl.swift */; };
 		A7E4FC6A4CC8C6B94D000951 /* SavedSearchesDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB2F6747522374F0D874E4 /* SavedSearchesDTOs.swift */; };
 		A852B17791DCFBA2C1EA1449 /* LoanDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862A07058ABDCDF934755AF /* LoanDisplay.swift */; };
+		A8BC829BE4EC404BB433D39D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */; };
 		A8F675171DAEFB58126BA560 /* AuthAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C80CD09F7839396144B1E54 /* AuthAPIService.swift */; };
 		A9A449B6AECDC2D30277ECDA /* AdaptiveSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ABBA325FEEB775895CB9A8 /* AdaptiveSize.swift */; };
 		AB01871FD1FC86064BE6B10E /* InkyomiDecryptingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472879A43323892111CD908D /* InkyomiDecryptingContainer.swift */; };
@@ -194,6 +196,7 @@
 		291CF71D36CEFF1D752CE7CF /* SavedSearchesRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearchesRepositoryImpl.swift; sourceTree = "<group>"; };
 		29739591B5050B6DDE5EDC81 /* LibraryBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBook.swift; sourceTree = "<group>"; };
 		2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkYomiApp.swift; sourceTree = "<group>"; };
+		2B4959FA95E7F73E4D62E003 /* SpanObserverBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanObserverBridge.swift; sourceTree = "<group>"; };
 		2C1A5E35BAF6B89A68DB42EA /* BookCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCoverView.swift; sourceTree = "<group>"; };
 		2D80AABAFFA8C47AFD647E38 /* LendingCatalogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LendingCatalogViewModel.swift; sourceTree = "<group>"; };
 		2DA22A4073C456495D0E7693 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
@@ -275,6 +278,7 @@
 		A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsLendingAPIService.swift; sourceTree = "<group>"; };
 		A5BC9931CE5F3C8503263882 /* InkYomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InkYomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C0791420324ACBA0C2FF2F /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A8A4667FEF828099492F5BC0 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		AF2A357626E0AD09A13691B5 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfRowView.swift; sourceTree = "<group>"; };
@@ -610,6 +614,7 @@
 			isa = PBXGroup;
 			children = (
 				CF82ED22F87B5C821CBB855E /* AccSpanObserverScript.swift */,
+				2B4959FA95E7F73E4D62E003 /* SpanObserverBridge.swift */,
 				C84F66C2D2EF6399D1F850C4 /* SpanUploadScheduler.swift */,
 			);
 			path = Telemetry;
@@ -692,6 +697,7 @@
 				96C6F33106806D96613CCBAD /* Assets.xcassets */,
 				401A0967073CBA36F053CED4 /* Info.plist */,
 				2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */,
+				A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */,
 				3B14983CB1FE3D3A0B667EBE /* Core */,
 				E72A0FD1B930B81009E137F7 /* Data */,
 				67561182581DBC84BEF45894 /* Domain */,
@@ -906,6 +912,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9405F17808FA7A7FBFF87E0 /* Assets.xcassets in Resources */,
+				A8BC829BE4EC404BB433D39D /* PrivacyInfo.xcprivacy in Resources */,
 				3C90F0CACC8D9A54F48961F9 /* inkyomi-provider-cert.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1050,6 +1057,7 @@
 				69B6B5AE6EE1AFAE5EA92683 /* SearchViewModel.swift in Sources */,
 				510A20F6A92DAB33B22E5732 /* SettingsView.swift in Sources */,
 				DE87CCFACCA26F56574B3614 /* ShelfRowView.swift in Sources */,
+				0E026B770D89B971D4F195AD /* SpanObserverBridge.swift in Sources */,
 				5363ED59F8877499DDEF2191 /* SpanTelemetryAPIService.swift in Sources */,
 				D9DB67C4CAFDCC1A323505D1 /* SpanTelemetryRepository.swift in Sources */,
 				985FED6D57233214A402B140 /* SpanUploadScheduler.swift in Sources */,
@@ -1167,6 +1175,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1183,6 +1192,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

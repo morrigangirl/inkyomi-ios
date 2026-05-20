@@ -74,6 +74,18 @@ final class ReaderViewModel {
     private var lendingRepository: (any LendingRepository)?
     private var readerPreferences: ReaderPreferences?
     private var contentProtection: InkyomiContentProtection?
+    private var spanTelemetryAPIService: SpanTelemetryAPIService?
+    private var spanTelemetryRepository: SpanTelemetryRepository?
+    /// Per-reader-session bridge. Lives for the duration of an open
+    /// borrowed publication; replaced on each `configure(...)` call,
+    /// `detach()`-ed on reader close, and exposed read-only to
+    /// `EPUBHostViewController` so it can register the bridge with
+    /// Readium's `WKUserContentController` at navigator setup time.
+    private(set) var spanObserverBridge: SpanObserverBridge?
+    /// Resolved when the accounting manifest fetch finishes, so any
+    /// downstream code can know whether telemetry is "ready" for this
+    /// book or quietly disabled (fetch failed / non-borrowed).
+    private(set) var telemetryActive: Bool = false
 
     // Session tracking
     private var activeHref: String?
@@ -92,13 +104,23 @@ final class ReaderViewModel {
         lendingRepository: any LendingRepository,
         modelContext: ModelContext,
         readerPreferences: ReaderPreferences,
-        contentProtection: InkyomiContentProtection
+        contentProtection: InkyomiContentProtection,
+        spanTelemetryAPIService: SpanTelemetryAPIService,
+        spanTelemetryRepository: SpanTelemetryRepository,
+        modelContainer: ModelContainer
     ) {
         self.bookRepository = bookRepository
         self.lendingRepository = lendingRepository
         self.modelContext = modelContext
         self.readerPreferences = readerPreferences
         self.contentProtection = contentProtection
+        self.spanTelemetryAPIService = spanTelemetryAPIService
+        self.spanTelemetryRepository = spanTelemetryRepository
+        // Bridge is created up-front so EPUBHostViewController can grab
+        // it via `viewModel.spanObserverBridge` during setupUserScripts
+        // even if the manifest fetch hasn't completed yet — observations
+        // emitted before `setActiveLoan` lands are simply dropped.
+        self.spanObserverBridge = SpanObserverBridge(modelContainer: modelContainer)
         loadSettings()
     }
 
@@ -137,13 +159,34 @@ final class ReaderViewModel {
         do {
             // Determine if this is a borrowed or owned book
             let source: BookSource
+            let activeLoanId: String?
             if let lendingRepository,
-               let _ = try? await lendingRepository.getLoanForBook(bookId: bookId) {
+               let loan = try? await lendingRepository.getLoanForBook(bookId: bookId) {
                 source = .borrowed
-                debugLog("[Reader] loadBook: detected BORROWED book \(self.bookId)")
+                activeLoanId = loan.loanId
+                debugLog("[Reader] loadBook: detected BORROWED book \(self.bookId) loanId=\(loan.loanId)")
             } else {
                 source = .owned
+                activeLoanId = nil
                 debugLog("[Reader] loadBook: detected OWNED book \(self.bookId)")
+            }
+
+            // Span telemetry: only borrowed books carry an accounting
+            // manifest, so this path is gated on `source == .borrowed`.
+            // Fetch failures are silent — the reader still opens; the
+            // user just won't be credited reading-page progress on the
+            // backend until a later retry succeeds.
+            if let activeLoanId, let api = spanTelemetryAPIService, let bridge = spanObserverBridge {
+                do {
+                    let manifest = try await api.getAccountingManifest(loanId: activeLoanId)
+                    var map: [String: Int] = [:]
+                    for span in manifest.spans { map[span.accId] = span.sequenceIndex }
+                    bridge.setActiveLoan(loanId: activeLoanId, accIdToSequence: map)
+                    telemetryActive = true
+                    debugLog("[Telemetry] manifest loaded: loanId=\(activeLoanId) spans=\(manifest.spans.count)")
+                } catch {
+                    debugLog("[Telemetry] manifest fetch failed for loanId=\(activeLoanId): \(error.localizedDescription)")
+                }
             }
 
             // Download/locate the EPUB file
@@ -465,6 +508,17 @@ final class ReaderViewModel {
 
     func closeReader() {
         closeActiveLocation()
+        // Stop attributing observations to this loan; the bridge stays
+        // referenced by EPUBHostViewController until SwiftUI tears the
+        // reader view down, but further JS-emitted events are dropped.
+        spanObserverBridge?.detach()
+        telemetryActive = false
+        // Kick a foreground drain so the user's most recent reading
+        // surfaces server-side without waiting for the 15-minute
+        // BGProcessingTask cycle. Best-effort.
+        if let repo = spanTelemetryRepository {
+            Task { await repo.uploadPendingBatches() }
+        }
     }
 
     // MARK: - SwiftData Helpers

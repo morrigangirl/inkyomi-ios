@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import WebKit
 import ReadiumShared
 import ReadiumNavigator
 
@@ -175,6 +176,20 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     }
 
     // MARK: - EPUBNavigatorDelegate / NavigatorDelegate / VisualNavigatorDelegate
+
+    /// Readium hands us the WKWebView's `WKUserContentController` here
+    /// at navigator setup time. We use it to register the
+    /// `IntersectionObserver` user script and the `spanObserver`
+    /// message channel that `SpanObserverBridge` reads on the native
+    /// side. Each reload of the navigator (font/theme change) gets a
+    /// fresh content controller; the bridge handles re-registration
+    /// idempotently via `removeScriptMessageHandler` before adding.
+    func navigator(
+        _ navigator: EPUBNavigatorViewController,
+        setupUserScripts userContentController: WKUserContentController
+    ) {
+        viewModel.spanObserverBridge?.installInto(userContentController)
+    }
 
     func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
         viewModel.handleLocatorChanged(locator)

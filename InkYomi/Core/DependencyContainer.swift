@@ -134,7 +134,16 @@ final class DependencyContainer: @unchecked Sendable {
         // Telemetry
         self.spanTelemetryAPIService = SpanTelemetryAPIService(client: apiClient)
         self.readerAPIService = ReaderAPIService(client: apiClient)
-        self.spanTelemetryRepository = SpanTelemetryRepository(modelContainer: modelContainer)
+        // `clientVersion` is read from Info.plist's CFBundleShortVersionString
+        // (which is $(MARKETING_VERSION) from project.yml) so server logs
+        // can tie a span batch to a known release.
+        let clientVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ?? "unknown"
+        self.spanTelemetryRepository = SpanTelemetryRepository(
+            modelContainer: modelContainer,
+            api: spanTelemetryAPIService,
+            appState: appState,
+            clientVersion: clientVersion
+        )
 
         // Downloads & DRM
         self.lendingDownloadManager = LendingDownloadManager()

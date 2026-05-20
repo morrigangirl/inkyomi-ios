@@ -35,7 +35,10 @@ struct ReaderView: View {
                 lendingRepository: container.lendingRepository,
                 modelContext: modelContext,
                 readerPreferences: container.readerPreferences,
-                contentProtection: container.inkyomiContentProtection
+                contentProtection: container.inkyomiContentProtection,
+                spanTelemetryAPIService: container.spanTelemetryAPIService,
+                spanTelemetryRepository: container.spanTelemetryRepository,
+                modelContainer: container.modelContainer
             )
             await viewModel.loadBook()
         }
