@@ -5,17 +5,20 @@ actor LendingRepositoryImpl: LendingRepository {
     private let catalogAPI: OpdsCatalogAPIService
     private let api: OpdsLendingAPIService
     private let transportSecretStore: LcpTransportSecretStore
+    private let lendingDownloadManager: LendingDownloadManager
     private let modelContainer: ModelContainer
 
     init(
         catalogAPI: OpdsCatalogAPIService,
         api: OpdsLendingAPIService,
         transportSecretStore: LcpTransportSecretStore,
+        lendingDownloadManager: LendingDownloadManager,
         modelContainer: ModelContainer
     ) {
         self.catalogAPI = catalogAPI
         self.api = api
         self.transportSecretStore = transportSecretStore
+        self.lendingDownloadManager = lendingDownloadManager
         self.modelContainer = modelContainer
     }
 
@@ -71,7 +74,13 @@ actor LendingRepositoryImpl: LendingRepository {
             try context.save()
         }
 
-        // Clean up secrets
+        // Clean up the cached EPUB and decryption material. Without
+        // the file delete here the borrowed-books directory would
+        // accumulate dead EPUBs forever; without the secret delete
+        // the keychain entry would survive even though it's now
+        // unusable. Both are best-effort — the local state is
+        // already correct.
+        lendingDownloadManager.deleteLendingBook(loanId: loanId)
         try? transportSecretStore.deleteTransportSecret(loanId: loanId)
     }
 
@@ -136,6 +145,12 @@ actor LendingRepositoryImpl: LendingRepository {
         let shelf = try await catalogAPI.getShelf()
         let context = modelContainer.mainContext
 
+        // Track every loanId the server still reports as live so we
+        // can reconcile previously-active loans the server has since
+        // returned / expired / revoked (the shelf endpoint just
+        // stops listing them rather than emitting a tombstone).
+        var seenLoanIds: Set<String> = []
+
         for pub in shelf.publications ?? [] {
             let acquisitionLink = pub.links?.first {
                 $0.type == "application/vnd.readium.lcp.license.v1.0+json"
@@ -150,6 +165,7 @@ actor LendingRepositoryImpl: LendingRepository {
                 .components(separatedBy: ".lcpl").first ?? ""
 
             guard !loanId.isEmpty else { continue }
+            seenLoanIds.insert(loanId)
 
             // Extract book UUID from cover image href (/api/covers/{uuid}/...)
             let coverHref = pub.images?.first?.href
@@ -219,6 +235,24 @@ actor LendingRepositoryImpl: LendingRepository {
                 if book.title.isEmpty { book.title = title }
                 if book.authorName == nil { book.authorName = authorName }
                 if book.coverUrl == nil { book.coverUrl = coverUrl }
+            }
+        }
+
+        // Reconcile vanished loans: anything we still think is active
+        // that the server didn't include in the shelf is now returned
+        // / expired / revoked. Mirror the BookRepository's terminal-
+        // loan cleanup so the Library refreshes, cached EPUBs go
+        // away, and the keychain transport-secret entry is purged.
+        let staleDescriptor = FetchDescriptor<LoanCacheModel>(
+            predicate: #Predicate { $0.status == "active" || $0.status == "ready" }
+        )
+        if let active = try? context.fetch(staleDescriptor) {
+            for loan in active where !seenLoanIds.contains(loan.loanId) {
+                let loanId = loan.loanId
+                loan.status = "returned"
+                if loan.returnedAt == nil { loan.returnedAt = Date() }
+                lendingDownloadManager.deleteLendingBook(loanId: loanId)
+                try? transportSecretStore.deleteTransportSecret(loanId: loanId)
             }
         }
 

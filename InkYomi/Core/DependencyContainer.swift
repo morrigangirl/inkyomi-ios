@@ -124,10 +124,17 @@ final class DependencyContainer: @unchecked Sendable {
         self.passphraseManager = LcpPassphraseManager(keychain: passphraseKeychain)
         self.opdsCatalogAPIService = OpdsCatalogAPIService(client: apiClient)
         self.opdsLendingAPIService = OpdsLendingAPIService(client: apiClient)
+        // Build the download manager up-front so the lending repository
+        // can use it for cache cleanup on explicit return / server
+        // reconciliation. The book repository binds to the same
+        // instance below — there's only ever one borrowed-EPUBs
+        // directory and one in-flight download path.
+        self.lendingDownloadManager = LendingDownloadManager()
         self.lendingRepository = LendingRepositoryImpl(
             catalogAPI: opdsCatalogAPIService,
             api: opdsLendingAPIService,
             transportSecretStore: transportSecretStore,
+            lendingDownloadManager: lendingDownloadManager,
             modelContainer: modelContainer
         )
 
@@ -146,7 +153,8 @@ final class DependencyContainer: @unchecked Sendable {
         )
 
         // Downloads & DRM
-        self.lendingDownloadManager = LendingDownloadManager()
+        // lendingDownloadManager was constructed up-front (above) so
+        // the lending repository could bind to it for cache cleanup.
         self.inkyomiContentProtection = InkyomiContentProtection(
             modelContainer: modelContainer,
             transportSecretStore: transportSecretStore

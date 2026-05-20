@@ -144,11 +144,31 @@ actor BookRepositoryImpl: BookRepository {
                     loan.renewedCount += 1
                     try? context.save()
                 } catch {
+                    // Auto-renew failed and the loan is non-readable.
+                    // Treat as terminal so we don't leave the cached
+                    // EPUB hanging around forever after a server
+                    // return / revoke / max-renewal exhaustion.
+                    reconcileTerminalLoan(
+                        loan: loan,
+                        terminalStatus: statusResult.status,
+                        context: context
+                    )
                     throw NSError(domain: "BookRepository", code: 0, userInfo: [
                         NSLocalizedDescriptionKey: "Loan expired and renewal failed: \(error.localizedDescription)"
                     ])
                 }
             } else {
+                // LSD reports the loan is not readable (returned,
+                // revoked, cancelled, or hard-expired) and there's no
+                // renewal path. Sync local state so the Library
+                // refreshes the book out of the Borrowed tab and the
+                // cached EPUB/secret aren't stuck on disk forever —
+                // otherwise repeated taps would loop the same error.
+                reconcileTerminalLoan(
+                    loan: loan,
+                    terminalStatus: statusResult.status,
+                    context: context
+                )
                 throw NSError(domain: "BookRepository", code: 0, userInfo: [
                     NSLocalizedDescriptionKey: "Loan \(statusResult.status.rawValue): this book is no longer available"
                 ])
@@ -386,5 +406,41 @@ actor BookRepositoryImpl: BookRepository {
                 createdAt: $0.createdAt
             )
         }
+    }
+
+    // MARK: - Loan reconciliation
+
+    /// Sync local state to a server-reported terminal loan status —
+    /// called when the LSD check reports a loan is returned, revoked,
+    /// cancelled, or hard-expired and there's no renewal path. Without
+    /// this, the LoanCacheModel stays `active` so `getActiveLoans()`
+    /// keeps surfacing the book in the Library, every tap reruns the
+    /// same LSD check, every check fails with "Loan returned",
+    /// and the cached EPUB sits on disk forever.
+    @MainActor
+    private func reconcileTerminalLoan(
+        loan: LoanCacheModel,
+        terminalStatus: LoanStatus,
+        context: ModelContext
+    ) {
+        let loanId = loan.loanId
+        loan.status = terminalStatus.rawValue
+        if terminalStatus == .returned && loan.returnedAt == nil {
+            loan.returnedAt = Date()
+        }
+        do {
+            try context.save()
+        } catch {
+            logger.error("Failed to persist terminal loan state for loanId=\(loanId, privacy: .public): \(error.localizedDescription, privacy: .public)")
+        }
+        lendingDownloadManager.deleteLendingBook(loanId: loanId)
+        do {
+            try transportSecretStore.deleteTransportSecret(loanId: loanId)
+        } catch {
+            // Best-effort — leaving the secret behind doesn't expose
+            // anything since the loan is now invalid server-side.
+            logger.info("Transport secret cleanup skipped for loanId=\(loanId, privacy: .public): \(error.localizedDescription, privacy: .public)")
+        }
+        logger.info("Reconciled terminal loan loanId=\(loanId, privacy: .public) status=\(terminalStatus.rawValue, privacy: .public)")
     }
 }
