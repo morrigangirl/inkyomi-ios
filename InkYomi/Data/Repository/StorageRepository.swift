@@ -38,6 +38,17 @@ actor StorageRepository {
         return deleteDirectoryContents(at: borrowedDirectory())
     }
 
+    /// Wipes both owned and borrowed download caches. Called from the
+    /// "Remove this device" flow + the bounce-to-OAuth migration
+    /// path — anywhere we have to drop every byte tied to the
+    /// signed-in user. Returns total bytes freed.
+    @discardableResult
+    func clearAllDownloads() -> Int64 {
+        let borrowed = deleteDirectoryContents(at: borrowedDirectory())
+        let owned = deleteDirectoryContents(at: ownedDirectory())
+        return borrowed + owned
+    }
+
     // MARK: - Internals
 
     private func ownedDirectory() -> URL {

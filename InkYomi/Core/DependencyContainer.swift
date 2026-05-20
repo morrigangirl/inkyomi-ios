@@ -31,7 +31,17 @@ final class DependencyContainer: @unchecked Sendable {
     let readerAPIService: ReaderAPIService
 
     // Repositories
-    let authRepository: NativeAuthRepository
+    // `authRepository` is the active repo for this launch — could be
+    // legacy NativeAuthRepository (lazy-transition users) or the new
+    // KeycloakAuthRepository (OAuth users / fresh installs). The
+    // coordinator made the choice in init; consumers should treat it
+    // as protocol-level.
+    let authRepository: any AuthRepository
+    /// Always-present Keycloak repo. Used directly by the OAuth
+    /// login button + `InkYomiApp.onOpenURL` callback dispatch.
+    let keycloakAuthRepository: KeycloakAuthRepository
+    /// The migration coordinator. Holds the bounce-to-OAuth logic.
+    let authMigrationCoordinator: AuthMigrationCoordinator
     let catalogRepository: CatalogRepositoryImpl
     let discoveryRepository: DiscoveryRepositoryImpl
     let searchRepository: SearchRepositoryImpl
@@ -78,17 +88,51 @@ final class DependencyContainer: @unchecked Sendable {
         }
         self.authAPIService = AuthAPIService(deviceIdProvider: deviceIdProvider)
 
-        // Auth repository
-        self.authRepository = NativeAuthRepository(
+        // Auth repositories
+        // The legacy native repo always exists so the lazy-transition
+        // code path can run. The Keycloak repo always exists so the
+        // OAuth login button + onOpenURL callback have something to
+        // call. The migration coordinator picks which one is "active"
+        // for this launch based on which credentials are present in
+        // the Keychain.
+        let native = NativeAuthRepository(
             authAPI: authAPIService,
             keychain: authKeychain,
             appState: appState
         )
+        let keycloak = KeycloakAuthRepository(
+            keychain: authKeychain,
+            appState: appState
+        )
+        self.keycloakAuthRepository = keycloak
 
-        // Main API client (with auth + device ID interceptors)
-        let authRepo = self.authRepository
+        let coordinator = AuthMigrationCoordinator(
+            keycloak: keycloak,
+            native: native,
+            authKeychain: authKeychain
+        )
+        self.authMigrationCoordinator = coordinator
+        self.authRepository = coordinator.active
+
+        // Wire the terminal-failure hooks so any refresh death — from
+        // either repo — funnels through the coordinator's wipe +
+        // bounce. Both onTerminalFailure properties are
+        // `nonisolated(unsafe)` so this synchronous assignment is
+        // valid; the hooks themselves are only invoked from inside
+        // their owning actor.
+        native.onTerminalFailure = { [weak coordinator] in
+            await coordinator?.bounceToOAuth(reason: "NativeAuthRepository terminal refresh failure")
+        }
+        keycloak.onTerminalFailure = { [weak coordinator] in
+            await coordinator?.bounceToOAuth(reason: "KeycloakAuthRepository OIDAuthState terminal error")
+        }
+
+        // Main API client (with auth + device ID interceptors). The
+        // bearer token routes through whichever repo the coordinator
+        // selected; both implement `AuthRepository.getAccessToken`.
+        let activeRepo = coordinator.active
         self.apiClient = APIClient(
-            tokenProvider: { await authRepo.getAccessToken() },
+            tokenProvider: { await activeRepo.getAccessToken() },
             deviceIdProvider: deviceIdProvider
         )
 
@@ -176,5 +220,10 @@ final class DependencyContainer: @unchecked Sendable {
         // Storage management + proactive loan renewal
         self.storageRepository = StorageRepository()
         self.loanRenewalCoordinator = LoanRenewalCoordinator(lendingRepository: lendingRepository)
+
+        // All stored properties are now assigned — hand the
+        // coordinator a back-reference so it can drive UserDataWipe
+        // on bounce-to-OAuth.
+        coordinator.attachContainer(self)
     }
 }

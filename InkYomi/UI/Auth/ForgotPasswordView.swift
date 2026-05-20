@@ -1,8 +1,11 @@
 import SwiftUI
 
+/// Password reset is owned by Keycloak's hosted "reset credentials"
+/// flow once we're on OAuth — there's no `POST /forgot-password`
+/// endpoint anymore. This view just routes the user to the right
+/// place in the system browser.
 struct ForgotPasswordView: View {
-    @Environment(DependencyContainer.self) private var container
-    @State private var viewModel = ForgotPasswordViewModel()
+    @State private var showResetPage = false
 
     var body: some View {
         VStack(spacing: 24) {
@@ -12,55 +15,28 @@ struct ForgotPasswordView: View {
                 .font(.inkTitle)
                 .foregroundStyle(Color.inkPrimary)
 
-            Text("Enter your email address and we'll send you a link to reset your password.")
+            Text("We'll open the InkColors password-reset page in your browser. After you set a new password, come back to the app and tap \u{201C}Sign in with InkColors\u{201D}.")
                 .font(.inkBody)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
-            TextField("Email", text: $viewModel.email)
-                .textContentType(.emailAddress)
-                .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .textFieldStyle(.roundedBorder)
-                .padding(.horizontal, 32)
-
-            if let error = viewModel.errorMessage {
-                Text(error)
-                    .foregroundStyle(Color.inkError)
-                    .font(.caption)
-            }
-
-            if viewModel.sent {
-                Text("If an account exists with that email, you'll receive a reset link shortly.")
-                    .foregroundStyle(.green)
-                    .font(.caption)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-            }
-
             Button {
-                Task {
-                    await viewModel.submit(authRepo: container.authRepository)
-                }
+                showResetPage = true
             } label: {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                } else {
-                    Text("Send Reset Link")
-                        .frame(maxWidth: .infinity)
-                }
+                Text("Open password reset")
+                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .tint(Color.inkPrimary)
-            .disabled(viewModel.isLoading || viewModel.email.isEmpty)
             .padding(.horizontal, 32)
 
             Spacer()
         }
         .navigationTitle("Forgot Password")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showResetPage) {
+            SafariView(url: Constants.Keycloak.resetPasswordURL).ignoresSafeArea()
+        }
     }
 }

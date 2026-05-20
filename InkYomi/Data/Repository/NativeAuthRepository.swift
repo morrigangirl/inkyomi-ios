@@ -12,6 +12,21 @@ actor NativeAuthRepository: AuthRepository {
     private var cachedExpiry: Date?
     private var refreshTask: Task<String?, Error>?
 
+    /// Coordinator-installed "your refresh is terminally dead, run
+    /// UserDataWipe + bounce to OAuth login" hook. Set by
+    /// `DependencyContainer` after both this repo and the
+    /// coordinator exist. Nil during construction — failures during
+    /// the very first `restoreSession()` (before the coordinator is
+    /// attached) fall back to the original `signOut()` path, which
+    /// is fine because the wipe is mostly a no-op on a fresh launch
+    /// with empty state.
+    ///
+    /// `nonisolated(unsafe)` because the container's init wires it
+    /// synchronously (the actor isn't usable from a sync context
+    /// without a Task hop). The hook is set once and never read
+    /// concurrently with another set — there's no race in practice.
+    nonisolated(unsafe) var onTerminalFailure: (@Sendable () async -> Void)?
+
     init(authAPI: AuthAPIService, keychain: KeychainManager, appState: AppState) {
         self.authAPI = authAPI
         self.keychain = keychain
@@ -118,8 +133,16 @@ actor NativeAuthRepository: AuthRepository {
             } catch let failure as AuthFailure where failure.terminal {
                 // Server-driven sign-out: explicit `invalid_grant` /
                 // `unauthorized_client` / `invalid_token` from the auth
-                // server. Wipe local state and bounce to login.
-                await self.signOut()
+                // server. Lazy-transition: instead of a local-only
+                // signOut (which left some downstream state behind),
+                // funnel through the migration coordinator so it
+                // runs UserDataWipe + flips the auth state for the
+                // OAuth re-sign-in.
+                if let hook = await self.onTerminalFailure {
+                    await hook()
+                } else {
+                    await self.signOut()
+                }
                 return nil
             } catch {
                 // Transient (network down, 5xx, ambiguous 401, timeout).
@@ -164,9 +187,14 @@ actor NativeAuthRepository: AuthRepository {
         do {
             try await refresh()
         } catch let failure as AuthFailure where failure.terminal {
-            // Server explicitly rejected the stored refresh token — sign
-            // out and surface the login screen.
-            await signOut()
+            // Server explicitly rejected the stored refresh token —
+            // lazy-transition bounce to OAuth login (wipes everything
+            // and surfaces the OAuth sign-in screen).
+            if let hook = self.onTerminalFailure {
+                await hook()
+            } else {
+                await signOut()
+            }
         } catch {
             // Transient failure. Keep the user signed in with whatever
             // cached profile we have so the app surfaces useful UI rather

@@ -6,6 +6,9 @@ struct SettingsView: View {
     @State private var showPrivacyWeb = false
     @State private var showTermsWeb = false
     @State private var showDeleteConfirm = false
+    @State private var showRemoveDeviceConfirm = false
+    @State private var isRemoving = false
+    @State private var removeError: String?
 
     @AppStorage(AppearancePreference.storageKey) private var appearanceRaw = AppearancePreference.system.rawValue
 
@@ -24,8 +27,26 @@ struct SettingsView: View {
                     settingsRow(
                         icon: "person.crop.circle",
                         title: "Profile",
-                        subtitle: "Email, devices, sign out"
+                        subtitle: "Email and registered devices"
                     )
+                }
+
+                Button {
+                    showRemoveDeviceConfirm = true
+                } label: {
+                    settingsRow(
+                        icon: "iphone.slash",
+                        title: "Remove this device",
+                        subtitle: "Revoke this device's access and sign out"
+                    )
+                }
+                .buttonStyle(.plain)
+                .disabled(isRemoving)
+
+                if let removeError {
+                    Text(removeError)
+                        .font(.caption)
+                        .foregroundStyle(Color.inkError)
                 }
             }
 
@@ -129,6 +150,37 @@ struct SettingsView: View {
         } message: {
             Text("This will permanently delete your account, library, and reading history. This cannot be undone. We'll open your email app so you can send the request to our privacy team — they'll confirm and remove your account within 30 days.")
         }
+        .alert("Remove this device?", isPresented: $showRemoveDeviceConfirm) {
+            Button("Cancel", role: .cancel) {}
+            Button("Remove", role: .destructive) {
+                Task { await removeThisDevice() }
+            }
+        } message: {
+            Text("This will revoke this device's access to your library and wipe all local data (downloaded books, bookmarks, highlights). You can sign in again on this device any time.")
+        }
+    }
+
+    /// Settings → "Remove this device". Two-phase:
+    /// 1. Best-effort `DELETE /devices/:id` to invalidate the
+    ///    Keycloak offline session server-side. Failures here are
+    ///    logged but don't block the local wipe — if we're offline,
+    ///    the wipe still happens and the device gets reconciled the
+    ///    next time the stored refresh token tries to refresh
+    ///    (`invalid_grant` → already-wiped).
+    /// 2. `UserDataWipe.wipe()` — Keychain, UserDefaults, SwiftData,
+    ///    downloads — followed by `authState = .unauthenticated`,
+    ///    which AppRouter watches to surface the login screen.
+    private func removeThisDevice() async {
+        isRemoving = true
+        removeError = nil
+        do {
+            try await container.deviceRepository.revokeCurrentDevice()
+        } catch {
+            // Best-effort: log and continue. The wipe still happens.
+            removeError = "Server revoke failed: \(error.localizedDescription) — continuing local removal."
+        }
+        await UserDataWipe.wipe(container: container)
+        isRemoving = false
     }
 
     @ViewBuilder

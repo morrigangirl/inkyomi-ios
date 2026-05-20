@@ -87,9 +87,11 @@
 		794046EA9ABE2291EC56E617 /* CatalogAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA539F91D6563D126F1C455 /* CatalogAPIService.swift */; };
 		7ACFE8A88EB8B9DD05239351 /* DeviceKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D584DEE1FFF754872F357F86 /* DeviceKeyManager.swift */; };
 		7D5505B86E6387C90A32F0E6 /* BookCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB620ED2CF33A6A1A7F6331 /* BookCardView.swift */; };
+		7E2645F7B3F9AD663DD2D6C6 /* AuthMigrationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F4767F8603A388D2654A1A /* AuthMigrationCoordinator.swift */; };
 		7E6D85522D0BC8B0A851F0E4 /* InkyomiModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF991BC33189F695D0A8432 /* InkyomiModelContainer.swift */; };
 		7FBF47AFE3C7E739DCAE2716 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFF6B7FA0169CBD4530E7F9 /* AboutView.swift */; };
 		812DFDA31AE447C5DE050B1F /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B497015ECD12702E8263024 /* SearchBarView.swift */; };
+		87AF4CE0DDFEEA7266BA9B72 /* KeycloakAuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F308A0618B6800270CD6BD84 /* KeycloakAuthRepository.swift */; };
 		87CCF39FD446603A550AE843 /* ReaderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528ABB26CDBAB2161AC79DEC /* ReaderModels.swift */; };
 		8988533EC34A4BF8CCBF1BBF /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562EB943D4239E0FD6D5F9AD /* UserProfile.swift */; };
 		8C0B074C1789DA1B90538022 /* kdf.json in Resources */ = {isa = PBXBuildFile; fileRef = 0B7CCFE82D55A991B97FD1B0 /* kdf.json */; };
@@ -126,6 +128,7 @@
 		BF918D7BA28247F2F0E36984 /* LcpTransportSecretStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AEDC7D2F1EB2D0E8D94D72 /* LcpTransportSecretStore.swift */; };
 		C0BA0A1E7DC185652F7D25D5 /* SearchTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06039CF2AB69345FCB0093AF /* SearchTypes.swift */; };
 		C0C5623BD5609418B8495B1C /* ReadiumZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0934A3364709AEE044311766 /* ReadiumZIPFoundation */; };
+		C161CD7C737566C73B173685 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C53837D6CBF7CABAC4D52D37 /* AppAuth */; };
 		C3C08189892F8E1292EA5983 /* ReaderPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC442AB88ECC15F7CCDF6C9 /* ReaderPreferences.swift */; };
 		CA0E729478691E1A9B0A355C /* EntitlementAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53D22AB1CD8109C9E4BF01B /* EntitlementAPIService.swift */; };
 		CBFC00ED12101B5EA6A8787F /* license-signature.json in Resources */ = {isa = PBXBuildFile; fileRef = E4A9E24E0F6D2CD9BECAAD05 /* license-signature.json */; };
@@ -149,6 +152,7 @@
 		DE87CCFACCA26F56574B3614 /* ShelfRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */; };
 		DF58AEB195A157A8E5915F09 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F56669AAB96B841532765C /* Tag.swift */; };
 		DF7C348656869A30C0681870 /* DeviceRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D35CC53CBF1B97EE942666 /* DeviceRepositoryImpl.swift */; };
+		E0946C8A852072A61BCD8164 /* UserDataWipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A1573F81647BF62431E0FA /* UserDataWipe.swift */; };
 		E0CEBC345F3FFEAB7E4087F3 /* SavedSearchesAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9050510AAFDE6FDCE5A5AA /* SavedSearchesAPIService.swift */; };
 		E7697D7CBEAE64693F614A2B /* InkYomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */; };
 		E9405F17808FA7A7FBFF87E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96C6F33106806D96613CCBAD /* Assets.xcassets */; };
@@ -193,6 +197,7 @@
 		21E15A0A2B74628E414B5F1B /* SearchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRepository.swift; sourceTree = "<group>"; };
 		24B22F5B67A2FBB3E36574EA /* CanonicalJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalJSON.swift; sourceTree = "<group>"; };
 		26ED30003ED077680CF3B821 /* TrendingBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingBook.swift; sourceTree = "<group>"; };
+		27F4767F8603A388D2654A1A /* AuthMigrationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthMigrationCoordinator.swift; sourceTree = "<group>"; };
 		291CF71D36CEFF1D752CE7CF /* SavedSearchesRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSearchesRepositoryImpl.swift; sourceTree = "<group>"; };
 		29739591B5050B6DDE5EDC81 /* LibraryBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBook.swift; sourceTree = "<group>"; };
 		2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkYomiApp.swift; sourceTree = "<group>"; };
@@ -317,8 +322,10 @@
 		E0AE71C4C213F43AA185D393 /* ReaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewModel.swift; sourceTree = "<group>"; };
 		E4A9E24E0F6D2CD9BECAAD05 /* license-signature.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "license-signature.json"; sourceTree = "<group>"; };
 		E4E90645505C1C52E5CAADCE /* DiscoveryAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryAPIService.swift; sourceTree = "<group>"; };
+		E6A1573F81647BF62431E0FA /* UserDataWipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataWipe.swift; sourceTree = "<group>"; };
 		E7474041177BE66E18DD7CE4 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		F12290C1E2058A74918F7DCD /* LicenseSignatureVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseSignatureVerifier.swift; sourceTree = "<group>"; };
+		F308A0618B6800270CD6BD84 /* KeycloakAuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeycloakAuthRepository.swift; sourceTree = "<group>"; };
 		F4A6FB673D9036A9B641C380 /* ReadingTelemetryEventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingTelemetryEventModel.swift; sourceTree = "<group>"; };
 		F53D22AB1CD8109C9E4BF01B /* EntitlementAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitlementAPIService.swift; sourceTree = "<group>"; };
 		F71A68E9EA61AE542361FBB4 /* BookDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetail.swift; sourceTree = "<group>"; };
@@ -338,6 +345,7 @@
 				9ED426112A542D812CCCD7A9 /* ReadiumShared in Frameworks */,
 				5586B88617CED9DF8C61133E /* ReadiumStreamer in Frameworks */,
 				3146E225FCF6E78A62E94C1E /* ReadiumNavigator in Frameworks */,
+				C161CD7C737566C73B173685 /* AppAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,10 +454,12 @@
 			isa = PBXGroup;
 			children = (
 				127F5B58D4AFFD91B6C996BA /* AuthFailure.swift */,
+				27F4767F8603A388D2654A1A /* AuthMigrationCoordinator.swift */,
 				CC170036D746FE75DC715B61 /* BookRepositoryImpl.swift */,
 				5C7AEC3BBCA7F28E261DAD44 /* CatalogRepositoryImpl.swift */,
 				D9D35CC53CBF1B97EE942666 /* DeviceRepositoryImpl.swift */,
 				43FFBF5DCFC0985BBC5985A1 /* DiscoveryRepositoryImpl.swift */,
+				F308A0618B6800270CD6BD84 /* KeycloakAuthRepository.swift */,
 				2EFB29B953AB4C01431DCE20 /* LendingRepositoryImpl.swift */,
 				695966B1CA470983E6010862 /* LibraryRepositoryImpl.swift */,
 				CCEF560866D27C7FF3891AE1 /* LoanRenewalCoordinator.swift */,
@@ -772,6 +782,7 @@
 		F86D3EEE0D277810EDE28D83 /* Local */ = {
 			isa = PBXGroup;
 			children = (
+				E6A1573F81647BF62431E0FA /* UserDataWipe.swift */,
 				599EB88EBCDCD3900D0A691B /* Crypto */,
 				F752D9AD722E394AC0E23322 /* Download */,
 				A694E635BD9E7C35BAED4781 /* Lending */,
@@ -828,6 +839,7 @@
 				4C18982B8F8D5EA4312A1E26 /* ReadiumShared */,
 				8E4C6F70B3246F89B9E51734 /* ReadiumStreamer */,
 				0B26992E06FDEDE70EFE4C91 /* ReadiumNavigator */,
+				C53837D6CBF7CABAC4D52D37 /* AppAuth */,
 			);
 			productName = InkYomi;
 			productReference = A5BC9931CE5F3C8503263882 /* InkYomi.app */;
@@ -879,6 +891,7 @@
 			mainGroup = 239703A9A22CF0FB2433DA77;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				68270DBF5CD733321D6D4363 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
 				C83071FE1B834FB60E71516A /* XCRemoteSwiftPackageReference "Nuke" */,
 				867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */,
 				5C5F5B83DFD8B4DADCDC776F /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
@@ -942,6 +955,7 @@
 				A8F675171DAEFB58126BA560 /* AuthAPIService.swift in Sources */,
 				3C9CA98297C77BEC17B3147D /* AuthDTOs.swift in Sources */,
 				EB22D9D4F447ED666A664356 /* AuthFailure.swift in Sources */,
+				7E2645F7B3F9AD663DD2D6C6 /* AuthMigrationCoordinator.swift in Sources */,
 				7005570EFDE1F7D034DFB1A1 /* AuthRepository.swift in Sources */,
 				31AD59C916762E3BAF6257D2 /* AuthState.swift in Sources */,
 				15B0B93E4EE1FEA4BD95008B /* Book.swift in Sources */,
@@ -995,6 +1009,7 @@
 				7E6D85522D0BC8B0A851F0E4 /* InkyomiModelContainer.swift in Sources */,
 				379B0A3A9030265B6EF3EB2F /* InstrumentedLocationModel.swift in Sources */,
 				D6FB1812B23D2C2C17062D13 /* KeychainManager.swift in Sources */,
+				87AF4CE0DDFEEA7266BA9B72 /* KeycloakAuthRepository.swift in Sources */,
 				95351AC21960764676BE3515 /* LandingPage.swift in Sources */,
 				D7A43E42B2CD38F23E58FB7B /* LcpPassphraseManager.swift in Sources */,
 				BF918D7BA28247F2F0E36984 /* LcpTransportSecretStore.swift in Sources */,
@@ -1071,6 +1086,7 @@
 				6F453EA095EF44E93680BD6F /* TransportKey.swift in Sources */,
 				52F39AE36091E54F76A4C121 /* TrendingBook.swift in Sources */,
 				DE29E8FF3627B970FE4E720D /* TrendingRowView.swift in Sources */,
+				E0946C8A852072A61BCD8164 /* UserDataWipe.swift in Sources */,
 				8988533EC34A4BF8CCBF1BBF /* UserProfile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1324,6 +1340,14 @@
 				minimumVersion = 3.0.1;
 			};
 		};
+		68270DBF5CD733321D6D4363 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/openid/AppAuth-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.0;
+			};
+		};
 		867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/readium/swift-toolkit.git";
@@ -1367,6 +1391,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 867C81A4F15368EF6BFF8ACF /* XCRemoteSwiftPackageReference "swift-toolkit" */;
 			productName = ReadiumStreamer;
+		};
+		C53837D6CBF7CABAC4D52D37 /* AppAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 68270DBF5CD733321D6D4363 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
