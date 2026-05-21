@@ -10,10 +10,7 @@ struct AppRouter: View {
             case .loading:
                 ProgressView("Loading...")
                     .task {
-                        // Coordinator picks the right restore path
-                        // based on which repo was selected (legacy
-                        // refresh vs. Keycloak OIDAuthState).
-                        await container.authMigrationCoordinator.restoreSession()
+                        await container.authRepository.restoreSession()
                     }
             case .unauthenticated:
                 AuthNavHost()

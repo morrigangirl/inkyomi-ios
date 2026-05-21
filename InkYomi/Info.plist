@@ -45,17 +45,10 @@
             <key>CFBundleTypeRole</key>
             <string>Viewer</string>
             <key>CFBundleURLName</key>
-            <string>shop.inkcolors.InkYomi.auth</string>
+            <string>shop.inkcolors.InkYomi</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <!-- OAuth 2.0 redirect URI for the Keycloak login flow.
-                     KeycloakAuthRepository registers
-                     shop.inkcolors.inkyomi://auth/callback with the
-                     IDP; iOS routes that URL back into the app via
-                     this scheme. Must match the Valid Redirect URI
-                     configured on the `inkcolors-reader-mobile`
-                     Keycloak client (see docs/KEYCLOAK_MOBILE_SETUP.md). -->
-                <string>shop.inkcolors.inkyomi</string>
+                <string>inkcolors</string>
             </array>
         </dict>
     </array>

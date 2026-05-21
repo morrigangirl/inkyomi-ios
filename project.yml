@@ -26,14 +26,6 @@ packages:
   ReadiumSwift:
     url: https://github.com/readium/swift-toolkit.git
     from: "3.1.0"
-  # OAuth 2.0 client (Authorization Code + PKCE) used by
-  # KeycloakAuthRepository for the device-bound reader login. Wraps
-  # ASWebAuthenticationSession + OIDAuthState refresh under the
-  # hood. Picked over hand-rolled PKCE because it handles redirect
-  # parsing, JWKS discovery, and refresh-token rotation correctly.
-  AppAuth:
-    url: https://github.com/openid/AppAuth-iOS
-    from: "1.7.0"
 
 targets:
   InkYomi:
@@ -62,8 +54,6 @@ targets:
         product: ReadiumStreamer
       - package: ReadiumSwift
         product: ReadiumNavigator
-      - package: AppAuth
-        product: AppAuth
 
   InkYomiTests:
     type: bundle.unit-test

@@ -12,13 +12,17 @@ actor NativeAuthRepository: AuthRepository {
     private var cachedExpiry: Date?
     private var refreshTask: Task<String?, Error>?
 
-    /// Coordinator-installed "your refresh is terminally dead, run
-    /// UserDataWipe + bounce to OAuth login" hook. Set by
-    /// `DependencyContainer` after both this repo and the
-    /// coordinator exist. Nil during construction — failures during
-    /// the very first `restoreSession()` (before the coordinator is
-    /// attached) fall back to the original `signOut()` path, which
-    /// is fine because the wipe is mostly a no-op on a fresh launch
+    /// "Your refresh is terminally dead" hook. `DependencyContainer`
+    /// wires this to `UserDataWipe.wipe(container:)` so a server-side
+    /// `invalid_grant` (refresh token rejected, device revoked, etc.)
+    /// triggers the full local cleanup — same wipe the in-app
+    /// "Remove this device" button runs — and the auth state flips
+    /// back to `.unauthenticated`.
+    ///
+    /// Nil during construction. Failures during the very first
+    /// `restoreSession()` (before the container has attached the
+    /// hook) fall back to the local-only `signOut()` path, which is
+    /// fine because the wipe is mostly a no-op on a fresh launch
     /// with empty state.
     ///
     /// `nonisolated(unsafe)` because the container's init wires it
@@ -132,12 +136,14 @@ actor NativeAuthRepository: AuthRepository {
                 return await self.cachedAccessToken
             } catch let failure as AuthFailure where failure.terminal {
                 // Server-driven sign-out: explicit `invalid_grant` /
-                // `unauthorized_client` / `invalid_token` from the auth
-                // server. Lazy-transition: instead of a local-only
-                // signOut (which left some downstream state behind),
-                // funnel through the migration coordinator so it
-                // runs UserDataWipe + flips the auth state for the
-                // OAuth re-sign-in.
+                // `unauthorized_client` / `invalid_token` from the
+                // auth server (or `device_revoked` from the API
+                // middleware). The container's terminal-failure
+                // hook runs UserDataWipe — same cleanup as Settings
+                // → "Remove this device" — and flips the auth state
+                // back to `.unauthenticated` so the login screen
+                // surfaces. Fall back to a local-only signOut if the
+                // hook hasn't been attached yet.
                 if let hook = await self.onTerminalFailure {
                     await hook()
                 } else {
@@ -187,9 +193,10 @@ actor NativeAuthRepository: AuthRepository {
         do {
             try await refresh()
         } catch let failure as AuthFailure where failure.terminal {
-            // Server explicitly rejected the stored refresh token —
-            // lazy-transition bounce to OAuth login (wipes everything
-            // and surfaces the OAuth sign-in screen).
+            // Server explicitly rejected the stored refresh token.
+            // Run the full wipe (same as Settings → "Remove this
+            // device") so no stale loan / book / DRM material leaks
+            // across the session boundary.
             if let hook = self.onTerminalFailure {
                 await hook()
             } else {

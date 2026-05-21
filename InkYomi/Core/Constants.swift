@@ -44,25 +44,4 @@ enum Constants {
         static let transportKeyInfo = "inkyomi/v1/transport"
         static let providerCertFilename = "inkyomi-provider-cert"
     }
-
-    /// Keycloak OAuth 2.0 client configuration for the mobile reader.
-    /// Mirrors the `inkcolors-reader-mobile` realm client documented in
-    /// pearlescent-dream/docs/KEYCLOAK_MOBILE_SETUP.md. Changes here
-    /// must stay in sync with the Keycloak realm config — issuer URL,
-    /// client id, and redirect URI are all matched server-side.
-    enum Keycloak {
-        static let issuerURL = URL(string: "https://auth.inkcolors.shop/realms/InkColors-Shop")!
-        static let clientId = "inkcolors-reader-mobile"
-        static let redirectURI = URL(string: "shop.inkcolors.inkyomi://auth/callback")!
-        static let scopes = ["openid", "profile", "email", "offline_access"]
-        /// Key under `Constants.Keychain.authService` where the
-        /// OIDAuthState archive is persisted. Distinct from
-        /// `accessTokenKey` so the legacy NativeAuthRepository path
-        /// keeps working in parallel during the lazy transition.
-        static let authStateKey = "oidAuthState"
-        /// Hosted password-reset page on Keycloak. Surfaced via the
-        /// ForgotPassword screen — there's no native API for this
-        /// once we're on OAuth.
-        static let resetPasswordURL = URL(string: "https://auth.inkcolors.shop/realms/InkColors-Shop/login-actions/reset-credentials?client_id=inkcolors-reader-mobile")!
-    }
 }

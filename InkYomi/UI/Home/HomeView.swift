@@ -6,6 +6,13 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = HomeViewModel()
+    /// Set when the user taps a Continue Reading item, which opens
+    /// the reader directly rather than routing through BookDetail.
+    /// `HomeViewModel.continueReading` is already filtered by
+    /// entitlement + active loan, so tapping an item here always
+    /// has read permission — no need to surface the marketing page
+    /// on the way to opening the book.
+    @State private var readerBookId: String?
 
     var body: some View {
         ScrollView {
@@ -45,6 +52,20 @@ struct HomeView: View {
                 modelContext: modelContext
             )
             await viewModel.loadLandingPage()
+        }
+        // Continue Reading tap → open the book directly, same way the
+        // borrowed-book "Read" button works in LibraryView. The
+        // BookDetail page is reachable from other surfaces (search,
+        // browse-hub) for users who do want the marketing view.
+        .fullScreenCover(isPresented: Binding(
+            get: { readerBookId != nil },
+            set: { if !$0 { readerBookId = nil } }
+        )) {
+            if let bookId = readerBookId {
+                ReaderView(bookId: bookId)
+                    .environment(container)
+                    .modelContainer(container.modelContainer)
+            }
         }
     }
 
@@ -88,7 +109,15 @@ struct HomeView: View {
                 HStack(spacing: 12) {
                     ForEach(viewModel.continueReading) { item in
                         let coverWidth = CoverSize.continueRow.width(for: hSizeClass)
-                        NavigationLink(value: item.bookId) {
+                        // Tap → open reader directly. Items in
+                        // `viewModel.continueReading` are pre-filtered
+                        // by entitlement + active loan, so we don't
+                        // need to bounce through BookDetail to verify
+                        // access. (Long-press could open the marketing
+                        // page in a future tweak; not added today.)
+                        Button {
+                            readerBookId = item.bookId
+                        } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 BookCoverView(
                                     url: item.coverUrl,

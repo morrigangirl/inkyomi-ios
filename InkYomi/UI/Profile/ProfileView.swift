@@ -42,11 +42,12 @@ struct ProfileView: View {
                 }
             }
 
-            // Sign out has moved to Settings → "Remove this device".
-            // It's the canonical "I'm done with this device" surface
-            // because it also revokes the Keycloak session server-side
-            // and runs UserDataWipe — a local-only signOut would leak
-            // your library to the next user of this physical device.
+            Section {
+                Button("Sign out", role: .destructive) {
+                    Task { await container.authRepository.signOut() }
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
         .navigationTitle("Account")
         .navigationBarTitleDisplayMode(.inline)
