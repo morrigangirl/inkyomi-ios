@@ -83,6 +83,18 @@ struct LendingCatalogView: View {
                 onBorrowSuccess?(bookId)
             }
         }
+        // When the catalog is already populated, a non-nil `error` is a borrow
+        // failure (catalog-load errors render via ContentUnavailableView while
+        // the list is empty). Surface that friendly copy in an alert instead
+        // of letting it go unseen behind the grid.
+        .alert("Couldn't Borrow", isPresented: Binding(
+            get: { viewModel.error != nil && !viewModel.publications.isEmpty },
+            set: { if !$0 { viewModel.error = nil } }
+        )) {
+            Button("OK", role: .cancel) { viewModel.error = nil }
+        } message: {
+            Text(viewModel.error ?? "")
+        }
     }
 
     private var catalogGrid: some View {
