@@ -36,6 +36,11 @@ struct DeviceAuthResponse: Decodable {
     let refreshExpiresAt: Int64
     let user: UserDTO
     let deviceRegistrationId: String?
+    /// `true` when the account is already at its device cap (5) and this
+    /// device could NOT be registered. Login still succeeds; the client
+    /// should warn the user and offer to free up a slot. Absent (→ false)
+    /// on a normal login and on `device-refresh`.
+    let deviceLimitReached: Bool?
 }
 
 struct UserDTO: Decodable {
