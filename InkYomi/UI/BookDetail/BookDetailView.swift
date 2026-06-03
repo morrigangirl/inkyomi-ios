@@ -6,6 +6,7 @@ struct BookDetailView: View {
     @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = BookDetailViewModel()
     @State private var showReader = false
+    @State private var showLookInside = false
 
     var body: some View {
         Group {
@@ -19,6 +20,13 @@ struct BookDetailView: View {
         }
         .navigationTitle(viewModel.bookDetail?.title ?? "Book")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showLookInside) {
+            LookInsideView(
+                idOrSlug: viewModel.bookDetail?.icin ?? bookId,
+                bookTitle: viewModel.bookDetail?.title ?? "Preview",
+                viewModel: viewModel
+            )
+        }
         .task {
             viewModel.configure(
                 catalogRepository: container.catalogRepository,
@@ -54,6 +62,7 @@ struct BookDetailView: View {
                         titleBlock(book)
                         Spacer()
                         actionButton(for: book)
+                        lookInsideButton(for: book)
                     }
                 }
                 .padding(.horizontal)
@@ -81,6 +90,7 @@ struct BookDetailView: View {
                             height: CoverSize.detail.height(for: hSizeClass)
                         )
                         actionButton(for: book)
+                        lookInsideButton(for: book)
                     }
                     .frame(width: CoverSize.detail.width(for: hSizeClass))
 
@@ -264,6 +274,22 @@ struct BookDetailView: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(Color.inkSecondary)
+        }
+    }
+
+    /// "Look Inside" pre-purchase preview entry point. Shown only when the
+    /// backend reports a preview is available for this book.
+    @ViewBuilder
+    private func lookInsideButton(for book: BookDetail) -> some View {
+        if book.lookInside.available {
+            Button {
+                showLookInside = true
+            } label: {
+                Label("Look Inside", systemImage: "book.pages")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(Color.inkPrimary)
         }
     }
 }
