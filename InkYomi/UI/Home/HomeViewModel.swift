@@ -33,17 +33,20 @@ final class HomeViewModel {
 
     private var searchTask: Task<Void, Never>?
     private var catalogRepository: (any CatalogRepository)?
+    private var searchRepository: (any SearchRepository)?
     private var discoveryRepository: (any DiscoveryRepository)?
     private var libraryRepository: (any LibraryRepository)?
     private var modelContext: ModelContext?
 
     func configure(
         catalogRepository: any CatalogRepository,
+        searchRepository: any SearchRepository,
         discoveryRepository: any DiscoveryRepository,
         libraryRepository: any LibraryRepository,
         modelContext: ModelContext
     ) {
         self.catalogRepository = catalogRepository
+        self.searchRepository = searchRepository
         self.discoveryRepository = discoveryRepository
         self.libraryRepository = libraryRepository
         self.modelContext = modelContext
@@ -126,10 +129,21 @@ final class HomeViewModel {
     }
 
     private func searchBooks(query: String) async {
-        guard let catalogRepository else { return }
+        guard let searchRepository else { return }
         isSearching = true
         do {
-            searchResults = try await catalogRepository.searchBooks(query: query)
+            // Home inline search routes through `/api/search/v2` (the legacy
+            // `POST /api/search` v1 endpoint no longer exists). We only need
+            // the first page of relevance-ranked hits here, mapped down to
+            // the basic `Book` projection the home list renders.
+            let results = try await searchRepository.search(
+                query: query,
+                filters: SearchFilters(),
+                sort: .relevance,
+                page: 1,
+                limit: Constants.homeSearchResultLimit
+            )
+            searchResults = results.books.map { $0.toBook() }
         } catch {
             if !Task.isCancelled {
                 searchResults = []

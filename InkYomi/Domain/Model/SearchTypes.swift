@@ -165,6 +165,26 @@ struct SearchResults: Sendable {
     let spellSuggest: String?
 }
 
+extension SearchResultBook {
+    /// Project a richer v2 search hit down to the basic catalog `Book`
+    /// used by the Home screen's inline-search list. Cover preference
+    /// mirrors the rest of the app (card → thumb → generic).
+    func toBook() -> Book {
+        Book(
+            id: id,
+            title: title,
+            slug: slug,
+            icin: icin,
+            coverUrl: coverCardUrl ?? coverThumbUrl ?? coverUrl,
+            authorName: authorName,
+            priceUsd: priceUsd,
+            hook: hook,
+            chips: nil,
+            isNewRelease: isNewRelease
+        )
+    }
+}
+
 // MARK: - Suggest (typeahead)
 
 struct SuggestBook: Identifiable, Sendable {

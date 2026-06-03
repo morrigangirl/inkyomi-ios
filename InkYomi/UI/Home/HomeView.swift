@@ -39,6 +39,7 @@ struct HomeView: View {
         .task {
             viewModel.configure(
                 catalogRepository: container.catalogRepository,
+                searchRepository: container.searchRepository,
                 discoveryRepository: container.discoveryRepository,
                 libraryRepository: container.libraryRepository,
                 modelContext: modelContext

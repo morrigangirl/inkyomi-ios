@@ -15,11 +15,6 @@ struct CatalogRepositoryImpl: CatalogRepository, Sendable {
         let response = try await api.getBookDetail(idOrSlug: idOrSlug)
         return response.toDomain()
     }
-
-    func searchBooks(query: String) async throws -> [Book] {
-        let response = try await api.search(query: query)
-        return response.data.map { $0.toDomain() }
-    }
 }
 
 /// Mapper extracted to a top-level extension so other repositories

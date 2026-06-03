@@ -10,6 +10,8 @@ enum Constants {
     static let spanPeriodicDrainSeconds: TimeInterval = 300
     static let httpTimeoutSeconds: TimeInterval = 30
     static let continueReadingLimit = 5
+    /// Page size for the Home screen's inline search (via `/api/search/v2`).
+    static let homeSearchResultLimit = 20
     static let continueReadingMaxProgress: Float = 0.98
     static let maxLoanRenewals = 2
     static let decryptionCacheSize = 16
