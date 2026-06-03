@@ -36,12 +36,34 @@ enum APIError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidURL: "Invalid URL"
-        case .httpError(let code, _): "HTTP error \(code)"
+        case .httpError(let code, _): serverMessage ?? "HTTP error \(code)"
         case .decodingError(let error): "Decoding error: \(error.localizedDescription)"
         case .unauthorized: "Unauthorized"
         case .rateLimited: "Rate limited"
         case .networkError(let error): "Network error: \(error.localizedDescription)"
         }
+    }
+
+    /// The human-readable message the backend put in an error response body,
+    /// if any. The API returns errors as JSON `{ "error": "..." }` and
+    /// occasionally as problem+json `{ "title": "..." }`; we try both. Only
+    /// `.httpError` carries a body, so every other case returns nil.
+    var serverMessage: String? {
+        guard case .httpError(_, let data) = self else { return nil }
+        return Self.decodeServerMessage(from: data)
+    }
+
+    private static func decodeServerMessage(from data: Data) -> String? {
+        struct ServerError: Decodable {
+            let error: String?
+            let title: String?
+        }
+        guard let decoded = try? JSONDecoder().decode(ServerError.self, from: data) else {
+            return nil
+        }
+        if let error = decoded.error, !error.isEmpty { return error }
+        if let title = decoded.title, !title.isEmpty { return title }
+        return nil
     }
 }
 

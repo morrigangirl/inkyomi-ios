@@ -63,8 +63,35 @@ final class LendingCatalogViewModel {
                 lastBorrowedBookId = bookId
             } catch {
                 borrowingBookId = nil
-                self.error = error.localizedDescription
+                self.error = Self.borrowErrorMessage(for: error)
             }
+        }
+    }
+
+    /// Map a borrow failure to user-facing copy. Borrow gating comes back as
+    /// `APIError.httpError` with a status code that tells us *why* the loan was
+    /// refused; we translate those into plain language instead of leaking
+    /// "HTTP error 404". Anything we don't recognize falls back to the decoded
+    /// server message, then to the error's own description.
+    static func borrowErrorMessage(for error: Error) -> String {
+        guard case let APIError.httpError(statusCode, _) = error else {
+            return error.localizedDescription
+        }
+        switch statusCode {
+        case 404:
+            // Unreleased / pre-order / not lending-enrolled / lending disabled.
+            return "This book isn't available for borrowing right now."
+        case 403:
+            return "An active lending subscription is required to borrow."
+        case 409:
+            return "You already have this book borrowed."
+        case 422:
+            return "You've reached your borrow limit."
+        case 503:
+            return "This book is temporarily unavailable for lending."
+        default:
+            return (error as? APIError)?.serverMessage
+                ?? error.localizedDescription
         }
     }
 
