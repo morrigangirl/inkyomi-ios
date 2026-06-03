@@ -43,8 +43,13 @@ enum CanonicalJSON {
         case let nsnull as NSNull:
             _ = nsnull
             result += "null"
-        case let bool as Bool:
-            result += bool ? "true" : "false"
+        // IMPORTANT: match NSNumber BEFORE Bool. `JSONSerialization` returns
+        // every JSON number and boolean as an NSNumber, and an NSNumber that
+        // wraps an integer (e.g. 1 or 0) also succeeds an `as Bool` cast —
+        // so a `case let bool as Bool` placed first would mis-serialize the
+        // integer 1 as `true`, corrupting the canonical bytes (and thus any
+        // RSA signature computed over them). The NSNumber branch below
+        // distinguishes real booleans via CFBooleanGetTypeID.
         case let number as NSNumber:
             // Check if boolean (NSNumber wraps bools too)
             if CFGetTypeID(number) == CFBooleanGetTypeID() {
@@ -61,6 +66,8 @@ enum CanonicalJSON {
                     result += "\(number)"
                 }
             }
+        case let bool as Bool:
+            result += bool ? "true" : "false"
         case let string as String:
             result += jsonString(string)
         case let dict as [String: Any]:

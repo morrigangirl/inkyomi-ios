@@ -20,6 +20,7 @@
 		12C946D481DAB2977F4B46B5 /* DeviceAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */; };
 		142BCD636DDA9A91746526D4 /* ReadingTelemetryEventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A6FB673D9036A9B641C380 /* ReadingTelemetryEventModel.swift */; };
 		15B0B93E4EE1FEA4BD95008B /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8780BBD47C18C9A9403DCF29 /* Book.swift */; };
+		1672057106DAB9A169A5C56C /* InkyomiCryptoVectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B951D40D079029A0E17C81F /* InkyomiCryptoVectorTests.swift */; };
 		1758E873E3AEEF06ECC1DEF4 /* PendingSpanReadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E02867E468A0FA44D2561F /* PendingSpanReadModel.swift */; };
 		1899D4233BC1552EB563D15A /* DiscoveryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD01D017644DDFD9B5D27FB5 /* DiscoveryRepository.swift */; };
 		18E22A7BCA9B44D807CB898D /* dev-signing-key.pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = CF89D145025E3294913168E7 /* dev-signing-key.pub.pem */; };
@@ -45,6 +46,7 @@
 		3741939B41202562909A55B1 /* RecentSearchesPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CDEC4E63A038A0B316611EC /* RecentSearchesPreferences.swift */; };
 		379B0A3A9030265B6EF3EB2F /* InstrumentedLocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F60281E3A645AC0EF849D09 /* InstrumentedLocationModel.swift */; };
 		386663C040EB5E355CEB400F /* SearchAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E47FF07E533FC35155420 /* SearchAPIService.swift */; };
+		3B0821CC81AFAA9C6E18B597 /* ContentKeyWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C53FB075E8A8567B0CF762E /* ContentKeyWrapperTests.swift */; };
 		3BBBAFC3A2943282DA76A930 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9041A941069D55608B9F58DB /* LibraryView.swift */; };
 		3C90F0CACC8D9A54F48961F9 /* inkyomi-provider-cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 62D7BE243FC6A02A67A3935A /* inkyomi-provider-cert.pem */; };
 		3C9CA98297C77BEC17B3147D /* AuthDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE055DFB60F00FAFD471EE /* AuthDTOs.swift */; };
@@ -229,6 +231,7 @@
 		46073C86CA71A9E846F6616E /* SpanTelemetryAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanTelemetryAPIService.swift; sourceTree = "<group>"; };
 		472879A43323892111CD908D /* InkyomiDecryptingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiDecryptingContainer.swift; sourceTree = "<group>"; };
 		4B4C132F36363EE9E7134986 /* TransportKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportKey.swift; sourceTree = "<group>"; };
+		4B951D40D079029A0E17C81F /* InkyomiCryptoVectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiCryptoVectorTests.swift; sourceTree = "<group>"; };
 		4BF991BC33189F695D0A8432 /* InkyomiModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkyomiModelContainer.swift; sourceTree = "<group>"; };
 		4C7C889F6A7BFE251EADD249 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		4CF479DDD51009B6F9BAC1C4 /* LinksHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksHelper.swift; sourceTree = "<group>"; };
@@ -255,6 +258,7 @@
 		6A7F3401097EE772BE70CE99 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		6AB620ED2CF33A6A1A7F6331 /* BookCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCardView.swift; sourceTree = "<group>"; };
 		6B497015ECD12702E8263024 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
+		6C53FB075E8A8567B0CF762E /* ContentKeyWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyWrapperTests.swift; sourceTree = "<group>"; };
 		71AE8E28F304149654DBFDA0 /* DiscoveryDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryDTOs.swift; sourceTree = "<group>"; };
 		743E34B0BF558E12A03686A1 /* LookInsideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookInsideView.swift; sourceTree = "<group>"; };
 		752022A2FDD99BA9C5CAFB00 /* DeviceListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListViewModel.swift; sourceTree = "<group>"; };
@@ -711,6 +715,8 @@
 		A74F494E9C15C93308DC5B6E /* InkYomiTests */ = {
 			isa = PBXGroup;
 			children = (
+				6C53FB075E8A8567B0CF762E /* ContentKeyWrapperTests.swift */,
+				4B951D40D079029A0E17C81F /* InkyomiCryptoVectorTests.swift */,
 				228582E531146F63FEDB3BAF /* Resources */,
 			);
 			path = InkYomiTests;
@@ -958,6 +964,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B0821CC81AFAA9C6E18B597 /* ContentKeyWrapperTests.swift in Sources */,
+				1672057106DAB9A169A5C56C /* InkyomiCryptoVectorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
