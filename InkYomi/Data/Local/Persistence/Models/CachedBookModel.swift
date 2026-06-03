@@ -19,6 +19,13 @@ final class CachedBookModel {
     var progressPercent: Float
     var totalReadingTimeMs: Int64
 
+    // MARK: - Reading-position sync bookkeeping
+    //
+    // Additive optional / defaulted → SwiftData lightweight migration.
+    // `progressNeedsSync` flags that `lastLocatorJson` / `progressPercent`
+    // have advanced locally and still owe a debounced POST to /progress.
+    var progressNeedsSync: Bool = false
+
     init(
         bookId: String,
         title: String,

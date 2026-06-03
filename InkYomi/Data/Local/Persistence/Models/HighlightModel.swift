@@ -12,6 +12,21 @@ final class HighlightModel {
     var note: String?
     var createdAt: Date
 
+    // MARK: - Server sync bookkeeping
+    //
+    // Additive optional / defaulted fields → SwiftData lightweight
+    // migration, no manual migration plan.
+    //
+    // `serverId` is the backend annotation id once pushed.
+    // `updatedAt` drives last-write-wins reconciliation against the
+    // server's `updated_at`. `needsSync` flags a local create/edit that
+    // still has to be pushed. `pendingDelete` marks a removed annotation
+    // awaiting a server DELETE.
+    var serverId: String?
+    var updatedAt: Date = Date()
+    var needsSync: Bool = false
+    var pendingDelete: Bool = false
+
     init(
         id: String = UUID().uuidString,
         bookId: String,
@@ -20,7 +35,11 @@ final class HighlightModel {
         colorHex: String = HighlightColor.yellow.rawValue,
         style: String = HighlightStyle.highlight.rawValue,
         note: String? = nil,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        updatedAt: Date = Date(),
+        serverId: String? = nil,
+        needsSync: Bool = false,
+        pendingDelete: Bool = false
     ) {
         self.id = id
         self.bookId = bookId
@@ -30,6 +49,10 @@ final class HighlightModel {
         self.style = style
         self.note = note
         self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.serverId = serverId
+        self.needsSync = needsSync
+        self.pendingDelete = pendingDelete
     }
 
     func toReaderHighlight() -> ReaderHighlight {
