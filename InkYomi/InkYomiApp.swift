@@ -19,9 +19,6 @@ struct InkYomiApp: App {
                 .environment(container.appState)
                 .modelContainer(container.modelContainer)
                 .preferredColorScheme(appearance.colorScheme)
-                .onOpenURL { url in
-                    container.deepLinkHandler.handle(url)
-                }
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .background {
