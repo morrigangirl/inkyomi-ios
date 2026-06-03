@@ -4,6 +4,7 @@ struct BookDetailView: View {
     let bookId: String
     @Environment(DependencyContainer.self) private var container
     @Environment(\.horizontalSizeClass) private var hSizeClass
+    @Environment(\.openURL) private var openURL
     @State private var viewModel = BookDetailViewModel()
     @State private var showReader = false
     @State private var showLookInside = false
@@ -265,11 +266,17 @@ struct BookDetailView: View {
             .fullScreenCover(isPresented: $showReader) {
                 ReaderView(bookId: bookId)
             }
-        } else if book.isPurchasable, let price = book.priceUsd {
+        } else if book.isPurchasable {
+            // Purchases happen on the website, never in-app, to avoid
+            // in-app-purchase fees. Open the book's public page in the
+            // system default browser (external) so the user clearly
+            // leaves the app — not an in-app SFSafariViewController.
             Button {
-                // Add to cart
+                if let url = URL(string: "https://inkcolors.shop/books/\(book.icin ?? book.slug)") {
+                    openURL(url)
+                }
             } label: {
-                Label(String(format: "Add to Cart - $%.2f", price), systemImage: "cart.badge.plus")
+                Label("View Online", systemImage: "arrow.up.right.square")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
