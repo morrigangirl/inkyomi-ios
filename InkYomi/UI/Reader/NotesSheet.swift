@@ -94,8 +94,31 @@ struct NotesSheet: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
+                    .contextMenu {
+                        Menu("Change Color") {
+                            ForEach(highlightColorOptions, id: \.self) { hex in
+                                Button {
+                                    viewModel.editHighlight(id: highlight.id, colorHex: hex, note: nil)
+                                } label: {
+                                    Label(colorName(hex), systemImage: "circle.fill")
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    private let highlightColorOptions = ["#F7D774", "#A8E6CF", "#FFB7B2", "#B5B9FF"]
+
+    private func colorName(_ hex: String) -> String {
+        switch hex {
+        case "#F7D774": return "Yellow"
+        case "#A8E6CF": return "Green"
+        case "#FFB7B2": return "Pink"
+        case "#B5B9FF": return "Blue"
+        default: return "Color"
         }
     }
 

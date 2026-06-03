@@ -31,6 +31,7 @@ final class DependencyContainer: @unchecked Sendable {
     let opdsLendingAPIService: OpdsLendingAPIService
     let spanTelemetryAPIService: SpanTelemetryAPIService
     let readerAPIService: ReaderAPIService
+    let readerSyncAPIService: ReaderSyncAPIService
 
     // Repositories
     let authRepository: NativeAuthRepository
@@ -46,6 +47,7 @@ final class DependencyContainer: @unchecked Sendable {
     let bookRepository: BookRepositoryImpl
     let storageRepository: StorageRepository
     let loanRenewalCoordinator: LoanRenewalCoordinator
+    let readerSyncCoordinator: ReaderSyncCoordinator
 
     // Preferences
     let recentSearches: RecentSearchesPreferences
@@ -140,6 +142,7 @@ final class DependencyContainer: @unchecked Sendable {
         // Telemetry
         self.spanTelemetryAPIService = SpanTelemetryAPIService(client: apiClient)
         self.readerAPIService = ReaderAPIService(client: apiClient)
+        self.readerSyncAPIService = ReaderSyncAPIService(client: apiClient)
         self.spanTelemetryRepository = SpanTelemetryRepository(modelContainer: modelContainer)
 
         // Downloads & DRM
@@ -165,5 +168,14 @@ final class DependencyContainer: @unchecked Sendable {
         // Storage management + proactive loan renewal
         self.storageRepository = StorageRepository()
         self.loanRenewalCoordinator = LoanRenewalCoordinator(lendingRepository: lendingRepository)
+
+        // Reader-state sync (bookmarks, annotations, position, preferences).
+        // MainActor-isolated like ReaderPreferences above. Capture locals so
+        // the closure doesn't reference `self` before init completes.
+        let readerSyncAPI = self.readerSyncAPIService
+        let container = self.modelContainer
+        self.readerSyncCoordinator = MainActor.assumeIsolated {
+            ReaderSyncCoordinator(api: readerSyncAPI, modelContainer: container)
+        }
     }
 }

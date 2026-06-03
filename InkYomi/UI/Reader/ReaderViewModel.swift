@@ -74,6 +74,7 @@ final class ReaderViewModel {
     private var lendingRepository: (any LendingRepository)?
     private var readerPreferences: ReaderPreferences?
     private var contentProtection: InkyomiContentProtection?
+    private var readerSyncCoordinator: ReaderSyncCoordinator?
 
     // Session tracking
     private var activeHref: String?
@@ -92,13 +93,15 @@ final class ReaderViewModel {
         lendingRepository: any LendingRepository,
         modelContext: ModelContext,
         readerPreferences: ReaderPreferences,
-        contentProtection: InkyomiContentProtection
+        contentProtection: InkyomiContentProtection,
+        readerSyncCoordinator: ReaderSyncCoordinator
     ) {
         self.bookRepository = bookRepository
         self.lendingRepository = lendingRepository
         self.modelContext = modelContext
         self.readerPreferences = readerPreferences
         self.contentProtection = contentProtection
+        self.readerSyncCoordinator = readerSyncCoordinator
         loadSettings()
     }
 
@@ -152,6 +155,12 @@ final class ReaderViewModel {
             debugLog("[Reader] loadBook: got file at \(fileURL.path)")
             isDownloading = false
 
+            // Pull + reconcile server reader-state into the local store
+            // BEFORE we read the resume position, so a forward-only server
+            // position (read on another device) is honored on open. Fully
+            // best-effort — reading works offline if this no-ops.
+            await readerSyncCoordinator?.syncOnOpen(bookId: bookId)
+
             // Refresh cached info
             let refreshed = fetchCachedBook()
             let initialLocatorJson = refreshed?.lastLocatorJson
@@ -185,9 +194,9 @@ final class ReaderViewModel {
             progressPercent = refreshed?.progressPercent ?? 0
             isLoading = false
 
-            // Load annotations
-            await loadBookmarks()
-            await loadHighlights()
+            // Load annotations (reads the local store the sync merged into)
+            loadBookmarks()
+            loadHighlights()
 
         } catch {
             debugLog("[Reader] FAILED to load book \(self.bookId): \(error)")
@@ -291,6 +300,9 @@ final class ReaderViewModel {
         cached.lastLocatorJson = locatorJson
         cached.progressPercent = Float(progression)
         try? modelContext?.save()
+        // Flag for a debounced (~5s) push to /progress. Forward-only is
+        // enforced on the pull side; locally we always store the latest.
+        readerSyncCoordinator?.recordPositionChanged(bookId: bookId)
     }
 
     // MARK: - Controls
@@ -313,34 +325,29 @@ final class ReaderViewModel {
     // MARK: - Bookmarks
 
     func addBookmark(locator: Locator) {
-        guard let bookRepository else { return }
+        guard let readerSyncCoordinator else { return }
         let jsonDict = locator.json
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict),
               let json = String(data: jsonData, encoding: .utf8) else { return }
 
-        Task {
-            _ = try? await bookRepository.addBookmark(
-                bookId: bookId,
-                locatorJson: json,
-                chapterTitle: locator.title,
-                label: locator.title ?? "Bookmark"
-            )
-            await loadBookmarks()
-            message = "Bookmark added"
-        }
+        // Optimistic local write + background push handled by the coordinator.
+        readerSyncCoordinator.addBookmark(
+            bookId: bookId,
+            locatorJson: json,
+            chapterTitle: locator.title,
+            label: locator.title ?? "Bookmark"
+        )
+        loadBookmarks()
+        message = "Bookmark added"
     }
 
     func deleteBookmark(id: String) {
-        guard let bookRepository else { return }
-        Task {
-            try? await bookRepository.deleteBookmark(id: id)
-            await loadBookmarks()
-        }
+        readerSyncCoordinator?.deleteBookmark(id: id)
+        loadBookmarks()
     }
 
-    private func loadBookmarks() async {
-        guard let bookRepository else { return }
-        bookmarks = (try? await bookRepository.getBookmarks(bookId: bookId)) ?? []
+    private func loadBookmarks() {
+        bookmarks = readerSyncCoordinator?.getBookmarks(bookId: bookId) ?? []
     }
 
     // MARK: - Highlights
@@ -353,36 +360,38 @@ final class ReaderViewModel {
     }
 
     func confirmHighlight() {
-        guard let pending = pendingHighlight, let bookRepository else { return }
+        guard let pending = pendingHighlight, let readerSyncCoordinator else { return }
         pendingHighlight = nil
-        Task {
-            _ = try? await bookRepository.addHighlight(
-                bookId: bookId,
-                locatorJson: pending.locatorJson,
-                quote: pending.quote,
-                colorHex: pending.colorHex,
-                style: .highlight,
-                note: pending.note.isEmpty ? nil : pending.note
-            )
-            await loadHighlights()
-        }
+        // Optimistic local write + background push handled by the coordinator.
+        readerSyncCoordinator.addHighlight(
+            bookId: bookId,
+            locatorJson: pending.locatorJson,
+            quote: pending.quote,
+            colorHex: pending.colorHex,
+            style: .highlight,
+            note: pending.note.isEmpty ? nil : pending.note
+        )
+        loadHighlights()
     }
 
     func cancelPendingHighlight() {
         pendingHighlight = nil
     }
 
-    func deleteHighlight(id: String) {
-        guard let bookRepository else { return }
-        Task {
-            try? await bookRepository.deleteHighlight(id: id)
-            await loadHighlights()
-        }
+    /// Edit an existing highlight's color and/or note. Optimistic; the
+    /// coordinator bumps `updatedAt` (last-write-wins) and pushes a PATCH.
+    func editHighlight(id: String, colorHex: String?, note: String?) {
+        readerSyncCoordinator?.updateHighlight(id: id, colorHex: colorHex, style: nil, note: note)
+        loadHighlights()
     }
 
-    private func loadHighlights() async {
-        guard let bookRepository else { return }
-        highlights = (try? await bookRepository.getHighlights(bookId: bookId)) ?? []
+    func deleteHighlight(id: String) {
+        readerSyncCoordinator?.deleteHighlight(id: id)
+        loadHighlights()
+    }
+
+    private func loadHighlights() {
+        highlights = readerSyncCoordinator?.getHighlights(bookId: bookId) ?? []
     }
 
     // MARK: - Settings
@@ -441,6 +450,8 @@ final class ReaderViewModel {
         prefs.theme = theme
         prefs.pageLayout = pageLayout
         NotificationCenter.default.post(name: .readerPreferencesChanged, object: nil)
+        // Debounced push of the synced subset (fontFamily, lineHeight, theme).
+        readerSyncCoordinator?.recordPreferencesChanged(prefs)
     }
 
     // MARK: - Search
@@ -461,10 +472,23 @@ final class ReaderViewModel {
 
     func onForegrounded() {
         activeLocationStart = Date()
+        // Pull reader preferences on foreground and reflect any remote
+        // change into the live reader settings.
+        guard let coordinator = readerSyncCoordinator, let prefs = readerPreferences else { return }
+        Task {
+            await coordinator.pullPreferences(into: prefs)
+            loadSettings()
+            NotificationCenter.default.post(name: .readerPreferencesChanged, object: nil)
+        }
     }
 
     func closeReader() {
         closeActiveLocation()
+        // Flush queued position + bookmark/annotation pushes immediately so
+        // nothing is lost if the app is killed after close.
+        guard let coordinator = readerSyncCoordinator else { return }
+        let bid = bookId
+        Task { await coordinator.syncOnClose(bookId: bid) }
     }
 
     // MARK: - SwiftData Helpers
