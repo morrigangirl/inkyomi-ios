@@ -128,7 +128,13 @@ final class InkyomiContentProtection: ContentProtection {
         // ---- 4. Derive transport key + unwrap content key ----
         let contentKey: Data
         do {
-            let transportSecret = hexToBytes(transportSecretHex)
+            // Fail-closed on a malformed/corrupt stored secret rather than
+            // crashing: hexToBytes returns nil on odd-length or non-hex
+            // input, and TransportKey.derive requires exactly 32 bytes.
+            guard let transportSecret = hexToBytes(transportSecretHex),
+                  transportSecret.count == 32 else {
+                return failClosed("Malformed transport_secret for loanId=\(loanId)")
+            }
             let transportKey = TransportKey.derive(transportSecret: transportSecret, licenseId: license.id)
 
             guard let encryptedValue = license.encryption.contentKey.encryptedValue,
@@ -254,14 +260,17 @@ final class InkyomiContentProtection: ContentProtection {
         let rights: UserRights = UnrestrictedUserRights()
     }
 
-    private func hexToBytes(_ hex: String) -> Data {
-        precondition(hex.count % 2 == 0, "transport_secret hex must have even length")
+    /// Decode a hex string to bytes. Returns `nil` on malformed input
+    /// (odd length or a non-hex character) so callers in the fail-closed
+    /// DRM path can reject the open gracefully instead of trapping.
+    private func hexToBytes(_ hex: String) -> Data? {
+        guard hex.count % 2 == 0 else { return nil }
         var data = Data(capacity: hex.count / 2)
         var index = hex.startIndex
         for _ in 0..<hex.count / 2 {
             let nextIndex = hex.index(index, offsetBy: 2)
             guard let byte = UInt8(hex[index..<nextIndex], radix: 16) else {
-                preconditionFailure("Invalid hex character")
+                return nil
             }
             data.append(byte)
             index = nextIndex
