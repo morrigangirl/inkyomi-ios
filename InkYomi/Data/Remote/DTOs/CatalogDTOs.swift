@@ -223,43 +223,8 @@ struct TagDto: Decodable {
 }
 
 // MARK: - Search
-
-struct SearchRequest: Encodable {
-    let q: String
-}
-
-struct SearchResponse: Decodable {
-    let data: [SearchResultDto]
-    let error: String?
-}
-
-struct SearchResultDto: Decodable {
-    let id: String
-    let slug: String
-    let icin: String?
-    let title: String
-    let authorName: String?
-    let coverOriginalUrl: String?
-    let coverCardUrl: String?
-    let coverThumbUrl: String?
-    let coverUrl: String?
-    let coverAlt: String?
-    let hook: String?
-    let chips: [String]?
-    let isNewRelease: Bool?
-
-    func toDomain() -> Book {
-        Book(
-            id: id,
-            title: title,
-            slug: slug,
-            icin: icin,
-            coverUrl: coverCardUrl ?? coverUrl,
-            authorName: authorName,
-            priceUsd: nil,
-            hook: hook,
-            chips: chips,
-            isNewRelease: isNewRelease ?? false
-        )
-    }
-}
+//
+// The legacy v1 search DTOs (`SearchRequest`/`SearchResponse`/
+// `SearchResultDto`) were removed alongside the dead `POST /api/search`
+// call. All search now flows through `/api/search/v2` — see
+// `SearchDTOs.swift` and `SearchAPIService`.

@@ -14,12 +14,4 @@ struct CatalogAPIService: Sendable {
     func getBookDetail(idOrSlug: String) async throws -> BookDetailResponse {
         try await client.request(Endpoint(path: "data/books/\(idOrSlug)"))
     }
-
-    func search(query: String) async throws -> SearchResponse {
-        try await client.request(Endpoint(
-            path: "search",
-            method: .post,
-            body: SearchRequest(q: query)
-        ))
-    }
 }
