@@ -12,6 +12,15 @@ final class BookDetailViewModel {
     /// doesn't render.
     var relatedBooks: [RelatedBook] = []
 
+    // MARK: Look Inside
+
+    /// The fetched preview, once loaded. Nil until the user opens it.
+    var lookInsidePreview: LookInsidePreview?
+    var isLoadingLookInside = false
+    /// True after a fetch that found no preview (HTTP 404) or failed, so
+    /// the sheet can show a "no preview" message instead of spinning.
+    var lookInsideUnavailable = false
+
     private var catalogRepository: (any CatalogRepository)?
     private var discoveryRepository: (any DiscoveryRepository)?
 
@@ -50,5 +59,25 @@ final class BookDetailViewModel {
         } catch {
             // Soft enhancement — no error surfaced on failure.
         }
+    }
+
+    /// Fetch the Look Inside preview on demand (when the user opens it).
+    /// A 404 from the backend maps to `lookInsideUnavailable` rather than
+    /// an error. Skips the network call if the preview is already loaded.
+    func loadLookInside(idOrSlug: String) async {
+        guard let catalogRepository else { return }
+        guard lookInsidePreview == nil else { return }
+        isLoadingLookInside = true
+        lookInsideUnavailable = false
+        do {
+            if let preview = try await catalogRepository.getLookInside(idOrSlug: idOrSlug) {
+                lookInsidePreview = preview
+            } else {
+                lookInsideUnavailable = true
+            }
+        } catch {
+            lookInsideUnavailable = true
+        }
+        isLoadingLookInside = false
     }
 }

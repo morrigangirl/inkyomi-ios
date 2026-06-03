@@ -168,6 +168,7 @@ struct BookDetailResponse: Decodable {
     let authors: [AuthorDto]?
     let tags: [TagDto]?
     let categories: [CategoryDto]?
+    let lookInside: LookInsideDto?
 
     func toDomain() -> BookDetail {
         BookDetail(
@@ -189,7 +190,43 @@ struct BookDetailResponse: Decodable {
             owned: owned ?? false,
             authors: (authors ?? []).map { $0.toDomain() },
             tags: (tags ?? []).map { $0.toDomain() },
-            categories: (categories ?? []).map { $0.toDomain() }
+            categories: (categories ?? []).map { $0.toDomain() },
+            lookInside: lookInside?.toDomain() ?? .unavailable
+        )
+    }
+}
+
+/// The `look_inside` status block on the book-detail response (migration
+/// 115). `available` is what the reader UI gates on — true only when the
+/// feature is enabled, a successful preview exists, and the book is
+/// publicly visible. The `preview_status` / `preview_failure_reason`
+/// fields are author-only and ignored here.
+struct LookInsideDto: Decodable {
+    let enabled: Bool?
+    let available: Bool?
+
+    func toDomain() -> LookInside {
+        LookInside(enabled: enabled ?? false, available: available ?? false)
+    }
+}
+
+// MARK: - Look Inside preview
+
+/// Response from `GET /api/data/books/:idOrSlug/look-inside` (no auth).
+/// `previewHtml` is already sanitized server-side; the client renders it
+/// in a JavaScript-disabled WKWebView, never the DRM reader.
+struct LookInsidePreviewResponse: Decodable {
+    let sourceTitle: String?
+    let previewHtml: String
+    let wordCount: Int?
+    let truncated: Bool?
+
+    func toDomain() -> LookInsidePreview {
+        LookInsidePreview(
+            sourceTitle: sourceTitle,
+            previewHtml: previewHtml,
+            wordCount: wordCount,
+            truncated: truncated ?? false
         )
     }
 }

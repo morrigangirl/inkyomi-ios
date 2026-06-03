@@ -87,6 +87,7 @@
 		770757FBFC182B890A89C247 /* BookRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC170036D746FE75DC715B61 /* BookRepositoryImpl.swift */; };
 		77162267ED57F7E558FDA017 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FDADBB75D11015D280879ED /* StorageRepository.swift */; };
 		7758F5A0302918CDF32584FC /* CatalogDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6382A59DA80FD03F494581 /* CatalogDTOs.swift */; };
+		77A77BCF7817F47031E31DDF /* LookInsideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743E34B0BF558E12A03686A1 /* LookInsideView.swift */; };
 		77DC3F8F4426110EE467E7BE /* LicenseSignatureVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12290C1E2058A74918F7DCD /* LicenseSignatureVerifier.swift */; };
 		792D20A4FB3EF3F0E0FBCC6C /* InkYomiTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C876E658A49403343F3C8A /* InkYomiTheme.swift */; };
 		794046EA9ABE2291EC56E617 /* CatalogAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA539F91D6563D126F1C455 /* CatalogAPIService.swift */; };
@@ -255,6 +256,7 @@
 		6AB620ED2CF33A6A1A7F6331 /* BookCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCardView.swift; sourceTree = "<group>"; };
 		6B497015ECD12702E8263024 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		71AE8E28F304149654DBFDA0 /* DiscoveryDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryDTOs.swift; sourceTree = "<group>"; };
+		743E34B0BF558E12A03686A1 /* LookInsideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookInsideView.swift; sourceTree = "<group>"; };
 		752022A2FDD99BA9C5CAFB00 /* DeviceListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListViewModel.swift; sourceTree = "<group>"; };
 		75AEDC7D2F1EB2D0E8D94D72 /* LcpTransportSecretStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LcpTransportSecretStore.swift; sourceTree = "<group>"; };
 		763AD0936DB4FA36EEDBFBCB /* DeviceAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAPIService.swift; sourceTree = "<group>"; };
@@ -684,6 +686,7 @@
 			children = (
 				8E9032BBED76CB98725878F3 /* BookDetailView.swift */,
 				D17B752867921F98B3D46270 /* BookDetailViewModel.swift */,
+				743E34B0BF558E12A03686A1 /* LookInsideView.swift */,
 			);
 			path = BookDetail;
 			sourceTree = "<group>";
@@ -1057,6 +1060,7 @@
 				F1C91E5598C1AD8A269C39DC /* LoanRenewalScheduler.swift in Sources */,
 				A42099996D29C1E23E343C53 /* LoginView.swift in Sources */,
 				3ECAF2613F0C3168231A1E22 /* LoginViewModel.swift in Sources */,
+				77A77BCF7817F47031E31DDF /* LookInsideView.swift in Sources */,
 				5B935DD82342493A65C90D6D /* LsdStatusChecker.swift in Sources */,
 				D47AF12ACA38D17C17B11D7E /* NativeAuthRepository.swift in Sources */,
 				36260EFEE4B1801B645D9FD1 /* NotesSheet.swift in Sources */,

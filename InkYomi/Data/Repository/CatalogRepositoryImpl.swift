@@ -15,6 +15,16 @@ struct CatalogRepositoryImpl: CatalogRepository, Sendable {
         let response = try await api.getBookDetail(idOrSlug: idOrSlug)
         return response.toDomain()
     }
+
+    func getLookInside(idOrSlug: String) async throws -> LookInsidePreview? {
+        do {
+            return try await api.getLookInside(idOrSlug: idOrSlug).toDomain()
+        } catch APIError.httpError(let statusCode, _) where statusCode == 404 {
+            // No preview available for this book — a normal, expected
+            // outcome the UI renders as "no preview", not an error.
+            return nil
+        }
+    }
 }
 
 /// Mapper extracted to a top-level extension so other repositories
