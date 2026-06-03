@@ -16,6 +16,15 @@ struct AppRouter: View {
                 AuthNavHost()
             case .authenticated:
                 AdaptiveMainShell()
+                    .task {
+                        // Once authenticated, make sure this device is
+                        // registered with its public key and the correct
+                        // platform. `device-login` creates the row but
+                        // hardcodes platform="android" server-side; the
+                        // registration call sends platform="ios". Best-
+                        // effort — never blocks or surfaces errors.
+                        try? await container.deviceRepository.ensureRegistered()
+                    }
             }
         }
     }

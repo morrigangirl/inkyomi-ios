@@ -25,8 +25,19 @@ struct DeviceDto: Decodable {
     let lastSeenAt: String?
     let isCurrent: Bool?
 
-    func toDomain() -> Device {
+    /// - Parameter currentRegistrationId: the `user_devices.id` the server
+    ///   assigned to this device at login. When present, `isCurrent` is
+    ///   computed locally (row PK match) because the server's own
+    ///   `is_current` flag compares against the wrong identifier. Falls
+    ///   back to the server value when we don't yet know our row id.
+    func toDomain(currentRegistrationId: String? = nil) -> Device {
         let formatter = ISO8601DateFormatter()
+        let resolvedIsCurrent: Bool
+        if let currentRegistrationId {
+            resolvedIsCurrent = (id == currentRegistrationId)
+        } else {
+            resolvedIsCurrent = isCurrent ?? false
+        }
         return Device(
             id: id,
             deviceName: deviceName,
@@ -34,7 +45,7 @@ struct DeviceDto: Decodable {
             platform: platform,
             registeredAt: registeredAt.flatMap { formatter.date(from: $0) },
             lastSeenAt: lastSeenAt.flatMap { formatter.date(from: $0) },
-            isCurrent: isCurrent ?? false
+            isCurrent: resolvedIsCurrent
         )
     }
 }

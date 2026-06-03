@@ -73,10 +73,12 @@ actor NativeAuthRepository: AuthRepository {
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileId)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileEmail)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileDisplayName)
+        UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.deviceRegistrationId)
         try? keychain.deleteAll()
 
         await MainActor.run {
             appState.authState = .unauthenticated
+            appState.deviceRegistrationId = nil
         }
     }
 
@@ -186,6 +188,18 @@ actor NativeAuthRepository: AuthRepository {
         UserDefaults.standard.set(expiry.timeIntervalSince1970, forKey: Constants.UserDefaultsKeys.accessTokenExpiry)
 
         try? keychain.save(response.refreshToken, forKey: "refreshToken")
+
+        // The server assigns the `user_devices.id` (row PK) on device-login
+        // and returns it as `deviceRegistrationId`. Persist it so the
+        // device-list screen can recompute `isCurrent` correctly (the
+        // backend's own `is_current` keys off this row id, not our
+        // client-side `device_id`). Device-refresh omits this field, so
+        // only overwrite when it's actually present — never clobber a
+        // previously-good value with nil on a token refresh.
+        if let registrationId = response.deviceRegistrationId {
+            UserDefaults.standard.set(registrationId, forKey: Constants.UserDefaultsKeys.deviceRegistrationId)
+            Task { @MainActor in appState.deviceRegistrationId = registrationId }
+        }
 
         let user = response.user
         UserDefaults.standard.set(user.id, forKey: Constants.UserDefaultsKeys.userProfileId)
