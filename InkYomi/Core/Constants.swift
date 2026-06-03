@@ -31,6 +31,7 @@ enum Constants {
         static let accessToken = "accessToken"
         static let accessTokenExpiry = "accessTokenExpiry"
         static let deviceId = "deviceId"
+        static let deviceRegistrationId = "deviceRegistrationId"
         static let userProfileId = "userProfileId"
         static let userProfileEmail = "userProfileEmail"
         static let userProfileDisplayName = "userProfileDisplayName"
