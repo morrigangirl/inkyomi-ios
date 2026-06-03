@@ -162,7 +162,11 @@ struct BookDetailResponse: Decodable {
     let priceUsd: String?
     let isPurchasable: Bool?
     let isNewRelease: Bool?
-    let ratingAvg: Double?
+    // The backend serializes numeric columns (price_usd, rating_avg) as
+    // JSON strings, e.g. "4.50". Decode as String and convert in toDomain,
+    // mirroring priceUsd — declaring this Double fails decoding for any
+    // book that has a rating.
+    let ratingAvg: String?
     let ratingCount: Int?
     let owned: Bool?
     let authors: [AuthorDto]?
@@ -185,7 +189,7 @@ struct BookDetailResponse: Decodable {
             priceUsd: priceUsd.flatMap { Double($0) },
             isPurchasable: isPurchasable ?? false,
             isNewRelease: isNewRelease ?? false,
-            ratingAvg: ratingAvg,
+            ratingAvg: ratingAvg.flatMap { Double($0) },
             ratingCount: ratingCount,
             owned: owned ?? false,
             authors: (authors ?? []).map { $0.toDomain() },

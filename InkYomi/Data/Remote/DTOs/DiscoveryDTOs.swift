@@ -39,13 +39,17 @@ struct DiscoverHomeResponseDto: Decodable {
 }
 
 struct BrowseHubGroupDto: Decodable, Sendable {
-    let key: String
+    // The browse-hub endpoint names the group identifier `groupKey` (the
+    // tiles use `key`). Decode from `groupKey` directly — declaring this
+    // `key` threw keyNotFound and broke the whole browse-hub payload
+    // (and the combined discover/home that embeds it).
+    let groupKey: String
     let label: String
     let tiles: [BrowseHubTileDto]
 
     func toDomain() -> BrowseHubGroup {
         BrowseHubGroup(
-            key: key,
+            key: groupKey,
             label: label,
             tiles: tiles.map { $0.toDomain() }
         )
