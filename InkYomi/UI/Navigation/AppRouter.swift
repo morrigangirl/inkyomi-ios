@@ -5,6 +5,7 @@ struct AppRouter: View {
     @Environment(DependencyContainer.self) private var container
 
     var body: some View {
+        @Bindable var appState = appState
         Group {
             switch appState.authState {
             case .loading:
@@ -24,6 +25,13 @@ struct AppRouter: View {
                         // registration call sends platform="ios". Best-
                         // effort — never blocks or surfaces errors.
                         try? await container.deviceRepository.ensureRegistered()
+                    }
+                    // Non-blocking device-limit prompt. Set on sign-in when
+                    // the account is at its device cap and this device
+                    // couldn't be registered. The user is already signed in;
+                    // this just offers a path to free a slot + retry.
+                    .sheet(isPresented: $appState.deviceLimitReached) {
+                        DeviceLimitView()
                     }
             }
         }

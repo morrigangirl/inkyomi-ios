@@ -18,6 +18,13 @@ final class AppState: @unchecked Sendable {
     /// Nil until the first successful login on this install.
     var deviceRegistrationId: String?
 
+    /// Set right after a successful sign-in when the backend reports the
+    /// account is at its 5-device cap and this device was NOT registered
+    /// (`deviceLimitReached`). Login still succeeds — this is a
+    /// non-blocking signal the UI consumes once to prompt the user to
+    /// free up a slot, then clears.
+    var deviceLimitReached = false
+
     init() {
         if let existing = UserDefaults.standard.string(forKey: Constants.UserDefaultsKeys.deviceId) {
             self.deviceId = existing

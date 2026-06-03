@@ -35,6 +35,9 @@ actor NativeAuthRepository: AuthRepository {
         storeTokens(response)
         await MainActor.run {
             appState.authState = .authenticated(response.user.toDomain())
+            // Surface the at-capacity signal exactly once per sign-in. A
+            // clean login resets it so a prior warning doesn't linger.
+            appState.deviceLimitReached = response.deviceLimitReached ?? false
         }
     }
 
