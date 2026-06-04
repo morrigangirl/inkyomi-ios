@@ -266,17 +266,19 @@ struct BookDetailView: View {
             .fullScreenCover(isPresented: $showReader) {
                 ReaderView(bookId: bookId)
             }
-        } else if book.isPurchasable {
+        } else if book.isPurchasable || book.isPreorderable {
             // Purchases happen on the website, never in-app, to avoid
             // in-app-purchase fees. Open the book's public page in the
             // system default browser (external) so the user clearly
-            // leaves the app — not an in-app SFSafariViewController.
+            // leaves the app — not an in-app SFSafariViewController. For a
+            // pre-order this is where the reader places the reservation.
             Button {
                 if let url = URL(string: "https://inkcolors.shop/books/\(book.icin ?? book.slug)") {
                     openURL(url)
                 }
             } label: {
-                Label("View Online", systemImage: "arrow.up.right.square")
+                Label(book.isPreorderable ? "Pre-order Online" : "View Online",
+                      systemImage: "arrow.up.right.square")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)

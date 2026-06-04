@@ -16,6 +16,12 @@ struct BookDetail: Identifiable, Equatable, Sendable {
     let coverUrl: String?
     let priceUsd: Double?
     let isPurchasable: Bool
+    /// Backend `preorder_state` ("open" | "paused" | "release_pending" |
+    /// "released" | "disabled" | "suspended_by_admin" | "canceled"). nil on
+    /// older backends that predate pre-orders.
+    let preorderState: String?
+    /// ISO-8601 release timestamp for a pre-order; nil when not a pre-order.
+    let releaseAt: String?
     let isNewRelease: Bool
     let ratingAvg: Double?
     let ratingCount: Int?
@@ -25,6 +31,13 @@ struct BookDetail: Identifiable, Equatable, Sendable {
     let categories: [Category]
     /// Pre-purchase "Look Inside" availability for this book.
     let lookInside: LookInside
+
+    /// Storefront pre-order CTA gate — mirrors the web SPA: a committed,
+    /// still-unreleased pre-order is published with `preorderState == "open"`
+    /// (and `isPurchasable` stays false until it releases). The book-detail
+    /// "View Online" button surfaces for these so the reader can complete the
+    /// pre-order on inkcolors.shop (commerce is web-only).
+    var isPreorderable: Bool { preorderState == "open" }
 }
 
 struct Author: Equatable, Sendable, Hashable {
