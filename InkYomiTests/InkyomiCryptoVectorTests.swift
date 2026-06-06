@@ -115,9 +115,9 @@ final class InkyomiCryptoVectorTests: XCTestCase {
     }
 
     /// `computeBoundPassphrase` = HMAC-SHA256(device_secret, "email:pin")
-    /// with the email lowercased. The Argon2id `deriveUserKey` vectors are
-    /// intentionally NOT exercised here: that function is an unimplemented
-    /// placeholder (no Argon2 C bridge yet) and calling it traps.
+    /// with the email lowercased. The shared `kdf.json` also carries Argon2id
+    /// `deriveUserKey` vectors; the iOS app never used that derivation, so it
+    /// isn't implemented here and those vectors are intentionally not exercised.
     func testBoundPassphraseVectors() throws {
         let data = try vectorData("kdf", "json")
         let parsed = try JSONDecoder().decode(KdfVectors.self, from: data)
