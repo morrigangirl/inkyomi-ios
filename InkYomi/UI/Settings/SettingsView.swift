@@ -3,8 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(DependencyContainer.self) private var container
 
-    @State private var showPrivacyWeb = false
-    @State private var showTermsWeb = false
+    @State private var legalDoc: LegalDoc?
     @State private var showDeleteConfirm = false
 
     @AppStorage(AppearancePreference.storageKey) private var appearanceRaw = AppearancePreference.system.rawValue
@@ -13,6 +12,21 @@ struct SettingsView: View {
         let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
         return "v\(short) (\(build))"
+    }
+
+    /// The legal document shown in an in-app Safari sheet. Driving one
+    /// `.sheet(item:)` off this enum — instead of two `.sheet(isPresented:)`
+    /// booleans on the same view — avoids the SwiftUI bug where stacked sheet
+    /// modifiers clobber each other and the wrong (or no) page opens.
+    private enum LegalDoc: Identifiable {
+        case privacy, terms
+        var id: Self { self }
+        var url: URL {
+            switch self {
+            case .privacy: InkColorsLinks.privacyURL
+            case .terms: InkColorsLinks.termsURL
+            }
+        }
     }
 
     var body: some View {
@@ -51,7 +65,7 @@ struct SettingsView: View {
 
             Section("Legal") {
                 Button {
-                    showPrivacyWeb = true
+                    legalDoc = .privacy
                 } label: {
                     settingsRow(
                         icon: "hand.raised",
@@ -62,7 +76,7 @@ struct SettingsView: View {
                 .buttonStyle(.plain)
 
                 Button {
-                    showTermsWeb = true
+                    legalDoc = .terms
                 } label: {
                     settingsRow(
                         icon: "doc.text",
@@ -111,11 +125,8 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
-        .sheet(isPresented: $showPrivacyWeb) {
-            SafariView(url: InkColorsLinks.privacyURL).ignoresSafeArea()
-        }
-        .sheet(isPresented: $showTermsWeb) {
-            SafariView(url: InkColorsLinks.termsURL).ignoresSafeArea()
+        .sheet(item: $legalDoc) { doc in
+            SafariView(url: doc.url).ignoresSafeArea()
         }
         .alert("Delete your account?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
