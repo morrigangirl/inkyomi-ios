@@ -6,8 +6,8 @@ import UIKit
 /// Centralised URLs and email addresses surfaced from Settings. Hosting on
 /// inkcolors.shop is the canonical home for legal pages.
 enum InkColorsLinks {
-    static let privacyURL = URL(string: "https://inkcolors.shop/privacy")!
-    static let termsURL = URL(string: "https://inkcolors.shop/terms")!
+    static let privacyURL = URL(string: "https://inkcolors.shop/legal/privacy")!
+    static let termsURL = URL(string: "https://inkcolors.shop/legal/terms")!
     static let supportEmail = "support@inkcolors.shop"
     static let privacyEmail = "privacy@inkcolors.shop"
     static let websiteURL = URL(string: "https://inkcolors.shop")!
