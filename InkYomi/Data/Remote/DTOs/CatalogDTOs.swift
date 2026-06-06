@@ -161,6 +161,13 @@ struct BookDetailResponse: Decodable {
     let coverAlt: String?
     let priceUsd: String?
     let isPurchasable: Bool?
+    // Pre-order CTA inputs. The backend joins these from the base `books`
+    // table (books_public predates pre-orders). A committed, still-unreleased
+    // pre-order is published with preorderState == "open" and
+    // isPurchasable == false until releaseAt. Decoded via the shared
+    // convertFromSnakeCase strategy (preorder_state / release_at).
+    let preorderState: String?
+    let releaseAt: String?
     let isNewRelease: Bool?
     // The backend serializes numeric columns (price_usd, rating_avg) as
     // JSON strings, e.g. "4.50". Decode as String and convert in toDomain,
@@ -188,6 +195,8 @@ struct BookDetailResponse: Decodable {
             coverUrl: coverCardUrl ?? coverUrl,
             priceUsd: priceUsd.flatMap { Double($0) },
             isPurchasable: isPurchasable ?? false,
+            preorderState: preorderState,
+            releaseAt: releaseAt,
             isNewRelease: isNewRelease ?? false,
             ratingAvg: ratingAvg.flatMap { Double($0) },
             ratingCount: ratingCount,
