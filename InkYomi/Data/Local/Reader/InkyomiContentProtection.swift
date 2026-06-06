@@ -69,7 +69,7 @@ final class InkyomiContentProtection: ContentProtection {
         }
 
         // ---- 2. Parse license + verify signature (fail-closed) ----
-        guard let licenseJsonString = String(data: licenseBytes, encoding: .utf8) else {
+        guard String(data: licenseBytes, encoding: .utf8) != nil else {
             return .failure(.assetNotSupported(nil))
         }
 

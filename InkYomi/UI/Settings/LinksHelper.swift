@@ -42,6 +42,7 @@ enum MailtoComposer {
     /// Open the system mail composer (or the system-resolved fallback) for
     /// the given address with optional subject + body. Best-effort — silent
     /// no-op if the URL cannot be opened.
+    @MainActor
     static func open(_ address: String, subject: String? = nil, body: String? = nil) {
         guard let url = url(to: address, subject: subject, body: body) else { return }
         UIApplication.shared.open(url)
