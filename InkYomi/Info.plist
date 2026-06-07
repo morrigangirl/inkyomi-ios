@@ -18,6 +18,15 @@
     <string>$(CURRENT_PROJECT_VERSION)</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
+    <!--
+      Export compliance: the app's only encryption is standard algorithms
+      (AES/HMAC/RSA via CryptoKit/CommonCrypto) used for DRM/content
+      protection and HTTPS, which qualifies for exemption — so it declares
+      no use of non-exempt encryption. This pre-answers the App Store
+      Connect prompt on every upload.
+    -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>UILaunchScreen</key>
