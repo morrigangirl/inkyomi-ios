@@ -11,6 +11,7 @@ enum InkColorsLinks {
     static let supportEmail = "support@inkcolors.shop"
     static let privacyEmail = "privacy@inkcolors.shop"
     static let websiteURL = URL(string: "https://inkcolors.shop")!
+    static let registerURL = URL(string: "https://inkcolors.shop/register")!
 }
 
 /// Drop-in `SafariServices.SFSafariViewController` wrapper. Used for
