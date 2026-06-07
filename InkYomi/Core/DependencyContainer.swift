@@ -25,6 +25,7 @@ final class DependencyContainer: @unchecked Sendable {
     let savedSearchesAPIService: SavedSearchesAPIService
     let entitlementAPIService: EntitlementAPIService
     let deviceAPIService: DeviceAPIService
+    let accountAPIService: AccountAPIService
     let opdsCatalogAPIService: OpdsCatalogAPIService
     let opdsLendingAPIService: OpdsLendingAPIService
     let spanTelemetryAPIService: SpanTelemetryAPIService
@@ -39,6 +40,7 @@ final class DependencyContainer: @unchecked Sendable {
     let savedSearchesRepository: SavedSearchesRepositoryImpl
     let libraryRepository: LibraryRepositoryImpl
     let deviceRepository: DeviceRepositoryImpl
+    let accountRepository: AccountRepositoryImpl
     let lendingRepository: LendingRepositoryImpl
     let spanTelemetryRepository: SpanTelemetryRepository
     let bookRepository: BookRepositoryImpl
@@ -120,6 +122,10 @@ final class DependencyContainer: @unchecked Sendable {
         // Device
         self.deviceAPIService = DeviceAPIService(client: apiClient)
         self.deviceRepository = DeviceRepositoryImpl(api: deviceAPIService, appState: appState)
+
+        // Account self-service (GDPR deletion — 30-day grace)
+        self.accountAPIService = AccountAPIService(client: apiClient)
+        self.accountRepository = AccountRepositoryImpl(api: accountAPIService)
 
         // Lending
         self.transportSecretStore = LcpTransportSecretStore(keychain: transportKeychain)

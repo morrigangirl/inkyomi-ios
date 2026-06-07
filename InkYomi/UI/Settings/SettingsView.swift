@@ -4,7 +4,6 @@ struct SettingsView: View {
     @Environment(DependencyContainer.self) private var container
 
     @State private var legalDoc: LegalDoc?
-    @State private var showDeleteConfirm = false
 
     @AppStorage(AppearancePreference.storageKey) private var appearanceRaw = AppearancePreference.system.rawValue
 
@@ -86,8 +85,8 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
 
-                Button {
-                    showDeleteConfirm = true
+                NavigationLink {
+                    DeleteAccountView()
                 } label: {
                     settingsRow(
                         icon: "trash",
@@ -95,7 +94,6 @@ struct SettingsView: View {
                         subtitle: "Permanently remove your account and data"
                     )
                 }
-                .buttonStyle(.plain)
             }
 
             Section("Support") {
@@ -128,18 +126,6 @@ struct SettingsView: View {
         .sheet(item: $legalDoc) { doc in
             SafariView(url: doc.url).ignoresSafeArea()
         }
-        .alert("Delete your account?", isPresented: $showDeleteConfirm) {
-            Button("Cancel", role: .cancel) {}
-            Button("Open email", role: .destructive) {
-                MailtoComposer.open(
-                    InkColorsLinks.privacyEmail,
-                    subject: "Account deletion request",
-                    body: deletionEmailBody
-                )
-            }
-        } message: {
-            Text("This will permanently delete your account, library, and reading history. This cannot be undone. We'll open your email app so you can send the request to our privacy team — they'll confirm and remove your account within 30 days.")
-        }
     }
 
     @ViewBuilder
@@ -161,15 +147,4 @@ struct SettingsView: View {
         }
     }
 
-    private var deletionEmailBody: String {
-        """
-        Hi InkColors team,
-
-        Please delete my account and all associated data.
-
-        App version: \(versionString)
-
-        Thanks.
-        """
-    }
 }
