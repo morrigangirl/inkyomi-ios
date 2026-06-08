@@ -36,6 +36,7 @@ struct HomeView: View {
         }
         .background(searchShortcut)
         .navigationTitle("InkYomi")
+        .announcesChanges(of: viewModel.error) { $0 }
         .task {
             viewModel.configure(
                 catalogRepository: container.catalogRepository,

@@ -21,6 +21,7 @@ struct BookDetailView: View {
         }
         .navigationTitle(viewModel.bookDetail?.title ?? "Book")
         .navigationBarTitleDisplayMode(.inline)
+        .announcesChanges(of: viewModel.error) { $0 }
         .sheet(isPresented: $showLookInside) {
             LookInsideView(
                 idOrSlug: viewModel.bookDetail?.icin ?? bookId,

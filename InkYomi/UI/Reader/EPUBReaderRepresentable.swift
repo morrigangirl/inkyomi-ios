@@ -178,6 +178,11 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
 
     func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
         viewModel.handleLocatorChanged(locator)
+        // Re-sync VoiceOver to the newly-rendered page after a turn / TOC jump so
+        // focus doesn't strand on the previous page's content (audit A2 / WCAG 2.4.3).
+        if UIAccessibility.isVoiceOverRunning {
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
+        }
     }
 
     func navigator(_ navigator: Navigator, presentError error: NavigatorError) {
