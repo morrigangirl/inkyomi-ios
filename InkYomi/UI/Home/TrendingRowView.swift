@@ -12,6 +12,7 @@ struct TrendingRowView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Trending now")
                 .font(.inkHeadline)
+                .accessibilityAddTraits(.isHeader)
                 .padding(.horizontal)
 
             ScrollView(.horizontal, showsIndicators: false) {

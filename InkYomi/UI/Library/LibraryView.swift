@@ -112,6 +112,7 @@ struct LibraryView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                 }
+                                .accessibilityElement(children: .combine)
                             }
                             .buttonStyle(.plain)
                         }

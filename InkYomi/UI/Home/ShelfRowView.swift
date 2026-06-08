@@ -9,6 +9,7 @@ struct ShelfRowView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(shelf.title)
                 .font(.inkHeadline)
+                .accessibilityAddTraits(.isHeader)
                 .padding(.horizontal)
 
             ScrollView(.horizontal, showsIndicators: false) {
