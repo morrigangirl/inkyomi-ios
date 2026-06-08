@@ -75,6 +75,8 @@ struct LibraryView: View {
                 snackbar(message)
             }
         }
+        .announcesChanges(of: viewModel.error) { $0 }
+        .announcesChanges(of: viewModel.message) { $0 }
     }
 
     // MARK: - Owned Grid

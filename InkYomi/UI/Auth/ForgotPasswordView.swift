@@ -61,5 +61,6 @@ struct ForgotPasswordView: View {
         }
         .navigationTitle("Forgot Password")
         .navigationBarTitleDisplayMode(.inline)
+        .announcesChanges(of: viewModel.errorMessage) { $0 }
     }
 }

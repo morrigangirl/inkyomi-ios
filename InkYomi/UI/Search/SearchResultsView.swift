@@ -137,6 +137,7 @@ struct SearchResultsView: View {
                 savedSearchId: savedSearchId
             )
         }
+        .announcesChanges(of: viewModel.errorMessage) { $0 }
     }
 
     /// Default name to pre-fill in the Save dialog: prefer the live

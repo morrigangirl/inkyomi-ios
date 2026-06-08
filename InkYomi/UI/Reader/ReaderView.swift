@@ -88,6 +88,8 @@ struct ReaderView: View {
             }
         }
         .background(keyboardShortcuts)
+        .announcesChanges(of: viewModel.message) { $0 }
+        .announcesChanges(of: viewModel.error) { $0 }
     }
 
     private var keyboardShortcuts: some View {
@@ -182,6 +184,9 @@ struct ReaderView: View {
         .padding(.bottom, 30)
         .padding(.top, 8)
         .background(.ultraThinMaterial)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Reading progress")
+        .accessibilityValue("\(Int(viewModel.progressPercent * 100)) percent")
     }
 
     private var loadingView: some View {

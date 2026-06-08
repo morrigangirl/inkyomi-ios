@@ -15,16 +15,16 @@ enum LoanUrgency {
     /// Material 3-equivalent surface tinting for the badge background.
     var backgroundColor: Color {
         switch self {
-        case .overdue, .urgent: Color.red.opacity(0.18)
-        case .soon: Color.orange.opacity(0.20)
-        case .normal: Color(.systemGray5).opacity(0.85)
+        case .overdue, .urgent: inkAdaptive(light: (0.980, 0.890, 0.880), dark: (0.320, 0.120, 0.110))
+        case .soon: inkAdaptive(light: (0.990, 0.930, 0.800), dark: (0.300, 0.220, 0.050))
+        case .normal: Color(.systemGray5)
         }
     }
 
     var foregroundColor: Color {
         switch self {
-        case .overdue, .urgent: Color.red
-        case .soon: Color.orange
+        case .overdue, .urgent: inkAdaptive(light: (0.630, 0.100, 0.080), dark: (1.0, 0.620, 0.580))
+        case .soon: inkAdaptive(light: (0.500, 0.300, 0.0), dark: (1.0, 0.800, 0.450))
         case .normal: Color.secondary
         }
     }

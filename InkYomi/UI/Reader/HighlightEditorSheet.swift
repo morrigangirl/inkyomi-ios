@@ -10,6 +10,16 @@ struct HighlightEditorSheet: View {
         "#B5B9FF",  // Purple
     ]
 
+    private func colorName(_ hex: String) -> String {
+        switch hex.uppercased() {
+        case "#F7D774": "Yellow"
+        case "#A8E6CF": "Green"
+        case "#FFB7B2": "Pink"
+        case "#B5B9FF": "Purple"
+        default: "Highlight color"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -39,6 +49,8 @@ struct HighlightEditorSheet: View {
                                     }
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel(colorName(hex))
+                            .accessibilityAddTraits(viewModel.pendingHighlight?.colorHex == hex ? [.isSelected] : [])
                         }
                     }
                     .frame(maxWidth: .infinity)

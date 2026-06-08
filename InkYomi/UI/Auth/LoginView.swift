@@ -84,5 +84,6 @@ struct LoginView: View {
             SafariView(url: InkColorsLinks.registerURL)
                 .ignoresSafeArea()
         }
+        .announcesChanges(of: viewModel.errorMessage) { $0 }
     }
 }
