@@ -36,6 +36,7 @@ struct TrendingRowView: View {
                                 }
                             }
                             .frame(width: coverWidth)
+                            .accessibilityElement(children: .combine)
                         }
                         .buttonStyle(.plain)
                     }
