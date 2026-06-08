@@ -4,7 +4,7 @@ import SwiftUI
 /// The brand palette was authored for light mode only; the dark variants keep
 /// the same hue but lift the value so the colors stay legible as foreground /
 /// tint on a dark background (audit H6).
-private func inkAdaptive(
+func inkAdaptive(
     light: (red: Double, green: Double, blue: Double),
     dark: (red: Double, green: Double, blue: Double)
 ) -> Color {
@@ -69,5 +69,21 @@ struct InkProminentButtonStyle: ButtonStyle {
             )
             .foregroundStyle(.white.opacity(isEnabled ? 1.0 : 0.75))
             .opacity(configuration.isPressed ? 0.85 : 1.0)
+    }
+}
+
+extension View {
+    /// Posts a screen-reader announcement whenever `value` changes to a
+    /// non-empty message. Surfaces status messages (errors, confirmations,
+    /// load results) that are otherwise silent for VoiceOver users (WCAG 4.1.3
+    /// Status Messages).
+    func announcesChanges<Value: Equatable>(
+        of value: Value,
+        message: @escaping (Value) -> String?
+    ) -> some View {
+        onChange(of: value) { _, newValue in
+            guard let text = message(newValue), !text.isEmpty else { return }
+            UIAccessibility.post(notification: .announcement, argument: text)
+        }
     }
 }
