@@ -46,14 +46,21 @@ final class LendingDownloadManager: @unchecked Sendable {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        // Stream the response straight to disk instead of buffering the whole
+        // EPUB (up to the 100 MB backend cap) in memory — a 100 MB in-memory
+        // Data is real jetsam pressure on a low-RAM device (audit C6).
+        let (downloadedURL, response) = try await URLSession.shared.download(for: request)
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+            try? FileManager.default.removeItem(at: downloadedURL)
             throw LendingDownloadError.httpError(statusCode)
         }
 
-        try data.write(to: tempFile)
+        if FileManager.default.fileExists(atPath: tempFile.path) {
+            try FileManager.default.removeItem(at: tempFile)
+        }
+        try FileManager.default.moveItem(at: downloadedURL, to: tempFile)
 
         // Inject license.lcpl into the EPUB ZIP
         try await injectLicense(sourceEpub: tempFile, targetFile: finalFile, licenseData: licenseData)
@@ -113,12 +120,17 @@ final class LendingDownloadManager: @unchecked Sendable {
         try await addDataEntry(to: target, path: "META-INF/license.lcpl", data: licenseData, type: .file)
     }
 
-    /// Extract an entry to a temp file and read the data back.
-    /// Avoids Sendable closure issues with the consumer-based extract API.
+    /// Extract an entry to a temp file and return it memory-mapped.
+    /// `.mappedIfSafe` keeps the entry's bytes file-backed (paged in on demand,
+    /// evictable under memory pressure) rather than fully resident, so a single
+    /// large ZIP entry can't spike memory during the rebuild (audit C6). The
+    /// mapping stays valid after the temp file is unlinked — POSIX keeps the
+    /// inode alive until the mapping is released. Also avoids Sendable issues
+    /// with the consumer-based extract API.
     private func extractToData(archive: Archive, entry: Entry, tempDir: URL) async throws -> Data {
         let tempFile = tempDir.appendingPathComponent(UUID().uuidString)
         _ = try await archive.extract(entry, to: tempFile, skipCRC32: true)
-        let data = try Data(contentsOf: tempFile)
+        let data = try Data(contentsOf: tempFile, options: .mappedIfSafe)
         try? FileManager.default.removeItem(at: tempFile)
         return data
     }
