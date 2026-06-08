@@ -12,6 +12,7 @@ struct BrowseHubSection: View {
         VStack(alignment: .leading, spacing: 24) {
             Text("Browse the catalog")
                 .font(.inkHeadline)
+                .accessibilityAddTraits(.isHeader)
                 .padding(.horizontal)
 
             ForEach(groups) { group in

@@ -82,6 +82,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Continue Reading")
                 .font(.inkHeadline)
+                .accessibilityAddTraits(.isHeader)
                 .padding(.horizontal)
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -103,6 +104,7 @@ struct HomeView: View {
                                     .tint(Color.inkPrimary)
                             }
                             .frame(width: coverWidth)
+                            .accessibilityElement(children: .combine)
                         }
                         .buttonStyle(.plain)
                     }
