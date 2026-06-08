@@ -5,7 +5,7 @@ struct SettingsView: View {
 
     @State private var showPrivacyWeb = false
     @State private var showTermsWeb = false
-    @State private var showDeleteConfirm = false
+    @State private var showDeleteSheet = false
 
     @AppStorage(AppearancePreference.storageKey) private var appearanceRaw = AppearancePreference.system.rawValue
 
@@ -73,7 +73,7 @@ struct SettingsView: View {
                 .buttonStyle(.plain)
 
                 Button {
-                    showDeleteConfirm = true
+                    showDeleteSheet = true
                 } label: {
                     settingsRow(
                         icon: "trash",
@@ -117,17 +117,8 @@ struct SettingsView: View {
         .sheet(isPresented: $showTermsWeb) {
             SafariView(url: InkColorsLinks.termsURL).ignoresSafeArea()
         }
-        .alert("Delete your account?", isPresented: $showDeleteConfirm) {
-            Button("Cancel", role: .cancel) {}
-            Button("Open email", role: .destructive) {
-                MailtoComposer.open(
-                    InkColorsLinks.privacyEmail,
-                    subject: "Account deletion request",
-                    body: deletionEmailBody
-                )
-            }
-        } message: {
-            Text("This will permanently delete your account, library, and reading history. This cannot be undone. We'll open your email app so you can send the request to our privacy team — they'll confirm and remove your account within 30 days.")
+        .sheet(isPresented: $showDeleteSheet) {
+            DeleteAccountView()
         }
     }
 
@@ -150,15 +141,4 @@ struct SettingsView: View {
         }
     }
 
-    private var deletionEmailBody: String {
-        """
-        Hi InkColors team,
-
-        Please delete my account and all associated data.
-
-        App version: \(versionString)
-
-        Thanks.
-        """
-    }
 }
