@@ -14,7 +14,14 @@ struct TocSheet: View {
                         Text(item.title)
                             .padding(.leading, CGFloat(item.depth) * 16)
                             .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
                     }
+                    // .plain so the row honors the adaptive .primary label color
+                    // instead of adopting the reader's navy .tint (Color.inkPrimary),
+                    // which is a fixed dark color and renders unreadably on the
+                    // dark-mode sheet background (audit H6 / dark-mode contrast).
+                    .buttonStyle(.plain)
                 }
             }
             .navigationTitle("Table of Contents")
