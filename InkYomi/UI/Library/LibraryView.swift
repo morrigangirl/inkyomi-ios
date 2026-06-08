@@ -147,20 +147,7 @@ struct LibraryView: View {
                             BorrowedBookCard(
                                 loan: loan,
                                 onRead: {
-                                    let bid = loan.bookId
-                                    // Debug: write to file to confirm button tap
-                                    let logFile = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("reader_debug.log")
-                                    let msg = "\(Date()): Read tapped for bookId=\(bid)\n"
-                                    if let data = msg.data(using: .utf8) {
-                                        if let handle = try? FileHandle(forWritingTo: logFile) {
-                                            handle.seekToEndOfFile()
-                                            handle.write(data)
-                                            handle.closeFile()
-                                        } else {
-                                            try? data.write(to: logFile)
-                                        }
-                                    }
-                                    readerBookId = bid
+                                    readerBookId = loan.bookId
                                 },
                                 onReturn: {
                                     viewModel.returnConfirmLoanId = loan.loanId

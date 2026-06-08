@@ -108,6 +108,10 @@ final class ReaderViewModel {
     // MARK: - Load Book
 
     private func debugLog(_ msg: String) {
+        // Debug-only diagnostics. Gated out of Release so we never do
+        // synchronous file I/O on the reader-open path and never write
+        // reading activity to Documents (which is included in backups).
+        #if DEBUG
         let logFile = FileManager.default
             .urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("reader_debug.log")
@@ -121,6 +125,7 @@ final class ReaderViewModel {
                 try? data.write(to: logFile)
             }
         }
+        #endif
     }
 
     func loadBook() async {
