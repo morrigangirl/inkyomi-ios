@@ -22,6 +22,8 @@ struct ReaderSettingsSheet: View {
                             in: 0.8...1.8,
                             step: 0.1
                         )
+                        .accessibilityLabel("Font size")
+                        .accessibilityValue(String(format: "%.0f%%", viewModel.fontScale * 100))
                         Text("A")
                             .font(.title)
                     }
@@ -40,6 +42,8 @@ struct ReaderSettingsSheet: View {
                         in: 1.0...2.5,
                         step: 0.1
                     )
+                    .accessibilityLabel("Line height")
+                    .accessibilityValue(String(format: "%.1f", viewModel.lineHeight))
                     Text(String(format: "%.1f", viewModel.lineHeight))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -55,6 +59,8 @@ struct ReaderSettingsSheet: View {
                         in: 0.5...2.0,
                         step: 0.1
                     )
+                    .accessibilityLabel("Margins")
+                    .accessibilityValue(String(format: "%.1f", viewModel.pageMargins))
                 }
 
                 // Font Family
@@ -125,6 +131,8 @@ struct ReaderSettingsSheet: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(theme.displayName)
+        .accessibilityAddTraits(viewModel.theme == theme ? .isSelected : [])
     }
 }
 
