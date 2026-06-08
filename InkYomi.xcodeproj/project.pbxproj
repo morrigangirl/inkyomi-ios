@@ -121,6 +121,7 @@
 		A65F398530AFE026B18EDC8E /* SearchRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8601365556E8054DD5A0E7B8 /* SearchRepositoryImpl.swift */; };
 		A7E4FC6A4CC8C6B94D000951 /* SavedSearchesDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB2F6747522374F0D874E4 /* SavedSearchesDTOs.swift */; };
 		A852B17791DCFBA2C1EA1449 /* LoanDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862A07058ABDCDF934755AF /* LoanDisplay.swift */; };
+		A8BC829BE4EC404BB433D39D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */; };
 		A8F675171DAEFB58126BA560 /* AuthAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C80CD09F7839396144B1E54 /* AuthAPIService.swift */; };
 		A94A30B77F18AD4608EBE71E /* DeleteAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EB6F43793B10707DBF1603 /* DeleteAccountViewModel.swift */; };
 		A9A449B6AECDC2D30277ECDA /* AdaptiveSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ABBA325FEEB775895CB9A8 /* AdaptiveSize.swift */; };
@@ -298,6 +299,7 @@
 		A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsLendingAPIService.swift; sourceTree = "<group>"; };
 		A5BC9931CE5F3C8503263882 /* InkYomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InkYomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C0791420324ACBA0C2FF2F /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A8A4667FEF828099492F5BC0 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		AF2A357626E0AD09A13691B5 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfRowView.swift; sourceTree = "<group>"; };
@@ -731,6 +733,7 @@
 				96C6F33106806D96613CCBAD /* Assets.xcassets */,
 				401A0967073CBA36F053CED4 /* Info.plist */,
 				2984905FB0FA2F837E565AF0 /* InkYomiApp.swift */,
+				A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */,
 				3B14983CB1FE3D3A0B667EBE /* Core */,
 				E72A0FD1B930B81009E137F7 /* Data */,
 				67561182581DBC84BEF45894 /* Domain */,
@@ -945,6 +948,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9405F17808FA7A7FBFF87E0 /* Assets.xcassets in Resources */,
+				A8BC829BE4EC404BB433D39D /* PrivacyInfo.xcprivacy in Resources */,
 				3C90F0CACC8D9A54F48961F9 /* inkyomi-provider-cert.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
