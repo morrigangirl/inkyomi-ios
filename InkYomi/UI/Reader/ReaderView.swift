@@ -131,6 +131,11 @@ struct ReaderView: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.showControls)
+        // Center-tap toggles the chrome, which VoiceOver intercepts — give AT users
+        // a rotor action to bring the controls back (audit A6).
+        .accessibilityAction(named: "Show reader controls") {
+            viewModel.showControls = true
+        }
     }
 
     private var topBar: some View {

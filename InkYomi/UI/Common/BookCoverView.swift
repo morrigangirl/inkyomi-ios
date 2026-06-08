@@ -17,27 +17,33 @@ struct BookCoverView: View {
     }
 
     var body: some View {
-        if let imageUrl = resolvedURL {
-            CachedAsyncImage(url: imageUrl) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(2.0 / 3.0, contentMode: .fit)
-                        .frame(width: width, height: height)
-                case .failure:
-                    placeholder
-                default:
-                    placeholder
-                        .overlay(ProgressView())
+        // Covers are decorative: every cover is paired with a visible title in its
+        // card/list, so hide the image/placeholder from VoiceOver to avoid stray
+        // unlabeled "image" stops (audit A8 / WCAG 1.1.1).
+        Group {
+            if let imageUrl = resolvedURL {
+                CachedAsyncImage(url: imageUrl) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(2.0 / 3.0, contentMode: .fit)
+                            .frame(width: width, height: height)
+                    case .failure:
+                        placeholder
+                    default:
+                        placeholder
+                            .overlay(ProgressView())
+                    }
                 }
+                .frame(width: width, height: height)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .shadow(radius: 2)
+            } else {
+                placeholder
             }
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: 6))
-            .shadow(radius: 2)
-        } else {
-            placeholder
         }
+        .accessibilityHidden(true)
     }
 
     private var placeholder: some View {
