@@ -82,11 +82,17 @@ final class DependencyContainer: @unchecked Sendable {
         }
         self.authAPIService = AuthAPIService(deviceIdProvider: deviceIdProvider)
 
-        // Auth repository
+        // Auth repository. The transport/passphrase keychains and the model
+        // container are injected so sign-out can wipe ALL local user data
+        // (LCP key material + SwiftData), not just the auth keychain. All
+        // three are constructed above, so there is no init/retain cycle.
         self.authRepository = NativeAuthRepository(
             authAPI: authAPIService,
             keychain: authKeychain,
-            appState: appState
+            appState: appState,
+            transportKeychain: transportKeychain,
+            passphraseKeychain: passphraseKeychain,
+            modelContainer: modelContainer
         )
 
         // Main API client (with auth + device ID interceptors)

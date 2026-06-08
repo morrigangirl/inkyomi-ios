@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import UIKit
 
 /// Actor-based auth repository with serialized token refresh.
@@ -8,17 +9,36 @@ actor NativeAuthRepository: AuthRepository {
     private let keychain: KeychainManager
     private let appState: AppState
 
+    // Wiped on sign-out alongside the auth keychain. These are plain value
+    // types / SwiftData containers that depend on nothing back here, so there
+    // is no retain or initialization cycle (all constructed before this repo
+    // in DependencyContainer).
+    private let transportKeychain: KeychainManager
+    private let passphraseKeychain: KeychainManager
+    private let modelContainer: ModelContainer
+
     private var cachedAccessToken: String?
     private var cachedExpiry: Date?
     private var refreshTask: Task<String?, Error>?
 
-    init(authAPI: AuthAPIService, keychain: KeychainManager, appState: AppState) {
+    init(
+        authAPI: AuthAPIService,
+        keychain: KeychainManager,
+        appState: AppState,
+        transportKeychain: KeychainManager,
+        passphraseKeychain: KeychainManager,
+        modelContainer: ModelContainer
+    ) {
         self.authAPI = authAPI
         self.keychain = keychain
         self.appState = appState
+        self.transportKeychain = transportKeychain
+        self.passphraseKeychain = passphraseKeychain
+        self.modelContainer = modelContainer
 
-        // Restore cached access token from UserDefaults
-        self.cachedAccessToken = UserDefaults.standard.string(forKey: Constants.UserDefaultsKeys.accessToken)
+        // Restore cached access token from the Keychain (sensitive — no longer
+        // in UserDefaults). Expiry stays in UserDefaults (non-sensitive).
+        self.cachedAccessToken = try? keychain.readString(forKey: Constants.Keychain.AuthKey.accessToken)
         if let expiryInterval = UserDefaults.standard.object(forKey: Constants.UserDefaultsKeys.accessTokenExpiry) as? TimeInterval {
             self.cachedExpiry = Date(timeIntervalSince1970: expiryInterval)
         }
@@ -42,7 +62,7 @@ actor NativeAuthRepository: AuthRepository {
     }
 
     func refresh() async throws {
-        guard let refreshToken = try keychain.readString(forKey: "refreshToken") else {
+        guard let refreshToken = try keychain.readString(forKey: Constants.Keychain.AuthKey.refreshToken) else {
             // No token — terminal. Caller decides whether to sign out;
             // for the standalone `refresh()` API we don't auto-signOut.
             throw AuthFailure.noRefreshToken
@@ -71,17 +91,62 @@ actor NativeAuthRepository: AuthRepository {
         cachedExpiry = nil
         refreshTask = nil
 
-        UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.accessToken)
+        // Auth state in UserDefaults (non-sensitive remnants). The access
+        // token, email, and refresh token live under the auth keychain and
+        // are cleared by `keychain.deleteAll()` below.
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.accessTokenExpiry)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileId)
-        UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileEmail)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.userProfileDisplayName)
         UserDefaults.standard.removeObject(forKey: Constants.UserDefaultsKeys.deviceRegistrationId)
         try? keychain.deleteAll()
 
+        // Full local wipe of all user data so a signed-out device retains
+        // nothing readable by the next user. Best-effort: each step is
+        // isolated so a single failure never blocks the sign-out itself.
+        wipeAllLocalUserData()
+
         await MainActor.run {
             appState.authState = .unauthenticated
             appState.deviceRegistrationId = nil
+        }
+    }
+
+    /// Erase every piece of local user data beyond the auth keychain:
+    /// LCP transport secrets + passphrases, downloaded EPUBs (owned +
+    /// borrowed), and the SwiftData store (sessions, bookmarks, highlights,
+    /// telemetry, cached book/loan rows). Best-effort throughout.
+    private func wipeAllLocalUserData() {
+        // 1. LCP key material (separate keychain services from auth).
+        try? transportKeychain.deleteAll()
+        try? passphraseKeychain.deleteAll()
+
+        // 2. Downloaded EPUBs. Both directories are recreated on demand by
+        //    the download paths (BookRepositoryImpl / LendingDownloadManager),
+        //    so deleting them outright is safe.
+        let fm = FileManager.default
+        if let documents = fm.urls(for: .documentDirectory, in: .userDomainMask).first {
+            try? fm.removeItem(at: documents.appendingPathComponent("books", isDirectory: true))
+            try? fm.removeItem(at: documents.appendingPathComponent("lending", isDirectory: true))
+        }
+
+        // 3. SwiftData rows. Batch-delete every model type on a fresh context
+        //    (the live container/mainContext stays usable for the rest of the
+        //    app). Wrapped so an empty store or a single failing type can't
+        //    abort the wipe.
+        let context = ModelContext(modelContainer)
+        do {
+            try context.delete(model: CachedBookModel.self)
+            try context.delete(model: LoanCacheModel.self)
+            try context.delete(model: BookmarkModel.self)
+            try context.delete(model: HighlightModel.self)
+            try context.delete(model: ReadingSessionModel.self)
+            try context.delete(model: ReadingTelemetryEventModel.self)
+            try context.delete(model: InstrumentedLocationModel.self)
+            try context.delete(model: PendingSpanReadModel.self)
+            try context.delete(model: AccountingManifestModel.self)
+            try context.save()
+        } catch {
+            // Best-effort — never block sign-out on a persistence hiccup.
         }
     }
 
@@ -148,7 +213,7 @@ actor NativeAuthRepository: AuthRepository {
 
         let storedProfile = storedUserProfile()
 
-        guard (try? keychain.readString(forKey: "refreshToken")) != nil else {
+        guard (try? keychain.readString(forKey: Constants.Keychain.AuthKey.refreshToken)) != nil else {
             await MainActor.run {
                 appState.authState = .unauthenticated
             }
@@ -187,10 +252,12 @@ actor NativeAuthRepository: AuthRepository {
         let expiry = Date(timeIntervalSince1970: Double(response.expiresAt) / 1000.0)
         cachedExpiry = expiry
 
-        UserDefaults.standard.set(response.accessToken, forKey: Constants.UserDefaultsKeys.accessToken)
+        // Access token is sensitive — Keychain, not UserDefaults. Expiry is
+        // not sensitive and stays in UserDefaults.
+        try? keychain.save(response.accessToken, forKey: Constants.Keychain.AuthKey.accessToken)
         UserDefaults.standard.set(expiry.timeIntervalSince1970, forKey: Constants.UserDefaultsKeys.accessTokenExpiry)
 
-        try? keychain.save(response.refreshToken, forKey: "refreshToken")
+        try? keychain.save(response.refreshToken, forKey: Constants.Keychain.AuthKey.refreshToken)
 
         // The server assigns the `user_devices.id` (row PK) on device-login
         // and returns it as `deviceRegistrationId`. Persist it so the
@@ -206,13 +273,15 @@ actor NativeAuthRepository: AuthRepository {
 
         let user = response.user
         UserDefaults.standard.set(user.id, forKey: Constants.UserDefaultsKeys.userProfileId)
-        UserDefaults.standard.set(user.email, forKey: Constants.UserDefaultsKeys.userProfileEmail)
+        // Email is sensitive (PII) — Keychain, not UserDefaults. Id and
+        // display name stay in UserDefaults (non-sensitive).
+        try? keychain.save(user.email, forKey: Constants.Keychain.AuthKey.userProfileEmail)
         UserDefaults.standard.set(user.displayName, forKey: Constants.UserDefaultsKeys.userProfileDisplayName)
     }
 
     private func storedUserProfile() -> UserProfile? {
         guard let id = UserDefaults.standard.string(forKey: Constants.UserDefaultsKeys.userProfileId),
-              let email = UserDefaults.standard.string(forKey: Constants.UserDefaultsKeys.userProfileEmail) else {
+              let email = try? keychain.readString(forKey: Constants.Keychain.AuthKey.userProfileEmail) else {
             return nil
         }
         return UserProfile(
