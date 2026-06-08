@@ -233,6 +233,8 @@ final class InkyomiContentProtection: ContentProtection {
     }
 
     private func debugLog(_ msg: String) {
+        // Debug-only diagnostics — gated out of Release (see ReaderViewModel.debugLog).
+        #if DEBUG
         let logFile = FileManager.default
             .urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("reader_debug.log")
@@ -246,6 +248,7 @@ final class InkyomiContentProtection: ContentProtection {
                 try? data.write(to: logFile)
             }
         }
+        #endif
     }
 
     // MARK: - ContentProtectionService
