@@ -21,15 +21,25 @@ enum Constants {
         static let transportService = "shop.inkcolors.InkYomi.transport"
         static let passphraseService = "shop.inkcolors.InkYomi.passphrase"
         static let deviceKeyService = "shop.inkcolors.InkYomi.deviceKey"
+
+        /// Account keys stored under `authService`. The refresh token lives
+        /// here too (key `"refreshToken"`). Access token and email are
+        /// sensitive and must NOT sit in UserDefaults.
+        enum AuthKey {
+            static let refreshToken = "refreshToken"
+            static let accessToken = "accessToken"
+            static let userProfileEmail = "userProfileEmail"
+        }
     }
 
     enum UserDefaultsKeys {
-        static let accessToken = "accessToken"
+        // Access token and email moved to the Keychain (see
+        // `Constants.Keychain.AuthKey`) — sensitive fields don't belong in
+        // UserDefaults. Expiry, id, and display name stay here (non-sensitive).
         static let accessTokenExpiry = "accessTokenExpiry"
         static let deviceId = "deviceId"
         static let deviceRegistrationId = "deviceRegistrationId"
         static let userProfileId = "userProfileId"
-        static let userProfileEmail = "userProfileEmail"
         static let userProfileDisplayName = "userProfileDisplayName"
     }
 
