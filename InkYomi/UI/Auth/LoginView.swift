@@ -58,8 +58,7 @@ struct LoginView: View {
                         .frame(maxWidth: .infinity)
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.inkPrimary)
+            .buttonStyle(InkProminentButtonStyle())
             .disabled(viewModel.isLoading || viewModel.email.isEmpty || viewModel.password.isEmpty)
             .padding(.horizontal, 32)
 

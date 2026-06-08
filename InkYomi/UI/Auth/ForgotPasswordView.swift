@@ -53,8 +53,7 @@ struct ForgotPasswordView: View {
                         .frame(maxWidth: .infinity)
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.inkPrimary)
+            .buttonStyle(InkProminentButtonStyle())
             .disabled(viewModel.isLoading || viewModel.email.isEmpty)
             .padding(.horizontal, 32)
 
