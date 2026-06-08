@@ -16,7 +16,8 @@ struct TrendingRowView: View {
                 .padding(.horizontal)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                // Lazy so off-screen covers don't all load up front.
+                LazyHStack(spacing: 12) {
                     ForEach(books) { trending in
                         NavigationLink(value: trending.book.id) {
                             VStack(alignment: .leading, spacing: 4) {

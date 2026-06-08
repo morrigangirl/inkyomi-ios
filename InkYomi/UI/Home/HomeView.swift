@@ -87,7 +87,8 @@ struct HomeView: View {
                 .padding(.horizontal)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                // Lazy so off-screen covers don't all load up front.
+                LazyHStack(spacing: 12) {
                     ForEach(viewModel.continueReading) { item in
                         let coverWidth = CoverSize.continueRow.width(for: hSizeClass)
                         NavigationLink(value: item.bookId) {

@@ -13,7 +13,8 @@ struct ShelfRowView: View {
                 .padding(.horizontal)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                // Lazy so off-screen covers don't all load up front.
+                LazyHStack(spacing: 12) {
                     ForEach(shelf.books) { book in
                         NavigationLink(value: book.id) {
                             VStack(alignment: .leading, spacing: 4) {
