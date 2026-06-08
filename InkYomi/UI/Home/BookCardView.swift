@@ -48,5 +48,6 @@ struct BookCardView: View {
             Spacer()
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 }

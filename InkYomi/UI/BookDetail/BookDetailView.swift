@@ -191,6 +191,7 @@ struct BookDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("More like this")
                     .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
                     .padding(.horizontal, hSizeClass == .regular ? 0 : 16)
 
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -221,6 +222,7 @@ struct BookDetailView: View {
                                     }
                                 }
                                 .frame(width: 110)
+                                .accessibilityElement(children: .combine)
                             }
                             .buttonStyle(.plain)
                         }

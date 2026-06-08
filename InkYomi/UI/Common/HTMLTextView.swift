@@ -38,6 +38,15 @@ struct HTMLTextView: View {
         let range = NSRange(location: 0, length: nsAttr.length)
         nsAttr.removeAttribute(.foregroundColor, range: range)
         nsAttr.removeAttribute(.backgroundColor, range: range)
+        // Scale the parser-baked fixed-size fonts to the user's Dynamic Type
+        // body size while preserving bold/italic traits (audit H4: descriptions
+        // previously rendered at a fixed 16pt regardless of the text-size setting).
+        let bodyMetrics = UIFontMetrics(forTextStyle: .body)
+        nsAttr.enumerateAttribute(.font, in: range) { value, subrange, _ in
+            if let font = value as? UIFont {
+                nsAttr.addAttribute(.font, value: bodyMetrics.scaledFont(for: font), range: subrange)
+            }
+        }
         return try? AttributedString(nsAttr, including: \.uiKit)
     }
 }

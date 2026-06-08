@@ -65,6 +65,7 @@ struct SearchResultsView: View {
                 } label: {
                     Image(systemName: "arrow.up.arrow.down")
                 }
+                .accessibilityLabel("Sort")
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button { showFilters = true } label: {
@@ -74,6 +75,8 @@ struct SearchResultsView: View {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                     }
                 }
+                .accessibilityLabel("Filters")
+                .accessibilityValue(viewModel.filters.activeCount > 0 ? "\(viewModel.filters.activeCount) active" : "None")
             }
         }
         .sheet(isPresented: $showFilters) {
@@ -234,6 +237,7 @@ private struct ResultCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 }
 

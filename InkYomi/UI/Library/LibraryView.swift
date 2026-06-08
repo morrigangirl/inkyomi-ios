@@ -49,6 +49,7 @@ struct LibraryView: View {
                     NavigationLink(value: LibraryRoute.lendingCatalog) {
                         Image(systemName: "building.columns")
                     }
+                    .accessibilityLabel("Lending library")
                 }
             }
         }
@@ -111,6 +112,7 @@ struct LibraryView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                 }
+                                .accessibilityElement(children: .combine)
                             }
                             .buttonStyle(.plain)
                         }
@@ -267,6 +269,7 @@ private struct BorrowedBookCard: View {
                         Image(systemName: "ellipsis.circle")
                             .font(.body)
                     }
+                    .accessibilityLabel("More actions")
                 }
             }
         }
