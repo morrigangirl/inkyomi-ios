@@ -129,6 +129,9 @@ final class CoverDiskCache: @unchecked Sendable {
     }
 
     func save(_ data: Data, for url: URL) {
+        // D6 (deferred): downsample covers at decode time (e.g. via
+        // CGImageSourceCreateThumbnailAtIndex) to cap decoded-bitmap memory —
+        // riskier decode change, intentionally out of this batch.
         let file = cacheFile(for: url)
         try? data.write(to: file, options: .atomic)
         if let image = UIImage(data: data) {

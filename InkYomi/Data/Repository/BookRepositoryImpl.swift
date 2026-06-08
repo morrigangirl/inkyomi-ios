@@ -46,19 +46,22 @@ actor BookRepositoryImpl: BookRepository {
 
     // MARK: - Owned download
 
-    @MainActor
+    // Not @MainActor: the network download + disk I/O run off the main
+    // actor so a large EPUB never blocks UI. Only the SwiftData
+    // `mainContext` reads/writes hop onto the main actor (mainContext is
+    // main-actor bound), mirroring the streaming lending fix.
     private func ensureOwnedDownloaded(bookId: String) async throws -> URL {
-        let context = modelContainer.mainContext
         let bid = bookId
-        let descriptor = FetchDescriptor<CachedBookModel>(
-            predicate: #Predicate { $0.bookId == bid }
-        )
 
-        // Check for already-cached file
-        if let cached = try? context.fetch(descriptor).first,
-           let path = cached.filePath,
-           FileManager.default.fileExists(atPath: path) {
-            return URL(fileURLWithPath: path)
+        // Check for already-cached file (SwiftData touch on the main actor).
+        if let cachedPath = await MainActor.run(body: { () -> String? in
+            let context = modelContainer.mainContext
+            let descriptor = FetchDescriptor<CachedBookModel>(
+                predicate: #Predicate { $0.bookId == bid }
+            )
+            return (try? context.fetch(descriptor).first)?.filePath
+        }), FileManager.default.fileExists(atPath: cachedPath) {
+            return URL(fileURLWithPath: cachedPath)
         }
 
         // Step 1: Get signed download URL
@@ -69,17 +72,25 @@ actor BookRepositoryImpl: BookRepository {
             ])
         }
 
-        // Step 2: Download the EPUB
-        let (data, _) = try await URLSession.shared.data(from: downloadURL)
-
         // Save to Documents/books/
         let booksDir = FileManager.default
             .urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("books", isDirectory: true)
         try FileManager.default.createDirectory(at: booksDir, withIntermediateDirectories: true)
-
         let fileURL = booksDir.appendingPathComponent("\(bookId).epub")
-        try data.write(to: fileURL)
+
+        // Step 2: Stream the EPUB straight to disk instead of buffering the
+        // whole file (up to the backend cap) in memory — matches the lending
+        // download path. The temp file URLSession hands back is moved into
+        // place with FileManager.moveItem. Error behavior is unchanged from
+        // the old `data(from:)`: transport failures still throw here, and we
+        // intentionally don't add an HTTP-status guard (the old code didn't
+        // have one) so the success/throw contract is identical.
+        let (downloadedURL, _) = try await URLSession.shared.download(from: downloadURL)
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try FileManager.default.removeItem(at: fileURL)
+        }
+        try FileManager.default.moveItem(at: downloadedURL, to: fileURL)
 
         // Exclude from iCloud backup
         var resourceValues = URLResourceValues()
@@ -87,15 +98,21 @@ actor BookRepositoryImpl: BookRepository {
         var mutableURL = fileURL
         try mutableURL.setResourceValues(resourceValues)
 
-        // Create or update CachedBookModel
-        if let cached = try? context.fetch(descriptor).first {
-            cached.filePath = fileURL.path
-        } else {
-            let cached = CachedBookModel(bookId: bookId, title: "", authorName: nil, coverUrl: nil)
-            cached.filePath = fileURL.path
-            context.insert(cached)
+        // Create or update CachedBookModel (SwiftData touch on the main actor).
+        try await MainActor.run {
+            let context = modelContainer.mainContext
+            let descriptor = FetchDescriptor<CachedBookModel>(
+                predicate: #Predicate { $0.bookId == bid }
+            )
+            if let cached = try? context.fetch(descriptor).first {
+                cached.filePath = fileURL.path
+            } else {
+                let cached = CachedBookModel(bookId: bookId, title: "", authorName: nil, coverUrl: nil)
+                cached.filePath = fileURL.path
+                context.insert(cached)
+            }
+            try context.save()
         }
-        try context.save()
 
         return fileURL
     }

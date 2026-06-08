@@ -24,6 +24,10 @@ final class InkyomiDecryptingContainer: Container {
         self.contentKey = contentKey
         self.encryptedPaths = encryptedPaths
         cache.countLimit = 16
+        // Also bound by decrypted bytes, not just entry count: 16 large
+        // chapters could otherwise pin tens of MB of plaintext. cost is the
+        // plaintext length passed at setObject; NSCache evicts to stay under.
+        cache.totalCostLimit = 8 * 1024 * 1024
     }
 
     // sourceURL must be nil so Readium doesn't bypass the container
@@ -121,7 +125,7 @@ private final class DecryptingResource: Resource {
             do {
                 let plaintext = try ContentKeyWrapper.decryptResource(ciphertext, contentKey: contentKey)
                 logger.debug("Decrypted path=\(self.cacheKey) cipherLen=\(ciphertext.count) plainLen=\(plaintext.count)")
-                cache.setObject(plaintext as NSData, forKey: key)
+                cache.setObject(plaintext as NSData, forKey: key, cost: plaintext.count)
                 return .success(plaintext)
             } catch {
                 logger.error("decryptResource failed for path=\(self.cacheKey) ciphertextLen=\(ciphertext.count): \(error)")

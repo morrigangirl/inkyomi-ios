@@ -55,12 +55,19 @@ struct HeroCarouselView: View {
         // Focal-point alignment via `bannerSettings` is preserved for the
         // off-spec case so the important part of the image stays visible.
         ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                Color.inkPrimary.opacity(0.1)
+            // CachedAsyncImage routes banners through the same shared
+            // disk/memory cover cache BookCoverView uses, so a banner
+            // already downloaded for a cover (or a prior carousel pass)
+            // isn't re-fetched. Phase-based closure mirrors BookCoverView.
+            CachedAsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                default:
+                    Color.inkPrimary.opacity(0.1)
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: focalAlignment(for: slide.bannerSettings))
             .clipped()
