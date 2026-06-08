@@ -139,6 +139,7 @@ struct ReaderView: View {
                 Image(systemName: "chevron.left")
                     .font(.title3)
             }
+            .accessibilityLabel("Back")
 
             Text(viewModel.bookTitle)
                 .font(.headline)
@@ -149,14 +150,17 @@ struct ReaderView: View {
             Button { viewModel.isTocVisible = true } label: {
                 Image(systemName: "list.bullet")
             }
+            .accessibilityLabel("Table of contents")
 
             Button { viewModel.isNotesSheetVisible = true } label: {
                 Image(systemName: "bookmark")
             }
+            .accessibilityLabel("Bookmarks and highlights")
 
             Button { viewModel.isSettingsVisible = true } label: {
                 Image(systemName: "textformat.size")
             }
+            .accessibilityLabel("Reading settings")
         }
         .padding(.horizontal)
         .padding(.top, 50)
