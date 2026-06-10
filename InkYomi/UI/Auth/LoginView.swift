@@ -4,7 +4,6 @@ struct LoginView: View {
     @Environment(DependencyContainer.self) private var container
     @Environment(\.horizontalSizeClass) private var hSizeClass
     @State private var viewModel = LoginViewModel()
-    @State private var showRegister = false
     var navigateToForgotPassword: () -> Void
 
     var body: some View {
@@ -67,23 +66,10 @@ struct LoginView: View {
             }
             .foregroundStyle(Color.inkPrimaryLight)
 
-            // Accounts are created on the web (reader-app model). Open the
-            // sign-up page in an in-app Safari sheet so new users — and App
-            // Review — have a clear path to an account.
-            Button("New to InkColors? Create an account") {
-                showRegister = true
-            }
-            .font(.subheadline)
-            .foregroundStyle(Color.inkPrimaryLight)
-
             Spacer()
         }
         .frame(maxWidth: formMaxWidth)
         .frame(maxWidth: .infinity)
-        .sheet(isPresented: $showRegister) {
-            SafariView(url: InkColorsLinks.registerURL)
-                .ignoresSafeArea()
-        }
         .announcesChanges(of: viewModel.errorMessage) { $0 }
     }
 }
