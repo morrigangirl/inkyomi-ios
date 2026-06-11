@@ -90,6 +90,7 @@ struct ReaderView: View {
         .background(keyboardShortcuts)
         .announcesChanges(of: viewModel.message) { $0 }
         .announcesChanges(of: viewModel.error) { $0 }
+        .announcesChanges(of: viewModel.isReadAloudPlaying) { $0 ? "Reading aloud" : "Reading paused" }
     }
 
     private var keyboardShortcuts: some View {
@@ -103,6 +104,11 @@ struct ReaderView: View {
                 NotificationCenter.default.post(name: .readerGoForward, object: nil)
             }
             .keyboardShortcut(.rightArrow, modifiers: .command)
+
+            Button("Toggle Read Aloud") {
+                NotificationCenter.default.post(name: .readerReadAloudToggle, object: nil)
+            }
+            .keyboardShortcut("l", modifiers: .command)
         }
         .opacity(0)
         .frame(width: 0, height: 0)
@@ -163,6 +169,14 @@ struct ReaderView: View {
                 Image(systemName: "bookmark")
             }
             .accessibilityLabel("Bookmarks and highlights")
+
+            if viewModel.isReadAloudAvailable {
+                Button { viewModel.toggleReadAloud() } label: {
+                    Image(systemName: viewModel.isReadAloudPlaying ? "pause.circle.fill" : "play.circle")
+                }
+                .accessibilityLabel(viewModel.isReadAloudPlaying ? "Pause reading aloud" : "Read aloud")
+                .accessibilityHint("Reads the book aloud and turns pages automatically")
+            }
 
             Button { viewModel.isSettingsVisible = true } label: {
                 Image(systemName: "textformat.size")
@@ -258,5 +272,8 @@ extension Notification.Name {
     static let readerPageLayoutChanged = Notification.Name("readerPageLayoutChanged")
     static let readerGoBackward = Notification.Name("readerGoBackward")
     static let readerGoForward = Notification.Name("readerGoForward")
+    static let readerReadAloudToggle = Notification.Name("readerReadAloudToggle")
+    static let readerReadAloudNext = Notification.Name("readerReadAloudNext")
+    static let readerReadAloudPrevious = Notification.Name("readerReadAloudPrevious")
     static let focusHomeSearch = Notification.Name("focusHomeSearch")
 }
