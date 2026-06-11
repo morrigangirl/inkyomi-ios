@@ -29,7 +29,7 @@ struct LendingCatalogView: View {
                 }
             }
             .padding(10)
-            .background(.regularMaterial)
+            .adaptiveMaterial(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal)
             .padding(.vertical, 8)

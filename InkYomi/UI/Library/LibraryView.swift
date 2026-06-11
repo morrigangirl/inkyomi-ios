@@ -192,7 +192,7 @@ struct LibraryView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .background(.ultraThinMaterial)
+                .adaptiveMaterial()
                 .clipShape(Capsule())
                 .shadow(radius: 4)
                 .padding(.bottom, 20)

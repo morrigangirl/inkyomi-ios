@@ -63,6 +63,14 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         setupNavigator(at: initialLocator)
         setupNotificationObservers()
         setupReadAloud()
+
+        // Re-apply reader styling live when Increase Contrast or Bold Text
+        // changes, so the book updates without reopening.
+        registerForTraitChanges(
+            [UITraitAccessibilityContrast.self, UITraitLegibilityWeight.self]
+        ) { (vc: EPUBHostViewController, _) in
+            vc.navigator?.submitPreferences(vc.buildPreferences())
+        }
     }
 
     private func setupNavigator(at locator: Locator?) {
@@ -251,15 +259,26 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         prefs.fontSize = viewModel.fontScale
         prefs.publisherStyles = false
 
+        // Increase Contrast: push reader text/background to maximum contrast.
+        let highContrast = traitCollection.accessibilityContrast == .high
+
         switch viewModel.theme {
         case .light:
-            break // defaults
+            if highContrast {
+                prefs.backgroundColor = ReadiumNavigator.Color(hex: "#FFFFFF")
+                prefs.textColor = ReadiumNavigator.Color(hex: "#000000")
+            }
         case .sepia:
             prefs.backgroundColor = ReadiumNavigator.Color(hex: "#F5E6C8")
-            prefs.textColor = ReadiumNavigator.Color(hex: "#5B4636")
+            prefs.textColor = ReadiumNavigator.Color(hex: highContrast ? "#2B1C0E" : "#5B4636")
         case .dark:
-            prefs.backgroundColor = ReadiumNavigator.Color(hex: "#1A1A1A")
-            prefs.textColor = ReadiumNavigator.Color(hex: "#CCCCCC")
+            prefs.backgroundColor = ReadiumNavigator.Color(hex: highContrast ? "#000000" : "#1A1A1A")
+            prefs.textColor = ReadiumNavigator.Color(hex: highContrast ? "#FFFFFF" : "#CCCCCC")
+        }
+
+        // Bold Text: honor the system setting in the book's body text.
+        if traitCollection.legibilityWeight == .bold {
+            prefs.fontWeight = 1.5
         }
 
         switch viewModel.pageLayout {
