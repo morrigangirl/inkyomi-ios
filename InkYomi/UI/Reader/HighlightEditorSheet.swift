@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HighlightEditorSheet: View {
     let viewModel: ReaderViewModel
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
 
     private let colorOptions = [
         "#F7D774",  // Yellow
@@ -37,16 +38,25 @@ struct HighlightEditorSheet: View {
                             Button {
                                 viewModel.pendingHighlight?.colorHex = hex
                             } label: {
-                                Circle()
-                                    .fill(Color(hex: hex) ?? .yellow)
-                                    .frame(width: 36, height: 36)
-                                    .overlay {
-                                        if viewModel.pendingHighlight?.colorHex == hex {
-                                            Image(systemName: "checkmark")
-                                                .font(.caption.bold())
-                                                .foregroundStyle(.black.opacity(0.6))
+                                VStack(spacing: 4) {
+                                    Circle()
+                                        .fill(Color(hex: hex) ?? .yellow)
+                                        .frame(width: 36, height: 36)
+                                        .overlay {
+                                            if viewModel.pendingHighlight?.colorHex == hex {
+                                                Image(systemName: "checkmark")
+                                                    .font(.caption.bold())
+                                                    .foregroundStyle(.black.opacity(0.6))
+                                            }
                                         }
+                                    // Differentiate Without Color: show the name so
+                                    // color-blind users can tell the swatches apart.
+                                    if differentiateWithoutColor {
+                                        Text(colorName(hex))
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
                                     }
+                                }
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel(colorName(hex))

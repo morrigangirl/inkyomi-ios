@@ -7,6 +7,7 @@ struct ReaderView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     let bookId: String
     @State private var viewModel: ReaderViewModel
@@ -136,7 +137,7 @@ struct ReaderView: View {
                 .transition(.opacity)
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: viewModel.showControls)
+        .accessibleAnimation(.easeInOut(duration: 0.2), value: viewModel.showControls)
         // Center-tap toggles the chrome, which VoiceOver intercepts — give AT users
         // a rotor action to bring the controls back (audit A6).
         .accessibilityAction(named: "Show reader controls") {
@@ -192,7 +193,7 @@ struct ReaderView: View {
         .padding(.horizontal)
         .padding(.top, 50)
         .padding(.bottom, 8)
-        .background(.ultraThinMaterial)
+        .adaptiveMaterial()
         .foregroundStyle(.primary)
     }
 
@@ -208,7 +209,7 @@ struct ReaderView: View {
         .padding(.horizontal)
         .padding(.bottom, 30)
         .padding(.top, 8)
-        .background(.ultraThinMaterial)
+        .adaptiveMaterial()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Reading progress")
         .accessibilityValue("\(Int(viewModel.progressPercent * 100)) percent")
@@ -250,9 +251,9 @@ struct ReaderView: View {
             .font(.subheadline)
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: Capsule())
+            .adaptiveMaterial(in: Capsule())
             .padding(.top, 60)
-            .transition(.move(edge: .top).combined(with: .opacity))
+            .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     viewModel.consumeMessage()

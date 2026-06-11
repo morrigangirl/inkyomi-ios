@@ -6,7 +6,7 @@ struct AboutView: View {
     private var versionString: String {
         let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-        return "Version \(short) (\(build))"
+        return "Version \(short), Build: \(build)"
     }
 
     var body: some View {

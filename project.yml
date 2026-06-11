@@ -36,7 +36,10 @@ targets:
         INFOPLIST_FILE: InkYomi/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: shop.inkcolors.reader
         MARKETING_VERSION: "1.0.0"
-        CURRENT_PROJECT_VERSION: "2"
+        # Build number == the GitHub PR that cut the build, surfaced in-app as
+        # "Build: <n>". PR numbers only ever climb, so CFBundleVersion stays
+        # monotonic for App Store Connect with no manual bookkeeping.
+        CURRENT_PROJECT_VERSION: "33"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: true
     dependencies:

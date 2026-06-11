@@ -4,12 +4,25 @@ import SwiftUI
 /// The brand palette was authored for light mode only; the dark variants keep
 /// the same hue but lift the value so the colors stay legible as foreground /
 /// tint on a dark background (audit H6).
+typealias InkRGB = (red: Double, green: Double, blue: Double)
+
 func inkAdaptive(
-    light: (red: Double, green: Double, blue: Double),
-    dark: (red: Double, green: Double, blue: Double)
+    light: InkRGB,
+    dark: InkRGB,
+    lightHighContrast: InkRGB? = nil,
+    darkHighContrast: InkRGB? = nil
 ) -> Color {
     Color(uiColor: UIColor { traits in
-        let c = traits.userInterfaceStyle == .dark ? dark : light
+        // Honor Increase Contrast (Settings → Accessibility → Display &
+        // Text Size → Increase Contrast) when a higher-contrast variant is
+        // supplied, otherwise fall back to the standard light/dark value.
+        let highContrast = traits.accessibilityContrast == .high
+        let c: InkRGB
+        if traits.userInterfaceStyle == .dark {
+            c = (highContrast ? darkHighContrast : nil) ?? dark
+        } else {
+            c = (highContrast ? lightHighContrast : nil) ?? light
+        }
         return UIColor(red: c.red, green: c.green, blue: c.blue, alpha: 1)
     })
 }
@@ -18,15 +31,19 @@ extension Color {
     // Primary: light-mode navy (#2C3E7A) is near-black on a dark background,
     // so dark mode uses the lighter indigo (#5C6BC0).
     static let inkPrimary = inkAdaptive(
-        light: (0.173, 0.243, 0.478),   // #2C3E7A
-        dark:  (0.361, 0.420, 0.753)    // #5C6BC0
+        light: (0.173, 0.243, 0.478),             // #2C3E7A
+        dark:  (0.361, 0.420, 0.753),             // #5C6BC0
+        lightHighContrast: (0.102, 0.137, 0.494), // #1A237E — deeper navy on white
+        darkHighContrast:  (0.624, 0.659, 1.0)    // #9FA8FF — brighter on dark
     )
     static let inkPrimaryLight = Color(red: 0.361, green: 0.420, blue: 0.753)  // #5C6BC0
     static let inkPrimaryDark = Color(red: 0.102, green: 0.137, blue: 0.494)   // #1A237E
 
     static let inkSecondary = inkAdaptive(
-        light: (0.910, 0.337, 0.498),   // #E8567F
-        dark:  (1.0, 0.561, 0.639)      // #FF8FA3
+        light: (0.910, 0.337, 0.498),             // #E8567F
+        dark:  (1.0, 0.561, 0.639),               // #FF8FA3
+        lightHighContrast: (0.678, 0.078, 0.341), // #AD1457 — deeper on white
+        darkHighContrast:  (1.0, 0.698, 0.757)    // #FFB2C1 — brighter on dark
     )
     static let inkSecondaryLight = Color(red: 1.0, green: 0.561, blue: 0.639)  // #FF8FA3
     static let inkSecondaryDark = Color(red: 0.690, green: 0.188, blue: 0.310) // #B0304F
@@ -37,8 +54,10 @@ extension Color {
     // Error: light-mode #B3261E is too dark to read on a dark surface; dark
     // mode uses a brighter coral red (#FF8A80).
     static let inkError = inkAdaptive(
-        light: (0.702, 0.149, 0.118),   // #B3261E
-        dark:  (1.0, 0.541, 0.502)      // #FF8A80
+        light: (0.702, 0.149, 0.118),             // #B3261E
+        dark:  (1.0, 0.541, 0.502),               // #FF8A80
+        lightHighContrast: (0.557, 0.0, 0.0),     // #8E0000 — deeper red on white
+        darkHighContrast:  (1.0, 0.706, 0.671)    // #FFB4AB — brighter on dark
     )
 }
 
