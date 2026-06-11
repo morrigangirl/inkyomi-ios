@@ -132,6 +132,7 @@
 		B29A5F4AB8813DD03F8E6245 /* AccountAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA5D82EF11470DAE040D157 /* AccountAPIService.swift */; };
 		B6A74581246C0B76EB4B6D17 /* StorageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7ED375FA65C6DC3DD0F00D /* StorageView.swift */; };
 		B7C7D8F754906D9A872CDD95 /* BookCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1A5E35BAF6B89A68DB42EA /* BookCoverView.swift */; };
+		BE45A1D2525E81A7B8B3138E /* ReaderTTSController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB6A68FAD7C1E93D176A429 /* ReaderTTSController.swift */; };
 		BF8EE9BCB6047F53D72FA960 /* BookDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9032BBED76CB98725878F3 /* BookDetailView.swift */; };
 		BF918D7BA28247F2F0E36984 /* LcpTransportSecretStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AEDC7D2F1EB2D0E8D94D72 /* LcpTransportSecretStore.swift */; };
 		C0BA0A1E7DC185652F7D25D5 /* SearchTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06039CF2AB69345FCB0093AF /* SearchTypes.swift */; };
@@ -195,6 +196,7 @@
 		06039CF2AB69345FCB0093AF /* SearchTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTypes.swift; sourceTree = "<group>"; };
 		06E02867E468A0FA44D2561F /* PendingSpanReadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSpanReadModel.swift; sourceTree = "<group>"; };
 		09CEE4897FA0A1EC16CB48C8 /* CatalogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepository.swift; sourceTree = "<group>"; };
+		0AB6A68FAD7C1E93D176A429 /* ReaderTTSController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTTSController.swift; sourceTree = "<group>"; };
 		0B28524204607495F79B2B51 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		0B7CCFE82D55A991B97FD1B0 /* kdf.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = kdf.json; sourceTree = "<group>"; };
 		0CCE47617AE203BE866F93A4 /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
@@ -460,6 +462,7 @@
 				8423BA7ED48CAF132F841442 /* HighlightEditorSheet.swift */,
 				5748F93CE76D6C318868F041 /* NotesSheet.swift */,
 				A3437215236DC49549BD2BC8 /* ReaderSettingsSheet.swift */,
+				0AB6A68FAD7C1E93D176A429 /* ReaderTTSController.swift */,
 				CE72DE90C192AF222BE579B3 /* ReaderView.swift */,
 				E0AE71C4C213F43AA185D393 /* ReaderViewModel.swift */,
 				0DE59CC463C9DCF3B2068DEB /* TocSheet.swift */,
@@ -1082,6 +1085,7 @@
 				C848F3E88FBEF8EEB4238476 /* ReaderSyncAPIService.swift in Sources */,
 				91FFA7BD6F979FD81B56D72D /* ReaderSyncCoordinator.swift in Sources */,
 				E1055EF278E812B89A0EFB72 /* ReaderSyncDTOs.swift in Sources */,
+				BE45A1D2525E81A7B8B3138E /* ReaderTTSController.swift in Sources */,
 				8F895004AA4105274688E820 /* ReaderView.swift in Sources */,
 				9E7EFDA721270E39D6E695EA /* ReaderViewModel.swift in Sources */,
 				34AD3777AB77D8E7B4CC940B /* ReadingSessionModel.swift in Sources */,

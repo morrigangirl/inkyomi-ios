@@ -59,6 +59,10 @@ final class ReaderViewModel {
     var isSearching = false
     var message: String?
 
+    // Read-aloud (TTS). Set by the host VC's ReaderTTSController.
+    var isReadAloudAvailable = false
+    var isReadAloudPlaying = false
+
     // MARK: - Reader Preferences
     var fontScale: Double = 1.0
     var lineHeight: Double = 1.4
@@ -314,6 +318,22 @@ final class ReaderViewModel {
 
     func toggleControls() {
         showControls.toggle()
+    }
+
+    // MARK: - Read-aloud (TTS)
+    // These post to the host VC, which owns the ReaderTTSController (it has
+    // the publication + navigator needed to speak and follow the page).
+
+    func toggleReadAloud() {
+        NotificationCenter.default.post(name: .readerReadAloudToggle, object: nil)
+    }
+
+    func readAloudNext() {
+        NotificationCenter.default.post(name: .readerReadAloudNext, object: nil)
+    }
+
+    func readAloudPrevious() {
+        NotificationCenter.default.post(name: .readerReadAloudPrevious, object: nil)
     }
 
     // MARK: - TOC

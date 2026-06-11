@@ -35,12 +35,16 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     private let initialLocator: Locator?
     private let viewModel: ReaderViewModel
     private var navigator: EPUBNavigatorViewController?
+    private var ttsController: ReaderTTSController?
     nonisolated(unsafe) private var hrefObserver: Any?
     nonisolated(unsafe) private var bookmarkObserver: Any?
     nonisolated(unsafe) private var preferencesObserver: Any?
     nonisolated(unsafe) private var pageLayoutObserver: Any?
     nonisolated(unsafe) private var goBackwardObserver: Any?
     nonisolated(unsafe) private var goForwardObserver: Any?
+    nonisolated(unsafe) private var ttsToggleObserver: Any?
+    nonisolated(unsafe) private var ttsNextObserver: Any?
+    nonisolated(unsafe) private var ttsPreviousObserver: Any?
 
     init(publication: Publication, initialLocator: Locator?, viewModel: ReaderViewModel) {
         self.publication = publication
@@ -58,6 +62,7 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         view.backgroundColor = .systemBackground
         setupNavigator(at: initialLocator)
         setupNotificationObservers()
+        setupReadAloud()
     }
 
     private func setupNavigator(at locator: Locator?) {
@@ -98,6 +103,23 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
             self.navigator = nil
         }
         setupNavigator(at: resumeLocator)
+    }
+
+    /// Create the read-aloud controller and bridge it to the navigator: it
+    /// drives `viewModel.isReadAloudPlaying` for the UI, and turns the page to
+    /// follow the narration via `navigator.go(to:)`.
+    private func setupReadAloud() {
+        let controller = ReaderTTSController(publication: publication, title: viewModel.bookTitle)
+        controller.onPlayingChanged = { [weak self] playing in
+            self?.viewModel.isReadAloudPlaying = playing
+        }
+        controller.onAdvance = { [weak self] locator in
+            Task { @MainActor [weak self] in
+                _ = await self?.navigator?.go(to: locator, options: NavigatorGoOptions())
+            }
+        }
+        viewModel.isReadAloudAvailable = controller.isAvailable
+        self.ttsController = controller
     }
 
     private func setupNotificationObservers() {
@@ -172,6 +194,33 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
                 _ = await nav.goForward(options: NavigatorGoOptions())
             }
         }
+
+        ttsToggleObserver = NotificationCenter.default.addObserver(
+            forName: .readerReadAloudToggle,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.ttsController?.toggle(from: self.navigator?.currentLocation)
+            }
+        }
+
+        ttsNextObserver = NotificationCenter.default.addObserver(
+            forName: .readerReadAloudNext,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.ttsController?.skipNext() }
+        }
+
+        ttsPreviousObserver = NotificationCenter.default.addObserver(
+            forName: .readerReadAloudPrevious,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.ttsController?.skipPrevious() }
+        }
     }
 
     // MARK: - EPUBNavigatorDelegate / NavigatorDelegate / VisualNavigatorDelegate
@@ -230,6 +279,10 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // Stop narration + release the audio session / Now Playing when the
+        // reader is dismissed. Not fired for sheets or app backgrounding, so
+        // read-aloud correctly keeps playing in the background.
+        ttsController?.stop()
     }
 
     deinit {
@@ -239,5 +292,8 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         if let obs = pageLayoutObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = goBackwardObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = goForwardObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = ttsToggleObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = ttsNextObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = ttsPreviousObserver { NotificationCenter.default.removeObserver(obs) }
     }
 }
