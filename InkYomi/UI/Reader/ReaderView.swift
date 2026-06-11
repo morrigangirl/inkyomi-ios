@@ -142,6 +142,12 @@ struct ReaderView: View {
         .accessibilityAction(named: "Show reader controls") {
             viewModel.showControls = true
         }
+        // Reader-level VoiceOver rotor action so a blind reader can start /
+        // pause narration from anywhere in the book without finding the
+        // on-screen button (which lives in the auto-hiding chrome).
+        .accessibilityAction(named: viewModel.isReadAloudPlaying ? "Pause reading aloud" : "Read aloud") {
+            viewModel.toggleReadAloud()
+        }
     }
 
     private var topBar: some View {
