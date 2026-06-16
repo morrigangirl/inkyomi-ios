@@ -63,7 +63,6 @@
     </array>
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
-        <string>shop.inkcolors.InkYomi.spanUpload</string>
         <string>shop.inkcolors.InkYomi.loanRenewal</string>
     </array>
     <key>UIBackgroundModes</key>

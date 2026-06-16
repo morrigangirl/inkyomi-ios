@@ -4,7 +4,6 @@ struct BookDetailView: View {
     let bookId: String
     @Environment(DependencyContainer.self) private var container
     @Environment(\.horizontalSizeClass) private var hSizeClass
-    @Environment(\.openURL) private var openURL
     @State private var viewModel = BookDetailViewModel()
     @State private var showReader = false
     @State private var showLookInside = false
@@ -270,22 +269,14 @@ struct BookDetailView: View {
                 ReaderView(bookId: bookId)
             }
         } else if book.isPurchasable || book.isPreorderable {
-            // Purchases happen on the website, never in-app, to avoid
-            // in-app-purchase fees. Open the book's public page in the
-            // system default browser (external) so the user clearly
-            // leaves the app — not an in-app SFSafariViewController. For a
-            // pre-order this is where the reader places the reservation.
-            Button {
-                if let url = URL(string: "https://inkcolors.shop/books/\(book.icin ?? book.slug)") {
-                    openURL(url)
-                }
-            } label: {
-                Label(book.isPreorderable ? "Pre-order Online" : "View Online",
-                      systemImage: "arrow.up.right.square")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.inkSecondary)
+            // No purchasing in the app (App Store Review Guideline 3.1.1):
+            // books are bought on the website. We show only a plain,
+            // non-interactive availability note — no link, button, or
+            // call to action steering to an external purchase.
+            Text("Available at InkColors.Shop.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
     }
 
