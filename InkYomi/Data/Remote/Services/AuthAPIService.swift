@@ -13,12 +13,14 @@ struct AuthAPIService: Sendable {
         )
     }
 
-    func login(email: String, password: String, deviceId: String, deviceName: String?) async throws -> DeviceAuthResponse {
+    func login(email: String, password: String, deviceId: String, deviceName: String?, deviceModel: String?, platform: String?) async throws -> DeviceAuthResponse {
         let body = DeviceLoginRequest(
             email: email,
             password: password,
             deviceId: deviceId,
-            deviceName: deviceName
+            deviceName: deviceName,
+            deviceModel: deviceModel,
+            platform: platform
         )
         return try await client.request(Endpoint(
             path: "auth/device-login",

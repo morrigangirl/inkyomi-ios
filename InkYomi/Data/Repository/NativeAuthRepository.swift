@@ -45,12 +45,17 @@ actor NativeAuthRepository: AuthRepository {
     }
 
     func login(email: String, password: String) async throws {
-        let deviceName = await deviceModelName()
+        // device_name = the user's name for the device; device_model = the
+        // marketing model; platform = "ios" (the server no longer hardcodes
+        // android). See DeviceModelName / the device list.
+        let deviceName = await MainActor.run { UIDevice.current.name }
         let response = try await authAPI.login(
             email: email,
             password: password,
             deviceId: appState.deviceId,
-            deviceName: deviceName
+            deviceName: deviceName,
+            deviceModel: DeviceModelName.marketingName,
+            platform: "ios"
         )
         storeTokens(response)
         await MainActor.run {
@@ -291,9 +296,4 @@ actor NativeAuthRepository: AuthRepository {
         )
     }
 
-    private func deviceModelName() async -> String {
-        await MainActor.run {
-            UIDevice.current.model
-        }
-    }
 }

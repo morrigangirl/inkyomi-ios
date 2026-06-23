@@ -57,10 +57,14 @@ enum APIError: Error, LocalizedError {
         struct ServerError: Decodable {
             let error: String?
             let title: String?
+            let message: String?
         }
         guard let decoded = try? JSONDecoder().decode(ServerError.self, from: data) else {
             return nil
         }
+        // Prefer a human-readable `message` (e.g. the device-limit 409's
+        // "Remove a device to add this one.") over the machine `error` code.
+        if let message = decoded.message, !message.isEmpty { return message }
         if let error = decoded.error, !error.isEmpty { return error }
         if let title = decoded.title, !title.isEmpty { return title }
         return nil
@@ -140,6 +144,12 @@ actor APIClient {
         case 200...299:
             return data
         case 401:
+            // Preserve the body when the device has been revoked so the auth
+            // layer can classify it as a terminal failure (sign out + wipe all
+            // local data). Other 401s stay an opaque .unauthorized.
+            if let body = String(data: data, encoding: .utf8), body.contains("device_revoked") {
+                throw APIError.httpError(statusCode: 401, data: data)
+            }
             throw APIError.unauthorized
         case 429:
             throw APIError.rateLimited

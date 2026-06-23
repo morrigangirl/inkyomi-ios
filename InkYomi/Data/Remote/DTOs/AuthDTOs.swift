@@ -6,11 +6,14 @@ struct DeviceLoginRequest: Encodable {
     let password: String
     let deviceId: String
     let deviceName: String?
+    let deviceModel: String?
+    let platform: String?
 
     enum CodingKeys: String, CodingKey {
-        case email, password
+        case email, password, platform
         case deviceId = "device_id"
         case deviceName = "device_name"
+        case deviceModel = "device_model"
     }
 }
 

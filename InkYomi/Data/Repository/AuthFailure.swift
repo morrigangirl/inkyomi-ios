@@ -53,6 +53,10 @@ enum AuthFailure: Error {
         guard [400, 401, 403].contains(code) else { return false }
         return body.contains("\"invalid_grant\"") ||
             body.contains("\"unauthorized_client\"") ||
-            body.contains("\"invalid_token\"")
+            body.contains("\"invalid_token\"") ||
+            // The backend returns `{"error":"device_revoked"}` when this device
+            // has been removed. Treat it as terminal so the app signs out and
+            // wipes all local data on the next refresh after revocation.
+            body.contains("device_revoked")
     }
 }
