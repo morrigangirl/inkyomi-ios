@@ -149,7 +149,11 @@ final class DependencyContainer: @unchecked Sendable {
         self.spanTelemetryAPIService = SpanTelemetryAPIService(client: apiClient)
         self.readerAPIService = ReaderAPIService(client: apiClient)
         self.readerSyncAPIService = ReaderSyncAPIService(client: apiClient)
-        self.spanTelemetryRepository = SpanTelemetryRepository(modelContainer: modelContainer)
+        self.spanTelemetryRepository = SpanTelemetryRepository(
+            modelContainer: modelContainer,
+            apiService: spanTelemetryAPIService,
+            deviceId: appState.deviceId
+        )
 
         // Downloads & DRM
         self.lendingDownloadManager = LendingDownloadManager()
