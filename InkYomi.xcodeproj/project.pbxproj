@@ -256,7 +256,7 @@
 		5AD27B07C4E02D35E8F74921 /* BrowseHubTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseHubTile.swift; sourceTree = "<group>"; };
 		5C7AEC3BBCA7F28E261DAD44 /* CatalogRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepositoryImpl.swift; sourceTree = "<group>"; };
 		5C7ED375FA65C6DC3DD0F00D /* StorageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageView.swift; sourceTree = "<group>"; };
-		62D7BE243FC6A02A67A3935A /* inkyomi-provider-cert.pem */ = {isa = PBXFileReference; path = "inkyomi-provider-cert.pem"; sourceTree = "<group>"; };
+		62D7BE243FC6A02A67A3935A /* inkyomi-provider-cert.pem */ = {isa = PBXFileReference; lastKnownFileType = text; path = "inkyomi-provider-cert.pem"; sourceTree = "<group>"; };
 		64C11263B922F44284305776 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		6570844B345A501CE53C03B2 /* ReaderAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderAPIService.swift; sourceTree = "<group>"; };
 		6862A07058ABDCDF934755AF /* LoanDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoanDisplay.swift; sourceTree = "<group>"; };
@@ -300,9 +300,9 @@
 		A0891F61A1F07B34BEB8A1DD /* TelemetryDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryDTOs.swift; sourceTree = "<group>"; };
 		A3437215236DC49549BD2BC8 /* ReaderSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettingsSheet.swift; sourceTree = "<group>"; };
 		A4E60ACDF69FB737EE4B7850 /* OpdsLendingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpdsLendingAPIService.swift; sourceTree = "<group>"; };
-		A5BC9931CE5F3C8503263882 /* InkYomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InkYomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5BC9931CE5F3C8503263882 /* InkYomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InkYomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C0791420324ACBA0C2FF2F /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
-		A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		A5C83AE4D98C797D8EACA3DF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A8A4667FEF828099492F5BC0 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		AF2A357626E0AD09A13691B5 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		AF8F09B64B3B800603FA7FDD /* ShelfRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfRowView.swift; sourceTree = "<group>"; };
@@ -333,7 +333,7 @@
 		CE3AC3765DD5234DA930EE4B /* ReaderSyncDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSyncDTOs.swift; sourceTree = "<group>"; };
 		CE72DE90C192AF222BE579B3 /* ReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderView.swift; sourceTree = "<group>"; };
 		CF82ED22F87B5C821CBB855E /* AccSpanObserverScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccSpanObserverScript.swift; sourceTree = "<group>"; };
-		CF89D145025E3294913168E7 /* dev-signing-key.pub.pem */ = {isa = PBXFileReference; path = "dev-signing-key.pub.pem"; sourceTree = "<group>"; };
+		CF89D145025E3294913168E7 /* dev-signing-key.pub.pem */ = {isa = PBXFileReference; lastKnownFileType = text; path = "dev-signing-key.pub.pem"; sourceTree = "<group>"; };
 		D17B752867921F98B3D46270 /* BookDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailViewModel.swift; sourceTree = "<group>"; };
 		D584DEE1FFF754872F357F86 /* DeviceKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceKeyManager.swift; sourceTree = "<group>"; };
 		D6A7AA2588ED8845E80F9434 /* NativeAuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuthRepository.swift; sourceTree = "<group>"; };
@@ -903,9 +903,6 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					04348D0DD6203C6E53F0F072 = {
-						DevelopmentTeam = "";
-					};
 					C4F368B18FEAC5BC3F7C0B52 = {
 						DevelopmentTeam = "";
 					};
@@ -1147,14 +1144,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = 34;
+				DEVELOPMENT_TEAM = PV65ZWXCWX;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = InkYomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = shop.inkcolors.reader;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1319,14 +1317,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = 34;
+				DEVELOPMENT_TEAM = PV65ZWXCWX;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = InkYomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = shop.inkcolors.reader;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
