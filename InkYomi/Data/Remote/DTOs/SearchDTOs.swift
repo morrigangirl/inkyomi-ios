@@ -13,8 +13,9 @@ import Foundation
 /// Wraps a string field that the backend sometimes serializes as a
 /// number. The contract type is `string`, but historic seed data and
 /// some response paths emit raw integers (e.g. `"seriesNumber":3`).
-/// kotlinx-serialization on Android coerces type mismatches silently;
-/// Swift's `JSONDecoder` does not, so this wrapper does it explicitly.
+/// Swift's `JSONDecoder` rejects a number where a `String` is declared
+/// (it throws), so this wrapper decodes either form explicitly. The
+/// Android client mirrors it with a `StringOrNumberSerializer`.
 struct StringOrNumber: Decodable, Sendable {
     let value: String?
 
