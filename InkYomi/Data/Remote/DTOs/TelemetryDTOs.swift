@@ -34,6 +34,9 @@ struct SpanUploadRequest: Encodable {
     let deviceId: String
     let clientTimestamp: Date
     let clientVersion: String
+    /// Stable idempotency id for this batch so a resend (lost ACK) is applied
+    /// at most once server-side (the span upsert is additive). See migration 159.
+    let clientBatchId: String
     let spans: [SpanReadDto]
 
     enum CodingKeys: String, CodingKey {
@@ -41,6 +44,7 @@ struct SpanUploadRequest: Encodable {
         case deviceId = "device_id"
         case clientTimestamp = "client_timestamp"
         case clientVersion = "client_version"
+        case clientBatchId = "client_batch_id"
         case spans
     }
 }

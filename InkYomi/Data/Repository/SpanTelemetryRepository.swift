@@ -111,9 +111,13 @@ actor SpanTelemetryRepository {
     }
 
     /// Upload all pending spans, oldest first, in ≤`spanBatchSize` batches per
-    /// loan. Rows are deleted only after a 2xx, so a failure (network, 429,
-    /// 401) leaves the queue intact for the next trigger. Throttled to once per
-    /// `spanUploadThrottleSeconds` unless `force`; re-entrancy-guarded.
+    /// loan. Each batch carries a STABLE idempotency id (assigned once and kept
+    /// on the rows until a 2xx deletes them) sent as `client_batch_id`, so a
+    /// resend after a lost ACK is deduped server-side and the additive dwell
+    /// upsert isn't double-applied. Rows are deleted only after a 2xx, so a
+    /// failure (network, 429, 401) leaves the queue intact for the next trigger.
+    /// Throttled to once per `spanUploadThrottleSeconds` unless `force`;
+    /// re-entrancy-guarded.
     func drainAll(force: Bool = false) async {
         if draining { return }
         if !force, let last = lastDrainAt, Date().timeIntervalSince(last) < Constants.spanUploadThrottleSeconds {
@@ -123,61 +127,60 @@ actor SpanTelemetryRepository {
         lastDrainAt = Date()
         defer { draining = false }
 
-        // Snapshot pending rows into Sendable values so we never hold a
+        // Assign a stable batch id to any not-yet-batched rows (persisted, so a
+        // retry reuses it), then snapshot into Sendable values — we never hold a
         // (non-Sendable) ModelContext across the network await.
-        let snapshot = fetchPendingSnapshot()
-        if snapshot.isEmpty { return }
+        assignBatchIds()
+        let batches = fetchPendingBatches()
+        if batches.isEmpty { return }
 
-        let byLoan = Dictionary(grouping: snapshot, by: { $0.loanId })
-        loanLoop: for (loanId, rows) in byLoan {
-            var index = 0
-            while index < rows.count {
-                if Task.isCancelled { return }
-                let upper = min(index + Constants.spanBatchSize, rows.count)
-                let chunk = Array(rows[index ..< upper])
-                index = upper
+        var budgetExhaustedLoans = Set<String>()
+        for batch in batches {
+            if Task.isCancelled { return }
+            // Skip a loan's remaining batches once it has hit its daily budget.
+            if budgetExhaustedLoans.contains(batch.loanId) { continue }
 
-                let spans = chunk.map {
-                    SpanReadDto(accId: $0.accId, sequenceIndex: $0.sequenceIndex, enteredAt: $0.enteredAt, exitedAt: $0.exitedAt, dwellMs: $0.dwellMs)
-                }
-                let request = SpanUploadRequest(
-                    loanId: loanId,
-                    deviceId: deviceId,
-                    clientTimestamp: Date(),
-                    clientVersion: clientVersion,
-                    spans: spans
-                )
+            let spans = batch.rows.map {
+                SpanReadDto(accId: $0.accId, sequenceIndex: $0.sequenceIndex, enteredAt: $0.enteredAt, exitedAt: $0.exitedAt, dwellMs: $0.dwellMs)
+            }
+            let request = SpanUploadRequest(
+                loanId: batch.loanId,
+                deviceId: deviceId,
+                clientTimestamp: Date(),
+                clientVersion: clientVersion,
+                clientBatchId: batch.batchId,
+                spans: spans
+            )
 
-                do {
-                    let response = try await apiService.uploadSpans(request: request)
-                    // 2xx (even with per-span rejections): delete the whole chunk
-                    // — rejected spans are invalid (unknown acc_id / sequence
-                    // mismatch) and would never succeed on retry, so dropping
-                    // them prevents a poison row from wedging the queue.
-                    deleteUploaded(ids: chunk.map { $0.id })
-                    telemetryLogger.info("Uploaded \(chunk.count, privacy: .public) spans (accepted=\(response.accepted ?? -1, privacy: .public)) for loan \(loanId, privacy: .public)")
-                } catch APIError.unauthorized {
-                    // Session-wide auth failure — every loan would fail too; stop
-                    // and keep the WHOLE queue for after the next sign-in.
-                    telemetryLogger.notice("Telemetry unauthorized; keeping queue for next session")
-                    return
-                } catch APIError.rateLimited {
-                    // Per-loan daily budget (429) — keep this loan's rows but move
-                    // on so other loans still drain (no cross-loan starvation).
-                    telemetryLogger.notice("Telemetry rate-limited for loan \(loanId, privacy: .public); trying next loan")
-                    continue loanLoop
-                } catch let APIError.httpError(status, _) where (400 ..< 500).contains(status) {
-                    // Permanent client error for this loan/batch (403 not-owned,
-                    // 404 gone, 400 malformed) — never succeeds on retry, so drop
-                    // this chunk to avoid an immortal poison queue, then move on.
-                    telemetryLogger.error("Telemetry permanent \(status, privacy: .public) for loan \(loanId, privacy: .public); dropping batch")
-                    deleteUploaded(ids: chunk.map { $0.id })
-                    continue loanLoop
-                } catch {
-                    // Transient (network / 5xx) — keep this loan's rows, try others.
-                    telemetryLogger.error("Telemetry upload failed for loan \(loanId, privacy: .public); keeping queue: \(String(describing: error), privacy: .public)")
-                    continue loanLoop
-                }
+            do {
+                let response = try await apiService.uploadSpans(request: request)
+                // 2xx (incl. a server-deduped resend, or per-span rejections):
+                // delete the batch — rejected/duplicate spans never succeed on
+                // retry, so dropping them prevents a poison row wedging the queue.
+                deleteUploaded(ids: batch.rows.map { $0.id })
+                telemetryLogger.info("Uploaded \(batch.rows.count, privacy: .public) spans (accepted=\(response.accepted ?? -1, privacy: .public)) for loan \(batch.loanId, privacy: .public)")
+            } catch APIError.unauthorized {
+                // Session-wide auth failure — every batch would fail too; stop and
+                // keep the WHOLE queue for after the next sign-in.
+                telemetryLogger.notice("Telemetry unauthorized; keeping queue for next session")
+                return
+            } catch APIError.rateLimited {
+                // Per-loan daily budget (429) — keep this batch's rows, skip the
+                // rest of this loan, but keep draining OTHER loans.
+                telemetryLogger.notice("Telemetry rate-limited for loan \(batch.loanId, privacy: .public); skipping its remaining batches")
+                budgetExhaustedLoans.insert(batch.loanId)
+                continue
+            } catch let APIError.httpError(status, _) where (400 ..< 500).contains(status) {
+                // Permanent client error (403 not-owned, 404 gone, 400 malformed)
+                // — never succeeds on retry, so drop this batch to avoid an
+                // immortal poison queue.
+                telemetryLogger.error("Telemetry permanent \(status, privacy: .public) for loan \(batch.loanId, privacy: .public); dropping batch")
+                deleteUploaded(ids: batch.rows.map { $0.id })
+                continue
+            } catch {
+                // Transient (network / 5xx) — keep this batch's rows, try others.
+                telemetryLogger.error("Telemetry upload failed for loan \(batch.loanId, privacy: .public); keeping queue: \(String(describing: error), privacy: .public)")
+                continue
             }
         }
     }
@@ -200,7 +203,6 @@ actor SpanTelemetryRepository {
 
     private struct PendingSnapshot {
         let id: String
-        let loanId: String
         let accId: String
         let sequenceIndex: Int
         let enteredAt: Date
@@ -208,19 +210,59 @@ actor SpanTelemetryRepository {
         let dwellMs: Int64
     }
 
-    private func fetchPendingSnapshot() -> [PendingSnapshot] {
+    private struct PendingBatch {
+        let batchId: String
+        let loanId: String
+        let rows: [PendingSnapshot]
+    }
+
+    /// Assign a stable batch id to pending rows that don't have one yet, in
+    /// ≤`spanBatchSize` chunks per loan, and persist it. A failed batch keeps its
+    /// id, so the retry sends the same `client_batch_id` and the server dedups.
+    /// Idempotent — rows already carrying a batchId are left untouched.
+    private func assignBatchIds() {
         let context = ModelContext(modelContainer)
         let descriptor = FetchDescriptor<PendingSpanReadModel>(
-            predicate: #Predicate { $0.uploaded == false },
+            predicate: #Predicate { $0.uploaded == false && $0.batchId == nil },
+            sortBy: [SortDescriptor(\.enteredAt)]
+        )
+        guard let rows = try? context.fetch(descriptor), !rows.isEmpty else { return }
+        let byLoan = Dictionary(grouping: rows, by: { $0.loanId })
+        for (_, loanRows) in byLoan {
+            var index = 0
+            while index < loanRows.count {
+                let upper = min(index + Constants.spanBatchSize, loanRows.count)
+                let batchId = UUID().uuidString
+                for row in loanRows[index ..< upper] { row.batchId = batchId }
+                index = upper
+            }
+        }
+        do {
+            try context.save()
+        } catch {
+            telemetryLogger.error("assignBatchIds save failed: \(String(describing: error), privacy: .public)")
+        }
+    }
+
+    /// Snapshot pending rows grouped by their (already-assigned) batch id into
+    /// Sendable values, so no ModelContext crosses the network await.
+    private func fetchPendingBatches() -> [PendingBatch] {
+        let context = ModelContext(modelContainer)
+        let descriptor = FetchDescriptor<PendingSpanReadModel>(
+            predicate: #Predicate { $0.uploaded == false && $0.batchId != nil },
             sortBy: [SortDescriptor(\.enteredAt)]
         )
         guard let rows = try? context.fetch(descriptor) else {
             telemetryLogger.error("drain fetch failed")
             return []
         }
-        return rows.map {
-            PendingSnapshot(id: $0.id, loanId: $0.loanId, accId: $0.accId, sequenceIndex: $0.sequenceIndex, enteredAt: $0.enteredAt, exitedAt: $0.exitedAt, dwellMs: $0.dwellMs)
+        var byBatch: [String: (loanId: String, rows: [PendingSnapshot])] = [:]
+        for row in rows {
+            guard let batchId = row.batchId else { continue }
+            let snapshot = PendingSnapshot(id: row.id, accId: row.accId, sequenceIndex: row.sequenceIndex, enteredAt: row.enteredAt, exitedAt: row.exitedAt, dwellMs: row.dwellMs)
+            byBatch[batchId, default: (row.loanId, [])].rows.append(snapshot)
         }
+        return byBatch.map { PendingBatch(batchId: $0.key, loanId: $0.value.loanId, rows: $0.value.rows) }
     }
 
     private func deleteUploaded(ids: [String]) {
