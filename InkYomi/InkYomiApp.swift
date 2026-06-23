@@ -22,9 +22,11 @@ struct InkYomiApp: App {
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .background {
-                Task {
-                    await container.spanTelemetryRepository.drainAll()
-                }
+                // Flush now, shielded by a background-task assertion so the
+                // upload survives suspension, then schedule the deferred
+                // BGProcessingTask catch-up.
+                SpanUploadScheduler.drainOnBackground(container.spanTelemetryRepository)
+                SpanUploadScheduler.scheduleUpload()
                 LoanRenewalScheduler.scheduleRenewal()
             }
         }
@@ -32,5 +34,6 @@ struct InkYomiApp: App {
 
     init() {
         LoanRenewalScheduler.registerTask(container: DependencyContainer.shared)
+        SpanUploadScheduler.registerTask(container: DependencyContainer.shared)
     }
 }

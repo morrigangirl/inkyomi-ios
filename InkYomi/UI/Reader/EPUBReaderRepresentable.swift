@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import WebKit
 import ReadiumShared
 import ReadiumNavigator
 
@@ -36,6 +37,10 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     private let viewModel: ReaderViewModel
     private var navigator: EPUBNavigatorViewController?
     private var ttsController: ReaderTTSController?
+    /// Receives span-dwell observations from the injected JS for borrowed books.
+    /// Created before the navigator so it's ready when `setupUserScripts` fires.
+    private var spanBridge: SpanObserverBridge?
+    nonisolated(unsafe) private var spanDrainTimer: Timer?
     nonisolated(unsafe) private var hrefObserver: Any?
     nonisolated(unsafe) private var bookmarkObserver: Any?
     nonisolated(unsafe) private var preferencesObserver: Any?
@@ -60,9 +65,13 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        // Create the span bridge BEFORE the navigator: `setupUserScripts` fires
+        // synchronously during navigator creation, and needs the bridge to exist.
+        spanBridge = SpanObserverBridge(repository: DependencyContainer.shared.spanTelemetryRepository)
         setupNavigator(at: initialLocator)
         setupNotificationObservers()
         setupReadAloud()
+        setupSpanTelemetry()
 
         // Re-apply reader styling live when Increase Contrast or Bold Text
         // changes, so the book updates without reopening.
@@ -253,6 +262,83 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         }
     }
 
+    /// Readium calls this for every spread's web view. Inject the span
+    /// IntersectionObserver and register the bridge that receives its messages.
+    /// Re-register defensively (remove-then-add) so a repeated setup can't crash
+    /// on a duplicate handler name.
+    func navigator(_ navigator: EPUBNavigatorViewController, setupUserScripts userContentController: WKUserContentController) {
+        guard let spanBridge else { return }
+        let script = WKUserScript(
+            source: AccSpanObserverScript.javascript,
+            injectionTime: .atDocumentEnd,
+            forMainFrameOnly: false
+        )
+        userContentController.addUserScript(script)
+        userContentController.removeScriptMessageHandler(forName: "spanObserver")
+        userContentController.add(spanBridge, name: "spanObserver")
+    }
+
+    // MARK: - Span telemetry (borrowed books)
+
+    /// Resolve whether this is a borrowed book and, if so, fetch the accounting
+    /// manifest so the bridge can map acc_id → sequence_index. Then drain any
+    /// backlog and start the periodic in-session flush. Non-borrowed books
+    /// disable the bridge so nothing is recorded.
+    private func setupSpanTelemetry() {
+        guard let spanBridge else { return }
+        let bookId = viewModel.bookId
+        let container = DependencyContainer.shared
+        Task { @MainActor in
+            // Resolve the loan permissively (active/returned/expired — every
+            // status the server credits telemetry for) so a loan that expires
+            // mid-session keeps recording. nil => owned (non-loan) book.
+            guard let loanId = await container.spanTelemetryRepository.loanIdForTelemetry(bookId: bookId) else {
+                spanBridge.disable()
+                return
+            }
+
+            // Clear any backlog from a previous session up front. Doing this
+            // BEFORE configure() means it targets already-persisted rows and
+            // doesn't race this session's not-yet-flushed buffer (the periodic
+            // and on-close drains ship this session's spans).
+            await container.spanTelemetryRepository.drainAll(force: true)
+
+            // Build acc_id -> sequence_index from the frozen accounting manifest,
+            // falling back to the cached copy on a transient or empty fetch.
+            var map: [String: Int] = [:]
+            if let manifest = try? await container.spanTelemetryAPIService.getAccountingManifest(loanId: loanId) {
+                for span in manifest.spans { map[span.accId] = span.sequenceIndex }
+                if !map.isEmpty {
+                    await container.spanTelemetryRepository.cacheManifest(
+                        loanId: loanId,
+                        bookId: manifest.bookId,
+                        normalizedPageWords: manifest.normalizedPageWords,
+                        spans: manifest.spans
+                    )
+                }
+            }
+            if map.isEmpty, let cached = await container.spanTelemetryRepository.cachedManifestMap(loanId: loanId) {
+                map = cached
+            }
+
+            // Only enable recording with a usable map — configuring with an empty
+            // map would commit loanId and then silently drop every span.
+            guard !map.isEmpty else {
+                spanBridge.disable()
+                return
+            }
+            spanBridge.configure(loanId: loanId, accToSequence: map)
+            self.startPeriodicDrain()
+        }
+    }
+
+    private func startPeriodicDrain() {
+        spanDrainTimer?.invalidate()
+        spanDrainTimer = Timer.scheduledTimer(withTimeInterval: Constants.spanPeriodicDrainSeconds, repeats: true) { _ in
+            Task { await DependencyContainer.shared.spanTelemetryRepository.drainAll() }
+        }
+    }
+
     /// Build Readium EPUB preferences from the ViewModel state.
     private func buildPreferences() -> EPUBPreferences {
         var prefs = EPUBPreferences()
@@ -302,9 +388,14 @@ final class EPUBHostViewController: UIViewController, EPUBNavigatorDelegate {
         // reader is dismissed. Not fired for sheets or app backgrounding, so
         // read-aloud correctly keeps playing in the background.
         ttsController?.stop()
+        // Flush span telemetry on the way out of the reader.
+        spanDrainTimer?.invalidate()
+        spanDrainTimer = nil
+        Task { await DependencyContainer.shared.spanTelemetryRepository.drainAll(force: true) }
     }
 
     deinit {
+        spanDrainTimer?.invalidate()
         if let obs = hrefObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = bookmarkObserver { NotificationCenter.default.removeObserver(obs) }
         if let obs = preferencesObserver { NotificationCenter.default.removeObserver(obs) }
